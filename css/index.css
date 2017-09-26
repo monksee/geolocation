@@ -1,0 +1,669 @@
+/**********************************************************
+* Author: Sarah Monks
+* Assignment: WE4.0 Mobile Web Applications, Digital Skills Academy
+* Student ID: D15126869
+* Date : 2016/06/26
+* Ref: background gradient generator for header menu items: http://www.colorzilla.com/gradient-editor/
+* Ref: Style a checkbox using css: http://webdesign.tutsplus.com/tutorials/quick-tip-easy-css3-checkboxes-and-radio-buttons--webdesign-8953
+* Ref: Font Awesome by Dave Gandy - http://fontawesome.io
+***********************************************************/
+/*reset all html elements to 0 margin and padding etc*/
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, address, em, img, q,small, strong, b, i,
+ol, ul, li,form, label, table, caption,tr, th, td,
+article, aside, canvas, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video{
+    margin:0;
+    padding:0;
+    border:0;
+    outline:0;
+    vertical-align:baseline;
+    background:transparent;
+}
+html{
+-webkit-tap-highlight-color: rgba(0,0,0,0); /*removes the highlight blue color when clicking on elements on mobile*/
+-webkit-text-size-adjust: 100%; /*stops the font from stretching on the iphone on orientation change*/
+height: 100%;
+}
+
+/*remove the default list styling from all uls*/
+ul{
+list-style: none;
+}
+
+a{
+text-decoration: none; /*remove the underline from all anchor tags*/
+display: block;
+}
+
+body{
+position: relative;
+font-family: Arial, Helvetica, sans-serif;
+color: #fff;
+line-height: 1.2rem;
+font-size: .9rem;
+letter-spacing: .4px; /*create a small space between each so the text is more readable*/
+width: 100%;
+height: 100%;
+overflow: auto;
+background: #000;
+z-index: 1;
+}
+/**************************************/
+/*styling for heading tags*/
+h2{
+text-align: center;
+padding: 10px 0px 3px 0px;
+font-size: 1.1rem;
+}
+
+h3{
+text-align: center;
+font-size: 1.1rem;
+}
+/**************************************/
+/*styling for container wrapper*/
+#container_wrapper{
+position: absolute;
+left: 0px;
+top: 0px;
+width: 100%;
+height: 100%;
+background: #4f4f4f; /*grey background*/
+overflow: auto;
+z-index: 4; /*the container_wrapper div needs to have a higher z-index than the side panel area so that it sits on top of it*/
+/*add css transitions for when the container_wrapper is swiped to the left and right*/
+/*the swiping transition will take .3 seconds*/
+-webkit-transition: .3s; /* Android 2.1+, Chrome 1-25, iOS 3.2-6.1, Safari 3.2-6  */
+-moz-transition: .3s;
+-o-transition: .3s;
+transition: .3s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
+}
+
+.container{
+position: relative;
+/*need a padding of around 50px at the top on the container because the fixed header of 48px doesnt register a height*/
+padding: 56px 2% 0px 2%; /*the padding on left and right is a total of 4% which when added to the width of 96% will equal 100%*/
+width: 96%;
+overflow: hidden;
+z-index: 4;
+}
+
+.logo{
+display: block;
+width: 34px;
+overflow: visible;
+margin: 3px auto;
+color: #fc03e8;
+font-size: 40px;
+}
+.container_small{
+margin: 10px auto;
+width: 96%;
+padding: 0px 1%;
+background: #323232;
+-webkit-box-shadow:	inset 0px 1px 0px 0px rgba(100, 100,100, 1), inset 0px -1px 0px 0px rgba(25, 25,25, 1);
+-moz-box-shadow:    	inset 0px 1px 0px 0px rgba(72, 72,72,1), inset 0px -1px 0px 0px rgba(25, 25,25, 1);
+box-shadow:         	inset 0px 1px 0px 0px rgba(100,100,100, 1), inset 0px -1px 0px 0px rgba(25, 25,25, 1);
+border-radius:4px;  /*opera*/
+-moz-border-radius:4px;/*firefox*/
+-webkit-border-radius:4px;/*chrome and safari*/
+overflow: hidden;
+}
+.intro_paragraph{
+width: 97%;
+text-align: center;
+padding: 5px 1% 2px 2%;
+}
+/*******************************************************/
+/*styling for side panel area and container*/
+#panel_area{
+position:absolute; /*use position absolute so we can lay the container_wrapper div element over it*/
+top: 0px;
+left: 20%;
+height: 100%;
+width: 80%;
+overflow: auto; /*we use this instead of overflow scroll so that the scrollbar only shows if the content overflows the area*/
+-webkit-transition: .3s; /* Android 2.1+, Chrome 1-25, iOS 3.2-6.1, Safari 3.2-6  */
+-moz-transition: .3s;
+-o-transition: .3s;
+transition: .3s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
+background: #2d2d2d;
+-webkit-box-shadow: inset 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
+-moz-box-shadow:    inset 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
+box-shadow:         inset 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
+z-index: 2; /*the z-index of this panel_area needs to be lower than the container_wrapper z-index so that it sits underneath it*/
+}
+.panel_container{
+position: relative; 
+overflow: hidden;
+}
+.panel_header{
+position: relative;
+width: 95%;
+padding: 14px 1% 14px 4%;
+font-weight: normal;
+background: #2d2d2d;
+-webkit-box-shadow: inset 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
+-moz-box-shadow:    inset 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
+box-shadow:         inset 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
+overflow: hidden;
+}
+
+/*this class will be added to container_wrapper and header when the user opens the side panel using the ng-class directive*/
+.swipe_left{
+-webkit-transform: translateX(-80%); 
+-moz-transform: translateX(-80%);  
+-o-transform: translateX(-80%);  
+transform: translateX(-80%);
+}
+
+/****************************************************/
+/*styling for side panel menu*/
+.side_menu_item{
+width: 100%;
+-webkit-box-shadow: inset 0px 1px 0px 0px rgba(100, 100,100, 1), inset 0px -1px 0px 0px rgba(25, 25,25, 1);
+-moz-box-shadow:    inset 0px 1px 0px 0px rgba(72, 72,72,1), inset 0px -1px 0px 0px rgba(25, 25,25, 1);
+box-shadow:        inset 0px 1px 0px 0px rgba(100,100,100, 1), inset 0px -1px 0px 0px rgba(25, 25,25, 1);
+}
+
+/*create a class to style the a tags within the side panel menu 
+ *as this is more efficient than targeting the a tags through DOM traversal*/
+.side_menu_link{
+display: block;
+cursor: pointer;
+color: #fc03e8;
+width: 95%;
+padding: 14px 1% 14px 4%;
+}
+
+.side_menu_link:hover{
+color: #000;
+background: #fc03e8; /*apply pink background on hover*/
+}
+
+/*styling for the font-awesome arrow on the right side of the link*/
+.fa-chevron-right{
+font-size: 16px;
+color: #fc03e8;
+text-shadow: -1px -1px 0px #1e1e1e, 0 0 0 #000;
+float:right;
+margin: 0px 9px 0px 0px;
+}
+
+/*styling for the arrow on the right when the link is hovered over or clicked on mobile*/
+.side_menu_link:hover .fa-chevron-right{
+color: #000;
+text-shadow: none;
+}
+
+/*styling for the icons that appear in the side panel menu list*/
+.panel_icon{
+font-size: 18px;
+padding-right: 10px;
+}
+/******************************************************/
+/*styling for the header navigation menu*/
+header{
+width: 100%;
+display: block;
+}
+
+.header_nav{   	
+position: fixed;
+top: 0px;
+left: 0px;
+width: 100%; 
+/*add a high z-index value so that this fixed header stays on top of everything else on the page*/ 
+z-index: 10; 
+/*add css transitions for when the headernav is swiped to the left and right*/
+/*the swiping transition will take .3 seconds*/
+-webkit-transition: .3s; /* Android 2.1+, Chrome 1-25, iOS 3.2-6.1, Safari 3.2-6  */
+-moz-transition: .3s;
+-o-transition: .3s;
+transition: .3s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
+overflow: hidden; /*add this to clear below the floats*/
+}
+
+.header_menu_item{
+position: relative; 
+float: left; 
+/*there are four menu items so make them 25% width of the header*/
+width: 25%;
+height: 48px;
+}
+
+/*the following class is applied to the anchor tags in the header navigation*/
+.header_menu_link{
+position: relative;
+display:block;  
+padding: 10px 0px 5px 0px;
+text-align: center;
+width: 100%;
+height: 48px;
+font-size: 24px;
+color: #fc03e8;
+-webkit-box-shadow: inset 0px -1px 0px 0px rgba(0,0,0,1), inset 0px -2px 0px 0px rgba(90, 90, 90,1),inset 0px 1px 0px 0px rgba(8,8,8,1),inset 0px 2px 0px 0px rgba(100, 100, 100,1),inset -1px 0px 0px 0px rgba(8, 8, 8, 0.99), inset 1px 0px 0px 0px rgba(100, 100, 100, 0.7);
+-moz-box-shadow:    inset 0px -1px 0px 0px rgba(0,0,0,1), inset 0px -2px 0px 0px rgba(90, 90, 90,1),inset 0px 1px 0px 0px rgba(8,8,8,1),inset 0px 2px 0px 0px rgba(100, 100, 100,1),inset -1px 0px 0px 0px rgba(8, 8, 8, 0.99), inset 1px 0px 0px 0px rgba(100, 100, 100,0.7);
+box-shadow:       inset 0px -1px 0px 0px rgba(0,0,0,1), inset 0px -2px 0px 0px rgba(90, 90, 90,1), inset 0px 1px 0px 0px rgba(8,8,8,1),inset 0px 2px 0px 0px rgba(100, 100, 100,1),inset -1px 0px 0px 0px rgba(8, 8, 8, 0.99), inset 1px 0px 0px 0px rgba(100, 100, 100, 0.7);
+/*use a gradient for the background color of the links*/
+background: rgb(66,66,66); /* Old browsers */
+background: -moz-linear-gradient(top,  rgba(66,66,66,1) 0%, rgba(54,54,54,1) 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(66,66,66,1)), color-stop(100%,rgba(54,54,54,1))); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  rgba(66,66,66,1) 0%,rgba(54,54,54,1) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  rgba(66,66,66,1) 0%,rgba(54,54,54,1) 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  rgba(66,66,66,1) 0%,rgba(54,54,54,1) 100%); /* IE10+ */
+background: linear-gradient(to bottom,  rgba(66,66,66,1) 0%,rgba(54,54,54,1) 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#424242', endColorstr='#363636',GradientType=0 ); /* IE6-9 */
+
+/*specify a box sizing of border-box so that the width and height properties (and min/max properties) 
+ *includes content, padding and border, but not the margin
+ */
+-webkit-box-sizing:	border-box;
+-moz-box-sizing:	border-box; 
+box-sizing:		border-box;  
+cursor: pointer;
+}
+
+/*give the header menu items a pink background for the following css psuedo classes 
+ *and also when the current class is applied through the ng-class directive.
+ */
+.header_menu_link:active, .header_menu_link:hover, .header_menu_link.current{
+background: #fc03e8;
+color: rgba(0, 0, 0, .8); /*apply black text with .8 opacity, to create an embossed look with the following bright text shadow*/
+text-shadow: 1px 1px 0px #f946ea;
+}
+
+
+/******************************************************/
+/*styling for the scrollbar and scrolling functionality*/
+::-webkit-scrollbar{  
+padding: 1px;
+width: 2px;  
+background-color: #353535;
+}  
+
+::-webkit-scrollbar-track { 
+z-index: 400;
+border-radius: 2px; 
+background-color: #353535;  
+}  
+
+::-webkit-scrollbar-thumb{ /*styling for scrollbar thumb*/
+border-radius: 2px; 
+background-color: #939396; 
+}  
+::-webkit-scrollbar-thumb:hover {  
+background-color: #fc03e8; /*the thumb of the scrollbar will be pink on hover*/
+} 
+
+/*we need to add scrolling to the container_wrapper and to the side panel*/
+/*the following css transitions will create smooth scrolling on all modern devices*/
+
+.scrollable{
+overflow: scroll; /*overflow scroll is not supported on android 2.3 or below however in future iterations we can incorporate a fallback*/
+-webkit-transition-property: top, bottom;
+-moz-transition-property: top, bottom;
+-o-transition-property: top, bottom;
+transition-property: top, bottom;
+
+-webkit-transition-duration: .2s, .2s;
+-moz-transition-duration: .2s, .2s;
+-o-transition-duration: .2s, .2s;
+transition-duration: .2s, .2s;
+
+-webkit-transition-timing-function: linear, linear;
+-moz-transition-timing-function: linear, linear;
+-o-transition-timing-function: linear, linear;
+transition-timing-function: linear, linear;
+-webkit-overflow-scrolling: touch;
+}
+/*******************************************************/
+/*styling for individual views*/
+/*styling for the get started section on the home "page"/view.
+ *we need this in order to center the button that it contains*/
+#get_started{
+width: 120px;
+margin: 10px auto;
+padding: 10px 0px;
+}
+/*create a container for the to do form*/
+#todo_form_wrapper{
+padding: 10px 0px 10px 0px;
+margin-bottom:15px; 
+}
+
+#todo_form{
+margin: 0px auto; /*centre the to do form in its container*/
+width: 94%;
+}
+
+/*create a container for the to do list*/
+#tasks_list_wrapper{
+padding: 5px 0px 30px 0px;
+clear: both;
+overflow: hidden;
+}
+/*container for the list of actions on history page*/
+#history_list{
+padding: 5px 0px 30px 0px;
+}
+/**************************************/
+/*reusable styles for text*/
+.pink_text{
+color: #fc03e8;
+}
+.green_text{
+color: #37e34b;
+}
+.text_center{
+text-align: center;
+}
+.text_right{
+text-align: right;
+}
+.bold_text{
+font-weight: bold;
+}
+.text_shadow{
+text-shadow: -1px -1px 0px #000;
+}
+
+/*******************************************************/
+/*styling for the todo form*/
+label{
+display:block;
+margin:3px 0px 3px 0px;
+color: #cacaca; /*off white color for the text*/
+text-shadow:  1px 1px 0px #000;
+z-index: 3;
+}
+/*target the input field where the task name will be entered*/
+#task_name{
+border: 0px;
+outline: 0px;
+background:#d3d3d3;
+border:1px solid #dedede;
+color:#000;
+border-radius:2px;  /*opera*/
+-moz-border-radius:2px;/*firefox*/
+-webkit-border-radius:2px;/*chrome and safari*/
+padding: 5px 2% 5px 2%;
+width: 95%; 
+height:20px;
+}
+
+#task_name:focus{
+overflow: visible;
+color: #000; 
+box-shadow: inset 0px 0px 0px 100px #f7f7f7, 0px 0px 0px 1px #fc03e8;
+-moz-box-shadow: inset 0px 0px 0px 100px #f7f7f7, 0px 0px 0px 1px #fc03e8;
+-webkit-box-shadow: inset 0px 0px 0px 100px #f7f7f7,0px 0px 0px 1px #fc03e8;
+/*when the input field is in focus put a pink border around it*/
+border:1px solid #fc03e8;
+}
+
+#task_name:-moz-placeholder{ 
+color: #878787; 	/*text color for the placeholder text on firefox*/
+}
+
+#task_name::-webkit-input-placeholder{
+color: #878787; 	/*text color for the placeholder text on chrome*/
+}
+
+/*styling to prevent chrome's yellow colour input field after autocomplete*/
+input:-webkit-autofill {
+-webkit-box-shadow: inset 0px 0px 0px 100px #d3d3d3;
+}
+
+.radio_button{
+margin: 7px 5px 3px 0px;
+cursor: pointer;
+}
+
+/*use this to divide different sections of our form so that we can clear any floats*/
+.form_divider{
+overflow: hidden;
+clear: both;
+padding-bottom: 15px;
+}
+
+/*use this error_message class for the error that we display to the user when the input is invalid*/
+.error_message{
+clear: both;
+width: 99%;
+color: #d60c40;
+}
+/*styling for displaying what the user types in the new task input field.*/
+.new_task{
+float: left;
+display: block;
+min-height: 20px; /*create a minium height so that the page doesnt look like it jumps when this section is empty*/
+padding: 8px 1% 0px 0%;
+width: 79%;
+color: #fc03e8;
+}
+
+/*styling for the feedback icon which we will display to the user to show if their input is valid in a particular field*/
+.feedback_icon{
+width: 24px;
+height: 24px;
+max-width: 20%;
+float: left;
+padding: 6px 3px 0px 3px;
+}
+
+/*red color text for the X symbol which is displayed when the input is not valid*/
+.feedback_icon .fa-times-circle{
+color: #d60c40;
+
+}
+/*green text for the check symbol which is displayed when input is valid*/
+.feedback_icon .fa-check-circle{
+color: #37e34b;
+}
+
+.feedback_icon .fa-times-circle, .feedback_icon .fa-check-circle{
+font-size: 22px;
+display: none; /*initialize the symbols to not display*/
+}
+/*make the background of the input field red when the input is invalid on blur*/
+.todo_form input.ng-invalid.ng-touched{
+background-color: #d60c40;
+}
+
+/*display the X symbol when input is invalid*/
+.todo_form input.ng-invalid.ng-touched + .feedback_icon .fa-times-circle{
+display: block;
+}
+/*display the check symbol when input is valid*/
+.todo_form input.ng-valid.ng-touched + .feedback_icon .fa-check-circle{
+display: block;
+}
+
+/*********************************************/
+/*styling for our checkboxes in our to do list*/
+input[type="checkbox"]{
+display:none; /*hide the original checkbox so we can apply custom styling. see reference on Style a checkbox using css*/
+}
+
+/*we target the label immediately next to the checkbox using the css + selector*/
+/*we then target the span tag within that label tag*/
+/*this span tag will contain our font-awesome check icon so we set a font size here for the icon and a font color*/ 
+input[type="checkbox"] + label span, .icon_button{
+padding-top: 3px;
+display:block;
+width:24px;
+height:24px;
+cursor:pointer;
+font-size: 28px; /*specify font size in pixels for icons*/
+color:#fc03e8;
+}
+/*the checked square icon will be displayed using the ng-class directive in todo.html when currentTask == done*/
+/*therefore in order to show to the user the task is done we will make the text green*/ 
+input[type="checkbox"] + label span .fa-check-square-o{
+color: #37e34b; 
+}
+
+.icon_button .fa-times{
+font-size: 25px; /*make the X symbol font 25px*/
+}
+
+/*styling for clock symbol displayed beside the day the task is due*/
+.fa-clock-o{
+font-size: 22px;
+} 
+
+/*create a class thats specifies zero padding for those columns that we don't want padding on*/
+.no_padding{
+padding: 0px !important;
+}
+
+/********************************************/
+/*button styling*/
+
+.button_style{
+position: relative;
+display: block;
+outline: 0; 		/*override the default button outline*/
+border: 0;  		/*override the default button border*/
+/*user border-radius to produce slightly rounded corners*/
+border-radius: 3px; 	
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+padding: 10px 12px 10px 12px; 
+background: #000;
+/*use box-shadow to create a pink outline. this could also be done using border*/
+-webkit-box-shadow:	0px 0px 0px 1px rgba(252, 3, 232, 1);
+-moz-box-shadow:	0px 0px 0px 1px rgba(252, 3, 232, 1);
+box-shadow: 		0px 0px 0px 1px rgba(252, 3, 232, 1);
+color: #fc03e8; /*pink text color*/
+text-align: center;
+cursor: pointer;
+float: right; /*this is mainly for the "add task" in the todo form which we want to be floated right.*/
+margin-bottom: 2px;
+z-index: 3;
+}
+/*styling for buttons on hover and when active*/
+.button_style:hover, .button_style:active{
+background: rgba(252, 3, 232, 1); 	/*background will be pink on hover and active*/
+color:#000; 	/*black text color*/
+}
+/********************************************/
+/*reusable style to create a full width row*/
+/*rows can then contain the column classes as seen below to divide the row into different width columns*/
+/*this is based on the bootstrap idea for the 12 grid layout*/
+.item_row{
+width: 100%;
+position: relative;
+}
+/*reusable class for list items used in the to do list and the history page*/
+.list_item{
+padding: 2px 0px 7px 0px;
+min-height: 40px;
+word-wrap: break-word; /*if a word spills over its container than break the word*/
+-webkit-box-shadow: inset 0px 1px 0px 0px rgba(100, 100,100, 1), inset 0px -1px 0px 0px rgba(25, 25,25, 1);
+-moz-box-shadow:    inset 0px 1px 0px 0px rgba(72, 72,72,1), inset 0px -1px 0px 0px rgba(25, 25,25, 1);
+box-shadow:        inset 0px 1px 0px 0px rgba(100,100,100, 1), inset 0px -1px 0px 0px rgba(25, 25,25, 1);
+overflow: hidden;
+}
+/*basic item-column class used in conjunction with the following column classes*/
+.item-column{
+display: block;
+float: left;
+padding: 8px 0px 3px 0px; /*padding top, right, bottom, left*/
+
+}
+/**************************************************************/
+/*styling for different column widths based on the 12 grid idea*/
+/*we will use these for creating columns in our todo list*/
+.column-xxs-12{
+width: 100%;
+}
+.column-xxs-11{
+width: 91.6%;
+}
+.column-xxs-10{
+width: 83.3%;
+}
+.column-xxs-9{
+width: 75%;
+}
+.column-xxs-8{
+width: 66.6666666666%;
+}
+.column-xxs-7{
+width: 58.3333333333%;
+}
+.column-xxs-6{
+width: 50%;
+}  
+.column-xxs-5{
+width: 41.6666666666%;
+}   
+.column-xxs-4{
+width: 33.333333333333%;
+}     
+.column-xxs-3{
+width: 25%;
+}     
+.column-xxs-2{
+width: 16.666666666666%;
+}   
+.column-xxs-1{
+width: 8.3333333333%;
+}  
+.column-xxs-offset-1{
+margin-left: 8.3333333333%;
+} 
+.column-xxs-offset-half{
+margin-left: 4.1666666666%;
+} 
+
+/**************************************************************/
+/*Font Awesome styles. See reference*/
+
+@font-face{
+font-family:FontAwesome;
+src:url(../fonts/fontawesome-webfont.eot?v=4.2.0);
+src:url(../fonts/fontawesome-webfont.eot?#iefix&v=4.2.0) format('embedded-opentype'),
+url(../fonts/fontawesome-webfont.woff?v=4.2.0) format('woff'),
+url(../fonts/fontawesome-webfont.ttf?v=4.2.0) format('truetype'),
+url(../fonts/fontawesome-webfont.svg?v=4.2.0#fontawesomeregular) format('svg');
+font-weight:400;
+font-style:normal;
+}
+
+.fa{
+display:inline-block;
+font:normal normal normal 14px/1 FontAwesome;
+font-size:inherit;
+text-rendering:auto;
+-webkit-font-smoothing:antialiased;
+-moz-osx-font-smoothing:grayscale
+}
+
+.fa-navicon:before{content:"\f0c9"}
+.fa-home:before{content:"\f015"}
+.fa-plus-square:before{content:"\f0fe"}
+.fa-check:before{content:"\f00c"}
+.fa-check-circle:before{content:"\f058"}
+.fa-check-square-o:before{content:"\f046"}
+.fa-square-o:before{content:"\f096"}
+.fa-times-circle:before{content:"\f057"}
+.fa-clock-o:before{content:"\f017"}
+.fa-calendar-times-o:before{content:"\f273"}
+.fa-close:before,.fa-remove:before,.fa-times:before{content:"\f00d"}
+.fa-refresh:before{content:"\f021"}
+.fa-chevron-left:before{content:"\f053"}
+.fa-chevron-right:before{content:"\f054"}
+.fa-caret-left:before{content:"\f0d9"}
+.fa-caret-right:before{content:"\f0da"}
+.fa-minus-square:before{content:"\f146"}
+.fa-minus-square-o:before{content:"\f147"}
+.fa-thumbs-up:before{content:"\f164"}
+.fa-thumbs-down:before{content:"\f165"}
+.fa-copyright:before{content:"\f1f9"}
+.fa-history:before{content:"\f1da"}
+.fa-pencil:before{content:"\f040"}
