@@ -8,9 +8,7 @@
 <script src="js/angular.min.js"></script>
 <script src="js/angular-route.min.js"></script>
 <script src="js/angular-touch.min.js"></script>
-<script src="http://maps.google.com/maps/api/js?key=AIzaSyAq3rgVX-gPP-1TWmUBER0f_E_tzGO_6Ng"></script>
 
-<script src="js/controllers.js"></script>
 <script src="phonegap.js"></script>
 
 <link rel="stylesheet" type="text/css" href="css/index.css"/>	
@@ -49,6 +47,7 @@ width: 100%;
 
 	<div id="container_wrapper" class="scrollable" ng-class="{'swipe_left': panelIsOpen == true}" ng-swipe-left="panelIsOpen = true">
 		<div class="container"> 
+			<div id="login_with_facebook" data-ng-click="loginWithFacebook()">Login with Facebook</div>
 			<span class="logo"><i class="fa fa-check-circle"></i></span>
 			<div ng-view>
 				<!--our individual views will be displayed here-->
@@ -61,5 +60,12 @@ width: 100%;
 
  
 </script>
+<script src="http://maps.google.com/maps/api/js?key=AIzaSyAq3rgVX-gPP-1TWmUBER0f_E_tzGO_6Ng"></script>
+<script src="modules/mapApp.js"></script>
+<script src="routes/routes.js"></script>
+<script src="factories/phonegapReadyFactory.js"></script>
+<script src="factories/facebookFactory.js"></script>
+<script src="factories/geolocationFactory.js"></script>
+<script src="controllers/controllers.js"></script>
 </body>
 </html>

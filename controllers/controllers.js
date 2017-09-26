@@ -1,88 +1,7 @@
 
-
-
-//configure our routes
-mapApp.config(function($routeProvider) {
-	$routeProvider
-		.when('/', {
-			//route for the home page
-			templateUrl : 'views/home.html',
-			controller : 'homeController'
-		})
-		.when('/map', {
-			//route for the to do list page
-			templateUrl : 'views/map.html',
-			controller : 'mapController'
-		});
-});
-
-//create a factory so that we can pass these variables between different controllers. see ref above.
-mapApp.factory('todoListFactory', function() {
-  	//private variables
-  	var _activityList = [];
-	var _tasks =[];
-	
-  	//return public API so that we can access it in all controllers
-  	return {
-    		activityList: _activityList, tasks: _tasks
- 	};
-});
-
-mapApp.factory('cordovaReady', function() {
-  return function (fn) {
-
-    var queue = [];
-
-    var impl = function () {
-      queue.push(Array.prototype.slice.call(arguments));
-    };
-
-    document.addEventListener('deviceready', function () {
-      queue.forEach(function (args) {
-        fn.apply(this, args);
-      });
-      impl = fn;
-    }, false);
-
-    return function () {
-      return impl.apply(this, arguments);
-    };
-  };
-});
-
-
-
-mapApp.factory('geolocation', function ($rootScope, cordovaReady) {
-  return {
-    getCurrentPosition: cordovaReady(function (onSuccess, onError, options) {
-      navigator.geolocation.getCurrentPosition(function () {
-        var that = this,
-          args = arguments;
-
-        if (onSuccess) {
-          $rootScope.$apply(function () {
-            onSuccess.apply(that, args);
-          });
-        }
-      }, function () {
-        var that = this,
-          args = arguments;
-
-        if (onError) {
-          $rootScope.$apply(function () {
-            onError.apply(that, args);
-          });
-        }
-      },
-      options);
-    })
-  };
-});
-
-
 //create the mainController which will be associated with the body of the index file as we will use this controller throughout all
 //"pages" for the header menu items and side panel menu.
-mapApp.controller("mainController", function($scope, geolocation){
+mapApp.controller("mainController", function($scope, geolocationFactory, facebookFactory){
 
 	//the boolean variable "panelIsOpen" will initially be set to false as the side panel with initially be closed on page load
 	var panelIsOpen = false;
@@ -117,7 +36,7 @@ mapApp.controller("mainController", function($scope, geolocation){
 		//the "current" class adds some css styling to the selected item to show the user which menu item is currently selected.
 		$scope.selectedItem = $index; 
 	}
-  geolocation.getCurrentPosition(function (position) {
+  geolocationFactory.getCurrentPosition(function (position) {
     alert('Latitude: '              + position.coords.latitude          + '\n' +
           'Longitude: '             + position.coords.longitude         + '\n' +
           'Altitude: '              + position.coords.altitude          + '\n' +
@@ -128,6 +47,14 @@ mapApp.controller("mainController", function($scope, geolocation){
           'Timestamp: '             + position.timestamp                + '\n');
   });
 
+$scope.loginWithFacebook = function(){
+alert('facebook1');
+facebookFactory.processFacebookLogin(function (response) {
+
+	
+
+});
+}
 
 });
 
