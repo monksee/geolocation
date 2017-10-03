@@ -48,6 +48,7 @@ width: 100%;
 	<div id="container_wrapper" class="scrollable" ng-class="{'swipe_left': panelIsOpen == true}" ng-swipe-left="panelIsOpen = true">
 		<div class="container"> 
 			<div id="login_with_facebook" data-ng-click="loginWithFacebook()">Login with Facebook</div>
+			<div>{{userDetails.userID}}</div>
 			<span class="logo"><i class="fa fa-check-circle"></i></span>
 			<div ng-view>
 				<!--our individual views will be displayed here-->
@@ -64,7 +65,9 @@ width: 100%;
 <script src="modules/mapApp.js"></script>
 <script src="routes/routes.js"></script>
 <script src="factories/phonegapReadyFactory.js"></script>
+<script src="factories/loginFactory.js"></script>
 <script src="factories/facebookFactory.js"></script>
+
 <script src="factories/geolocationFactory.js"></script>
 <script src="controllers/controllers.js"></script>
 </body>

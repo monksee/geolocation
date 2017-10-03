@@ -1,7 +1,7 @@
 
 //create the mainController which will be associated with the body of the index file as we will use this controller throughout all
 //"pages" for the header menu items and side panel menu.
-mapApp.controller("mainController", function($scope, geolocationFactory, facebookFactory){
+mapApp.controller("mainController", function($scope, $http, geolocationFactory, facebookFactory, loginFactory){
 
 	//the boolean variable "panelIsOpen" will initially be set to false as the side panel with initially be closed on page load
 	var panelIsOpen = false;
@@ -17,7 +17,8 @@ mapApp.controller("mainController", function($scope, geolocationFactory, faceboo
 	$scope.menuItems = menuItems;
 	//add the panelIsOpen boolean variable to scope
 	$scope.panelIsOpen = panelIsOpen;
-
+	//userDetails should be stored in the mainController scope becuas 
+	$scope.userDetails = {};
 	$scope.toggleSidePanel = function(){
 		//this function checks if the boolean variable "panelIsOpen" is currently true or false.
 		//if it is false when the user presses the toggle button it means the panel is currently closed so therefore 
@@ -48,13 +49,24 @@ mapApp.controller("mainController", function($scope, geolocationFactory, faceboo
   });
 
 $scope.loginWithFacebook = function(){
-alert('facebook1');
-facebookFactory.processFacebookLogin(function (response) {
+	facebookFactory.processFacebookLogin(function (response) {});
 
-	
 
-});
-}
+	//the following code should be moved to the facebookFactory when using phonegap
+    var data = {
+        "facebookUserID" : "10213718552614326", 
+        "facebookName" : "La", 
+        "profilePicURL" : "https://scontent.xx.fbcdn.net/v/t1.0-1/p50x50/21617751_10213716829451248_7798041643913998634_n.jpg?oh=7242e13b731a211fa7ac77ed443ec96f&oe=5A483F35"
+    };
+
+   // loginFactory.checkLoginDetails(data).then(function(userDetails) {
+        //use a promise to store the userDetails from the loginFactory into our $scope.userDetails variable. 
+  //    	$scope.userDetails = userDetails;
+    //  	console.log("$scope.userDetails" + $scope.userDetails.facebookName);
+		
+   // });
+ 
+}  
 
 });
 
