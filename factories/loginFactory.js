@@ -21,7 +21,8 @@ mapApp.factory('loginFactory', function($http, $timeout, $q, sharedFactory){
         var deferred = $q.defer();
         $http({
             method: 'POST',
-            url: 'http://localhost/API/auth?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+           // url: 'http://localhost/API/auth?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+           url: 'http://gamuzic.com/API/auth?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
             data : JSON.stringify(data),
             headers: {
                'Content-Type': 'application/json;charset=utf-8'
