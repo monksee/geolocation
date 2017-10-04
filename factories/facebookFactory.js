@@ -1,15 +1,15 @@
 
-mapApp.factory('facebookFactory', function ($rootScope, phonegapReady) {
+mapApp.factory('facebookFactory', function($rootScope, phonegapReady){
   return {
-    processFacebookLogin: phonegapReady(function (response) {
+    processFacebookLogin: phonegapReady(function(response){
 		alert('facebook');
-		facebookConnectPlugin.getLoginStatus(function(response) {
+		facebookConnectPlugin.getLoginStatus(function(response){
 			if (response.status === 'connected') {
       				//the user is logged into our app and facebook.
 				//now we need to get their facebook ID and check if they are already registered with us. 
 				//ie their facebook id exists in the facebookUserID field of the database
 				//alert(JSON.stringify(response));	
-				facebookConnectPlugin.api('/me?fields=id, email, name, link, picture?type=large', ["public_profile"],function(data) {
+				facebookConnectPlugin.api('/me?fields=id, email, name, link, picture', ["public_profile"],function(data){
   					alert("data" + JSON.stringify(data));
 					//Send the data to the server side. 	
 				
@@ -21,14 +21,14 @@ mapApp.factory('facebookFactory', function ($rootScope, phonegapReady) {
 			}else{ //response.status is not connected.
 
 				//the user is not logged into facebook therefore send them to log in.
-      				facebookConnectPlugin.login(["public_profile"], function(response) {
+      				facebookConnectPlugin.login(["public_profile"], function(response){
   					//handle the response
 					
 					if(response.status === 'connected'){
 						//successful login response
 
 						alert(JSON.stringify(response));
-						facebookConnectPlugin.api('/me?fields=id, email, name, link, picture?type=large', ["public_profile"],function(data) {
+						facebookConnectPlugin.api('/me?fields=id, email, name, link, picture', ["public_profile"],function(data){
   							alert("data" + JSON.stringify(data));
 
 						                

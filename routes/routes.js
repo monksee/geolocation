@@ -6,9 +6,9 @@ mapApp.config(function($routeProvider) {
 			templateUrl : 'views/home.html',
 			controller : 'homeController'
 		})
-		.when('/map', {
+		.when('/station', {
 			//route for the to do list page
-			templateUrl : 'views/map.html',
-			controller : 'mapController'
+			templateUrl : 'views/station.html',
+			controller : 'stationController'
 		});
 });

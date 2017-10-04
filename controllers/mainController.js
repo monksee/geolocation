@@ -9,7 +9,7 @@ mapApp.controller("mainController", function($scope, $http, geolocationFactory, 
 	//create an array of objects storing information on our menu items for the header of all "pages"
 	//store the relevant icons and hrefs for each menu item 
 	var menuItems = [{'name':'Home', 'href': '#/', 'font_awesome_icon' : 'fa-home'}, 
-			{'name': 'To Do List', 'href': '#todo', 'font_awesome_icon' : 'fa-pencil'},
+			{'name': 'To Do List', 'href': '#station', 'font_awesome_icon' : 'fa-pencil'},
 			{'name': 'Activity Log', 'href': '#history', 'font_awesome_icon' : 'fa-history'}];
 
 
