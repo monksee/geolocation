@@ -15,7 +15,7 @@ mapApp.factory('facebookFactory', function ($rootScope, phonegapReady) {
 					var id = data.id;
 					alert(id);	
 //loginFactory.checkLoginDetails(data);
-                   facebookConnectPlugin.api("/me?fields=picture",
+                   facebookConnectPlugin.api("/me/picture", ["public_profile"], 
     function (response) {
       if (response && !response.error) {
         /* handle the result */
@@ -47,8 +47,8 @@ mapApp.factory('facebookFactory', function ($rootScope, phonegapReady) {
 var id = data.id;
 					alert(id);	
 
-						                  facebookConnectPlugin.api("/me?fields=picture",
-    function (response) {
+						                  facebookConnectPlugin.api("/me/picture", ["public_profile"], 
+						                  	function (response) {
       if (response && !response.error) {
         /* handle the result */
         alert("response" + JSON.stringify(response));
