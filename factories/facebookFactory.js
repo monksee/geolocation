@@ -9,24 +9,10 @@ mapApp.factory('facebookFactory', function ($rootScope, phonegapReady) {
 				//now we need to get their facebook ID and check if they are already registered with us. 
 				//ie their facebook id exists in the facebookUserID field of the database
 				//alert(JSON.stringify(response));	
-				facebookConnectPlugin.api('/me?fields=id, email, name, link, picture', ["public_profile"],function(data) {
+				facebookConnectPlugin.api('/me?fields=id, email, name, link, picture?type=large', ["public_profile"],function(data) {
   					alert("data" + JSON.stringify(data));
 					//Send the data to the server side. 	
-					var id = data.id;
-					alert(id);	
-//loginFactory.checkLoginDetails(data);
-                   facebookConnectPlugin.api("/me/picture", ["public_profile"], 
-    function (response) {
-      if (response && !response.error) {
-        /* handle the result */
-        alert("response" + JSON.stringify(response));
-      }else{
-
-      	alert("error" + JSON.stringify(response.error));
-      }
-    }
-);
-
+				
 				}
 				,function(error_profile){	
 					//api call failed
@@ -42,22 +28,10 @@ mapApp.factory('facebookFactory', function ($rootScope, phonegapReady) {
 						//successful login response
 
 						alert(JSON.stringify(response));
-						facebookConnectPlugin.api('/me?fields=id, email, name, link, picture', ["public_profile"],function(data) {
+						facebookConnectPlugin.api('/me?fields=id, email, name, link, picture?type=large', ["public_profile"],function(data) {
   							alert("data" + JSON.stringify(data));
-var id = data.id;
-					alert(id);	
 
-						                  facebookConnectPlugin.api("/me/picture", ["public_profile"], 
-						                  	function (response) {
-      if (response && !response.error) {
-        /* handle the result */
-        alert("response" + JSON.stringify(response));
-      }else{
-
-      	alert("error" + JSON.stringify(response.error));
-      }
-    }
-);
+						                
 						
 						}
 						,function(error_profile){	
