@@ -1,11 +1,5 @@
 /**********************************************************
 * Author: Sarah Monks
-* Assignment: WE4.0 Mobile Web Applications, Digital Skills Academy
-* Student ID: D15126869
-* Date : 2016/06/26
-* Ref: background gradient generator for header menu items: http://www.colorzilla.com/gradient-editor/
-* Ref: Style a checkbox using css: http://webdesign.tutsplus.com/tutorials/quick-tip-easy-css3-checkboxes-and-radio-buttons--webdesign-8953
-* Ref: Font Awesome by Dave Gandy - http://fontawesome.io
 ***********************************************************/
 /*reset all html elements to 0 margin and padding etc*/
 html, body, div, span, object, iframe,
@@ -40,14 +34,14 @@ display: block;
 body{
 position: relative;
 font-family: Arial, Helvetica, sans-serif;
-color: #fff;
+color: #515252;
 line-height: 1.2rem;
 font-size: .9rem;
-letter-spacing: .4px; /*create a small space between each so the text is more readable*/
+letter-spacing: .4px; /*create a small space between each letter so the text is more readable*/
 width: 100%;
 height: 100%;
 overflow: auto;
-background: #000;
+background: #fafafa;
 z-index: 1;
 }
 /**************************************/
@@ -63,18 +57,20 @@ text-align: center;
 font-size: 1.1rem;
 }
 /**************************************/
-/*styling for container wrapper*/
+/*styling for the container wrapper*/
 #container_wrapper{
 position: absolute;
 left: 0px;
 top: 0px;
 width: 100%;
 height: 100%;
-background: #4f4f4f; /*grey background*/
+background: #fafafa; 
 overflow: auto;
-z-index: 4; /*the container_wrapper div needs to have a higher z-index than the side panel area so that it sits on top of it*/
-/*add css transitions for when the container_wrapper is swiped to the left and right*/
-/*the swiping transition will take .3 seconds*/
+/* the container_wrapper div needs to have a higher z-index than the side panel area so that it sits on top of it*/
+z-index: 4; 
+/* add css transitions for when the container_wrapper is swiped to the left and right
+ * the swiping transition will take .3 seconds
+ */
 -webkit-transition: .3s; /* Android 2.1+, Chrome 1-25, iOS 3.2-6.1, Safari 3.2-6  */
 -moz-transition: .3s;
 -o-transition: .3s;
@@ -83,8 +79,10 @@ transition: .3s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+ 
 
 .container{
 position: relative;
-/*need a padding of around 50px at the top on the container because the fixed header of 48px doesnt register a height*/
-padding: 56px 2% 0px 2%; /*the padding on left and right is a total of 4% which when added to the width of 96% will equal 100%*/
+/* need a padding of around 50px at the top on the container because the fixed header of 48px doesnt register a height.
+ * also the padding on left and right is a total of 4% which when added to the width of 96% will equal 100%
+ */
+padding: 56px 2% 0px 2%; 
 width: 96%;
 overflow: hidden;
 z-index: 4;
@@ -102,7 +100,6 @@ font-size: 40px;
 margin: 10px auto;
 width: 96%;
 padding: 0px 1%;
-background: #323232;
 -webkit-box-shadow:	inset 0px 1px 0px 0px rgba(100, 100,100, 1), inset 0px -1px 0px 0px rgba(25, 25,25, 1);
 -moz-box-shadow:    	inset 0px 1px 0px 0px rgba(72, 72,72,1), inset 0px -1px 0px 0px rgba(25, 25,25, 1);
 box-shadow:         	inset 0px 1px 0px 0px rgba(100,100,100, 1), inset 0px -1px 0px 0px rgba(25, 25,25, 1);
@@ -203,20 +200,24 @@ text-shadow: none;
 font-size: 18px;
 padding-right: 10px;
 }
-/******************************************************/
+
+
+/*******************************************HEADER NAV MENU **************************************/
 /*styling for the header navigation menu*/
 header{
 width: 100%;
 display: block;
+
 }
 
 .header_nav{   	
+background: #1d8ccd;
 position: fixed;
 top: 0px;
 left: 0px;
 width: 100%; 
 /*add a high z-index value so that this fixed header stays on top of everything else on the page*/ 
-z-index: 10; 
+z-index: 20; 
 /*add css transitions for when the headernav is swiped to the left and right*/
 /*the swiping transition will take .3 seconds*/
 -webkit-transition: .3s; /* Android 2.1+, Chrome 1-25, iOS 3.2-6.1, Safari 3.2-6  */
@@ -224,56 +225,66 @@ z-index: 10;
 -o-transition: .3s;
 transition: .3s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
 overflow: hidden; /*add this to clear below the floats*/
+height: 48px;
+-webkit-box-shadow: inset 0px -2px 0px 0px rgba(4, 114,169);
+-moz-box-shadow:    inset 0px -2px 0px 0px rgba(4, 114,169,1);
+box-shadow:        inset 0px -2px 0px 0px rgba(4,114,169, 1);
 }
 
 .header_menu_item{
 position: relative; 
 float: left; 
-/*there are four menu items so make them 25% width of the header*/
-width: 25%;
-height: 48px;
+width: 20%;
+height: 100%;
+}
+
+.header_menu_item.navicon{
+float: right; 
+}
+
+/*for centre company logo*/
+.header_menu_item.logo_list_item{
+width: 40%;
+float: left; 
+margin-left: 16%;
 }
 
 /*the following class is applied to the anchor tags in the header navigation*/
 .header_menu_link{
 position: relative;
 display:block;  
-padding: 10px 0px 5px 0px;
+padding: 12px 0px 0px 0px;
 text-align: center;
 width: 100%;
-height: 48px;
-font-size: 24px;
-color: #fc03e8;
--webkit-box-shadow: inset 0px -1px 0px 0px rgba(0,0,0,1), inset 0px -2px 0px 0px rgba(90, 90, 90,1),inset 0px 1px 0px 0px rgba(8,8,8,1),inset 0px 2px 0px 0px rgba(100, 100, 100,1),inset -1px 0px 0px 0px rgba(8, 8, 8, 0.99), inset 1px 0px 0px 0px rgba(100, 100, 100, 0.7);
--moz-box-shadow:    inset 0px -1px 0px 0px rgba(0,0,0,1), inset 0px -2px 0px 0px rgba(90, 90, 90,1),inset 0px 1px 0px 0px rgba(8,8,8,1),inset 0px 2px 0px 0px rgba(100, 100, 100,1),inset -1px 0px 0px 0px rgba(8, 8, 8, 0.99), inset 1px 0px 0px 0px rgba(100, 100, 100,0.7);
-box-shadow:       inset 0px -1px 0px 0px rgba(0,0,0,1), inset 0px -2px 0px 0px rgba(90, 90, 90,1), inset 0px 1px 0px 0px rgba(8,8,8,1),inset 0px 2px 0px 0px rgba(100, 100, 100,1),inset -1px 0px 0px 0px rgba(8, 8, 8, 0.99), inset 1px 0px 0px 0px rgba(100, 100, 100, 0.7);
-/*use a gradient for the background color of the links*/
-background: rgb(66,66,66); /* Old browsers */
-background: -moz-linear-gradient(top,  rgba(66,66,66,1) 0%, rgba(54,54,54,1) 100%); /* FF3.6+ */
-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(66,66,66,1)), color-stop(100%,rgba(54,54,54,1))); /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(top,  rgba(66,66,66,1) 0%,rgba(54,54,54,1) 100%); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(top,  rgba(66,66,66,1) 0%,rgba(54,54,54,1) 100%); /* Opera 11.10+ */
-background: -ms-linear-gradient(top,  rgba(66,66,66,1) 0%,rgba(54,54,54,1) 100%); /* IE10+ */
-background: linear-gradient(to bottom,  rgba(66,66,66,1) 0%,rgba(54,54,54,1) 100%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#424242', endColorstr='#363636',GradientType=0 ); /* IE6-9 */
+height: 100%;
+font-size: 22px;
+color: rgba(23, 27, 30, .8) !important; 
+text-shadow: 1px 1px 0px #2e9fe1, 0 0 0 #000;
 
-/*specify a box sizing of border-box so that the width and height properties (and min/max properties) 
- *includes content, padding and border, but not the margin
- */
+cursor: pointer;
 -webkit-box-sizing:	border-box;
 -moz-box-sizing:	border-box; 
-box-sizing:		border-box;  
-cursor: pointer;
+box-sizing:		border-box;
 }
 
-/*give the header menu items a pink background for the following css psuedo classes 
- *and also when the current class is applied through the ng-class directive.
- */
-.header_menu_link:active, .header_menu_link:hover, .header_menu_link.current{
-background: #fc03e8;
-color: rgba(0, 0, 0, .8); /*apply black text with .8 opacity, to create an embossed look with the following bright text shadow*/
-text-shadow: 1px 1px 0px #f946ea;
+
+.header_menu_link.logo_link{
+padding-top: 4px;
+margin: 0 auto;
 }
+
+.header_menu_link.logo_link, .small_logo_link img{
+width: 94px;
+max-width: 80%;
+height: auto;
+margin: 0 auto;
+}
+
+
+.header_menu_link.current, .header_menu_link:active{
+color: #fff !important;
+}
+
 
 
 /******************************************************/
@@ -371,46 +382,68 @@ text-shadow: -1px -1px 0px #000;
 }
 
 /*******************************************************/
-/*styling for the todo form*/
 label{
 display:block;
-margin:3px 0px 3px 0px;
-color: #cacaca; /*off white color for the text*/
-text-shadow:  1px 1px 0px #000;
+margin:12px 0px 0px 0px;
+color: #414141; /*off white color for the text*/
+padding: 12px 0px 0px 0px;
 z-index: 3;
+font-size: .9rem !important;
 }
+
 /*target the input field where the task name will be entered*/
-#task_name{
+input[type="text"], input[type="password"], input[type="email"], input[type="tel"]{
+box-shadow: none;
+-moz-box-shadow: none;
+-webkit-box-shadow: none;
 border: 0px;
 outline: 0px;
-background:#d3d3d3;
-border:1px solid #dedede;
-color:#000;
+background:#f7f7f7;
+border:1px solid #c1c1c1;
+color:#414141;
 border-radius:2px;  /*opera*/
 -moz-border-radius:2px;/*firefox*/
 -webkit-border-radius:2px;/*chrome and safari*/
-padding: 5px 2% 5px 2%;
-width: 95%; 
-height:20px;
+width: 95% !important;
+height:26px;
+font-family: Raleway, FontAwesome; /*need to put font awesome here for the icons in the input fields */
+font-size: .9rem !important;
+display: block;
+letter-spacing: .7px; 
 }
 
-#task_name:focus{
+
+textarea{
+box-shadow: none;
+-moz-box-shadow: none;
+-webkit-box-shadow: none;
+margin: 0px auto;
+border: 0px;
+outline: 0px;
+background:#f7f7f7;
+border:1px solid #c1c1c1;
+color:#414141;
+border-radius:2px;  /*opera*/
+-moz-border-radius:2px;/*firefox*/
+-webkit-border-radius:2px;/*chrome and safari*/
+padding: 5px 2% 5px 2% !important;
+width: 95% !important;
+font-family: Raleway, FontAwesome; /*need to put font awesome here for the icons in the input fields */
+font-size: .9rem !important;
+display: block;
+letter-spacing: .7px; 
+}
+
+
+input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, input[type="tel"]:focus, textarea:focus{
 overflow: visible;
 color: #000; 
-box-shadow: inset 0px 0px 0px 100px #f7f7f7, 0px 0px 0px 1px #fc03e8;
--moz-box-shadow: inset 0px 0px 0px 100px #f7f7f7, 0px 0px 0px 1px #fc03e8;
--webkit-box-shadow: inset 0px 0px 0px 100px #f7f7f7,0px 0px 0px 1px #fc03e8;
-/*when the input field is in focus put a pink border around it*/
-border:1px solid #fc03e8;
+border:1px solid #999898;
+box-shadow: inset 0px 0px 0px 100px #fff;
+-moz-box-shadow: inset 0px 0px 0px 100px #fff;
+-webkit-box-shadow: inset 0px 0px 0px 100px #fff;
 }
 
-#task_name:-moz-placeholder{ 
-color: #878787; 	/*text color for the placeholder text on firefox*/
-}
-
-#task_name::-webkit-input-placeholder{
-color: #878787; 	/*text color for the placeholder text on chrome*/
-}
 
 /*styling to prevent chrome's yellow colour input field after autocomplete*/
 input:-webkit-autofill {
@@ -520,35 +553,57 @@ font-size: 22px;
 padding: 0px !important;
 }
 
-/********************************************/
-/*button styling*/
 
-.button_style{
+/************************************************button styling**********************************************/
+.btn {
 position: relative;
 display: block;
 outline: 0; 		/*override the default button outline*/
 border: 0;  		/*override the default button border*/
 /*user border-radius to produce slightly rounded corners*/
-border-radius: 3px; 	
--webkit-border-radius: 3px;
--moz-border-radius: 3px;
-padding: 10px 12px 10px 12px; 
-background: #000;
-/*use box-shadow to create a pink outline. this could also be done using border*/
--webkit-box-shadow:	0px 0px 0px 1px rgba(252, 3, 232, 1);
--moz-box-shadow:	0px 0px 0px 1px rgba(252, 3, 232, 1);
-box-shadow: 		0px 0px 0px 1px rgba(252, 3, 232, 1);
-color: #fc03e8; /*pink text color*/
+border-radius: 5px; 	
+-webkit-border-radius: 5px;
+-moz-border-radius: 5px;
+
 text-align: center;
 cursor: pointer;
-float: right; /*this is mainly for the "add task" in the todo form which we want to be floated right.*/
-margin-bottom: 2px;
+padding: 7px 15px;
+
+font-size: .9rem;
+font-weight: bold;
+letter-spacing: 1px;
+
+transition: all 0.2s ease;	
 z-index: 3;
 }
-/*styling for buttons on hover and when active*/
-.button_style:hover, .button_style:active{
-background: rgba(252, 3, 232, 1); 	/*background will be pink on hover and active*/
-color:#000; 	/*black text color*/
+
+.btn_blue {
+color: #f1f3f3;
+border: 2px solid #1d8ccd;
+background: #1d8ccd !important;
+}
+.btn_blue.btn_blue_text {
+color: #1d8ccd !important;
+}
+
+.btn_blue:hover, .btn_blue:active{
+background: #1d8ccd !important;
+color: #fff !important;
+border-color: #1d8ccd;
+box-shadow: 0px 0px 0px 2px #fff inset; 
+transition: all 0.2s ease;	
+}
+
+.btn_submit{
+float: right;
+}
+#scroll_down{
+margin-top: 20px;
+text-align: center;
+}
+.extra_margin{
+margin: 5px 8px;	
+
 }
 /********************************************/
 /*reusable style to create a full width row*/

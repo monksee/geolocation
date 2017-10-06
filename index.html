@@ -12,6 +12,7 @@
 <script src="phonegap.js"></script>
 
 <link rel="stylesheet" type="text/css" href="css/index.css"/>	
+<link rel="stylesheet" type="text/css" href="css/font-awesome.css"/>	
 <style>
 #map {
 margin: 0px auto;
@@ -26,30 +27,29 @@ width: 100%;
 	<header>
 
 		<ul class="header_nav" ng-class="{'swipe_left': panelIsOpen == true}">
-			<li class="header_menu_item" data-ng-repeat="currentMenuItem in menuItems" data-ng-click="selectMenuItem($index)">
-				<!--we want to apply the current class whenever a particular menu item is selected.-->
-				<!--in order to do this we use the ng-class directive-->
-
-				<a class="header_menu_link" ng-class="{'current': $index == selectedItem}" href="{{currentMenuItem.href}}">
-					<i class="fa {{currentMenuItem.font_awesome_icon}}"></i>
-				</a>
+			<li class="header_menu_item" ng-click="goBack()">
+				<span id="back_header_link" class="header_menu_link normal_link"><i class="fa fa-arrow-left"></i></span>
+				
 			</li>
-			<!--the following list item represents a side panel button for opening and closing the side panel-->
-        		<!--use the ng-click directive to call the toggleSidePanel() function when this button is pressed-->
-			<!--using the ng-class directive we can apply the current class to this list item which will add some css styling-->
-        		<li class="header_menu_item" data-ng-click="toggleSidePanel()">
-				<span class="header_menu_link" ng-class="{'current': panelIsOpen == true}">
-					<i class="fa fa-navicon"></i>
-				</span>
-			</li>  	  
-       	 	</ul><!--/header_nav-->		
+        		<li class="header_menu_item navicon" data-ng-click="toggleSidePanel()">
+				    <span class="header_menu_link" ng-class="{'current': panelIsOpen == true}">
+					    <i class="fa fa-navicon"></i>
+				    </span>
+			    </li>  	  
+       	</ul><!--/header_nav-->		
 	</header>
 
 	<div id="container_wrapper" class="scrollable" ng-class="{'swipe_left': panelIsOpen == true}" ng-swipe-left="panelIsOpen = true">
 		<div class="container"> 
-			<div id="login_with_facebook" data-ng-click="loginWithFacebook()">Login with Facebook</div>
-			<div>{{userDetails.userID}}</div>
-			<span class="logo"><i class="fa fa-check-circle"></i></span>
+			<div id="login_with_facebook" data-ng-click="loginWithFacebook()" ng-show="!checkIfLoggedIn()">Login with Facebook</div>
+			<div id="login_info_area" ng-show="checkIfLoggedIn()">
+			    <span class="user_profile_pic">
+			        <img src="{{userDetails.facebookProfilePic}}" width="200" height="200" alt="Facebook profile pic">
+			    </span> 
+			    {{userDetails.facebookName}}
+			</div>
+
+			<span class="logo" ng-show="checkIfUserIsAdmin()"><i class="fa fa-check-circle"></i></span>
 			<div ng-view>
 				<!--our individual views will be displayed here-->
 

@@ -12,10 +12,4 @@ mapApp.controller("homeController", function($scope){
 });
 
 
-//create the homeController for the home.html view
-mapApp.controller("mapController", function($scope){
-	$scope.pageHeading = "Map"; //this will be inserted to a h2 tag
-	$scope.introParagraph = ""
-});
-
 
