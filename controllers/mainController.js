@@ -53,6 +53,28 @@ mapApp.controller("mainController", function($scope, $http, geolocationFactory, 
           'Timestamp: '             + position.timestamp                + '\n');
     });
 
+    (function() {
+    	//Anonymous function to be run when app opens.
+    	if(localStorage.getItem("userToken") === null){
+
+
+        }else{
+        	//userToken key exists in local storage so check this token on the server side to make sure its valid.
+            var data = {
+        	    "userToken" : localStorage.getItem("userToken")
+               // "userToken" : "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySUQiOjMxLCJmYWNlYm9va1VzZXJJRCI6IjEwMjEzNzE4NTUyNjE0MzI2In0.SdWuJQ8uvAt4neH6Pxr0zzh_TRB5un2rKWYQHfo2fpo"
+            };
+            loginFactory.checkUserToken(data).then(function(userDetails) {
+    	        //Since the checkUserToken method (in the loginFactory) is performaing a http request we need to use a promise
+    	        //to store the userDetails (from the response) into our $scope.userDetails variable. 
+      	        $scope.userDetails = userDetails;
+     	        console.log("$scope.userDetails" + JSON.stringify($scope.userDetails));
+            });
+        }
+    })();
+
+
+
     $scope.loginWithFacebook = function(){
 	    //facebookFactory.processFacebookLogin(function (response) {});
 	    //the following two blocks of code should be moved to the facebookFactory when using phonegap
@@ -70,6 +92,15 @@ mapApp.controller("mainController", function($scope, $http, geolocationFactory, 
      	    console.log("$scope.userDetails" + JSON.stringify($scope.userDetails));
         });
     }  
+    $scope.logOut = function(){
+    	var confirmation = confirm("Are you sure you want to log out?");
+
+	    if(confirmation){
+            sharedFactory.userService.resetUserDetails(); 
+            localStorage.clear();
+        }
+
+    }
 
     $scope.checkIfLoggedIn = function(){
         return sharedFactory.userService.userDetails.isLoggedIn;

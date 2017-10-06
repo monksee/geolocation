@@ -6,8 +6,8 @@ mapApp.factory('loginFactory', function($http, $timeout, $q, sharedFactory){
         var deferred = $q.defer();
         $http({
             method: 'POST',
-            //url: 'http://localhost/API/facebookAuth?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
-           url: 'http://gamuzic.com/API/facebookauth?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+            url: 'http://localhost/API/facebookAuth?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+           //url: 'http://gamuzic.com/API/facebookauth?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
             data: JSON.stringify(data),
             headers: {
                'Content-Type': 'application/json;charset=utf-8'
@@ -37,9 +37,9 @@ mapApp.factory('loginFactory', function($http, $timeout, $q, sharedFactory){
      
                 console.log(JSON.stringify(sharedFactory.userService.userDetails));
   
-              //  if(localStorage.getItem("userToken") === null){
-               //     localStorage.setItem('userToken', sharedFactory.userService.userDetails.userToken);
-               // }
+                if(localStorage.getItem("userToken") === null){
+                    localStorage.setItem('userToken', sharedFactory.userService.userDetails.userToken);
+                }
                 
                 $timeout(function() {
                     deferred.resolve(sharedFactory.userService.userDetails);
@@ -53,6 +53,67 @@ mapApp.factory('loginFactory', function($http, $timeout, $q, sharedFactory){
         //return the userDetails promise
         return deferred.promise;
     };
+
+
+
+    //Methods which perform API calls 
+    var checkUserToken = function(data){
+        /*
+         * This method makes a POSt request to the tokenAuth endpoint to check if a userToken is valid.
+         * We call this method if a userToken is detected in local storage when the app is opened.
+         * Since it will be called without an user action taking place we wont output any errors if they occur
+         * If the userToken is validated on server side we get the profile data for the userID stored in that userToken if it exists
+         */
+        var deferred = $q.defer();
+        $http({
+            method: 'POST',
+            url: 'http://localhost/API/tokenAuth?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+           //url: 'http://gamuzic.com/API/facebookauth?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+            data: JSON.stringify(data),
+            headers: {
+               'Content-Type': 'application/json;charset=utf-8'
+            },
+            responseType:'json'
+        }).then(function successCallback(response){
+            //Do checks to see if the response data is valid. If not valid then build the error notification
+            var responseUserDataIsValid = false; //initialize boolean to false
+            if(response.hasOwnProperty('data') && response.data !== null){
+                //check if the data property is present in the response and it is not null
+                    if(response.data.hasOwnProperty('userID') && response.data.userID !== null){
+                        //Check if the userID property exists and also is not null in the response.
+                        //This is the best way to determine whether the user details were successfully generated. 
+                        responseUserDataIsValid = true;
+                    }else{
+                        console.log("userID is not valid");
+                    }
+            }
+
+            //After the checks to see if the response is valid then store our user data in the userDetails object of the sharedFactory.
+            if(responseUserDataIsValid){
+                sharedFactory.userService.userDetails = setUserDetails(response);
+                if(localStorage.getItem("userToken") === null){
+                    localStorage.setItem('userToken', sharedFactory.userService.userDetails.userToken);
+                }
+                $timeout(function() {
+                    deferred.resolve(sharedFactory.userService.userDetails);
+                }, 100);
+            }else{
+                //Since this method is called without any user action taking place we wont output any errors if they occur.
+                //We just clear the token from local storage
+                sharedFactory.userService.resetUserDetails();
+                localStorage.clear();
+            }
+        },function errorCallback(response){
+           
+            //Error during checking userToken when the app loaded therefore delete the userToken from local storage
+            localStorage.clear();
+            sharedFactory.userService.resetUserDetails();
+        });
+        //return the userDetails promise
+        return deferred.promise;
+    };
+
+
 
     var setUserDetails = function(response){
         /*
@@ -73,6 +134,7 @@ mapApp.factory('loginFactory', function($http, $timeout, $q, sharedFactory){
     
   	//return public API so that we can access it in all controllers
   	return{
-        checkLoginDetails: checkLoginDetails
+        checkLoginDetails: checkLoginDetails,
+        checkUserToken: checkUserToken
  	  };
 });
