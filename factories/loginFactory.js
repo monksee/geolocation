@@ -37,9 +37,9 @@ mapApp.factory('loginFactory', function($http, $timeout, $q, sharedFactory){
      
                 console.log(JSON.stringify(sharedFactory.userService.userDetails));
   
-                if(localStorage.getItem("userToken") === null){
-                    localStorage.setItem('userToken', sharedFactory.userService.userDetails.userToken);
-                }
+              //  if(localStorage.getItem("userToken") === null){
+               //     localStorage.setItem('userToken', sharedFactory.userService.userDetails.userToken);
+               // }
                 
                 $timeout(function() {
                     deferred.resolve(sharedFactory.userService.userDetails);

@@ -32,16 +32,16 @@ mapApp.factory('sharedFactory', function(){
     // console.log("userDetails " + JSON.stringify(userDetails));
     (function () {
         //this anonymous function should be run when the app is launched/opened to check if a user is logged in.
-    if(localStorage.getItem("userToken") === null){
-        console.log('if executed');
+ //   if(localStorage.getItem("userToken") === null){
+    //    console.log('if executed');
         //therefore they're not logged in
-        userService.userDetails.userToken = "";
-        userService.userDetails.isLoggedIn = false;
-    }else{
+    //    userService.userDetails.userToken = "";
+    //    userService.userDetails.isLoggedIn = false;
+   // }else{
         //get the user token from local storage and check it on the server side before setting isLoggedIn to true.
-        userService.userDetails.userToken = localStorage.getItem("userToken");  
-        userService.userDetails.isLoggedIn = true;
-    }
+    //    userService.userDetails.userToken = localStorage.getItem("userToken");  
+    //    userService.userDetails.isLoggedIn = true;
+    //}
     })();
 
     var buildErrorNotification = function(response){
