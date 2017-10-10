@@ -119,9 +119,8 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
     };
 
     $scope.loginWithFacebook = function(){
-	    facebookFactory.processFacebookLogin(function (responseData) { 
-            alert('here responseData' + JSON.stringify(responseData)); 
-
+	    facebookFactory.processFacebookLogin().then(function(userDetails) {
+             alert("Facebook userDetails" + JSON.stringify(userDetails)); 
         });
 	    //the following blocks of code should be moved to the facebookFactory when using phonegap
         var facebookUserID = "10213718552614326";
