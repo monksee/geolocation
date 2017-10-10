@@ -6,56 +6,37 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 
 
     var getLoginStatus = function(){
-    	/* Gets a user's facebook login status.
+    	/* 
+    	 * Gets a user's facebook login status.
     	 */
         var deferred = $q.defer();
     	facebookConnectPlugin.getLoginStatus(function(response){
         	//success function
-           // if(response.status === 'connected'){
-           // $timeout(function() {
-                deferred.resolve(response.status); //resolve the promise passing in null
-          //  }, 100);
-		//	}else{ 
-			
-    		//$timeout(function() {
-          //      deferred.resolve(false); //resolve the promise passing in null
-           // }, 100);
-    	   // }
+            deferred.resolve(response.status); //resolve the promise passing in null
 		}, 
 	    function(error){ 
 	    	//error function
-			//error getting login status
 			alert("Facebook get login status Failed: " + error);
-			$timeout(function() {
-                deferred.resolve(null); //resolve the promise passing in null
-            }, 100);
+            deferred.resolve(null); //resolve the promise passing in null      
 		});//end getLoginStatus	
+
+
 		return deferred.promise;
     };
 
 
     var performFacebookLogin = function(){
     	
-    	/* the user is not logged into facebook therefore send them to log in.
+    	/* 
+    	 * The user is not logged into facebook therefore send them to log in.
     	 */
     	var deferred = $q.defer();
      	facebookConnectPlugin.login(["public_profile"], function(response){
   			//handle the response
-			if(response.status === 'connected'){
-				//successful login response
-				//$timeout(function() {
-                    deferred.resolve(true); //resolve the promise passing in null
-               // }, 100);
-			}else{ 
-    		  //  $timeout(function() {
-                    deferred.resolve(false); //resolve the promise passing in null
-              //  }, 100);
-    	    }				   
+			deferred.resolve(response.status); 			   
 		},
-		function(error){
-            $timeout(function() {
-                deferred.resolve(null); //resolve the promise passing in null
-            }, 100);
+		function(error){      
+            deferred.resolve(null); //resolve the promise passing in null
             alert("FB login Failed: " + JSON.stringify(error));
     	});
 		return deferred.promise;
@@ -91,40 +72,33 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 
     var processFacebookLogin = phonegapReady(function(){
     	var deferred = $q.defer();
-        getLoginStatus().then(function(responseStatus) {     
+    	var userIsConnected = false;
+        getLoginStatus().then(function(responseStatus){   
+
      	    alert('responseStatus ' + responseStatus);
             if(responseStatus === "connected"){
-                getProfileDetails().then(function(userData) {
-    	            alert('userData' + JSON.stringify(userData));
-    	            //if(userData !== null){
-                    //  alert("userData" + userData);
-                   // $timeout(function() {
-                        deferred.resolve(userData); //resolve the promise passing in null
-                    //}, 100);  
-    	        });
-
-    	    }else{
-              	performFacebookLogin().then(function(isConnectedNow) {
-    	            //Since the checkLoginDetails method (in the loginFactory) is performaing a http request we need to use a promise
-    	            //to store the userDetails (from the response) into our $scope.userDetails variable. 
-      	            alert('is isConnectedNow' +isConnectedNow);
-                    if(isConnectedNow){
-                        getProfileDetails().then(function(userData) {
-    
-    	                    alert('userData' + JSON.stringify(userData));
-    	                    //if(userData !== null){
-                              //  alert("userData" + userData);
-                           // $timeout(function() {
-                                deferred.resolve(userData); //resolve the promise passing in null
-                           // }, 100);
-                          
-    	                });
+            	userIsConnected = true;
+               
+    	    }else if(responseStatus !== null){
+              	performFacebookLogin().then(function(responseStatus){
+      	            alert('is isConnectedNow' + responseStatus);
+                    if(responseStatus === "connected"){
+                    	userIsConnected = true;
                     }
 
                 });
             }
         });
-         return deferred.promise;
+
+        if(userIsConnected){
+            getProfileDetails().then(function(userData){
+    	        alert('userData' + JSON.stringify(userData));
+                deferred.resolve(userData); 
+    	    });
+    	}else{
+            deferred.resolve(null); 
+    	}
+        return deferred.promise;
     });
 
     //return public API so that we can access it in all controllers
