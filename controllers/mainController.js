@@ -1,7 +1,7 @@
 
 //create the mainController which will be associated with the body of the index file as we will use this controller throughout all
 //"pages" for the header menu items and side panel menu.
-mapApp.controller("mainController", function($scope, $http, $timeout, geolocationFactory, facebookFactory, loginFactory, sharedFactory, userFactory, validatorFactory, stationFactory, localStorageFactory){
+mapApp.controller("mainController", function($scope, $http, $timeout, geolocationFactory, facebookFactory, loginFactory, sharedFactory, userFactory, validatorFactory, stationFactory){
 
 	//the boolean variable "panelIsOpen" will initially be set to false as the side panel with initially be closed on page load
 	var panelIsOpen = false;
@@ -71,13 +71,13 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
           'Speed: '                 + position.coords.speed             + '\n' +
           'Timestamp: '             + position.timestamp                + '\n');
     });
-    }
-   localStorageFactory.checkLocalStorage();
+    };
 
-   // (function() {
+
+    (function() {
        
-    $scope.anonymousFunction = function(){
-   alert('anonymous function');
+        // $scope.anonymousFunction = function(){
+        alert('anonymous function');
     	//Anonymous function to be run when app opens.
     	if(localStorage.getItem("userToken") === null){
     		//If there is no userToken in local storage, then we will not want the userDetails object to have any user Details.
@@ -90,8 +90,7 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
         	//userToken key exists in local storage so check this token on the server side to make sure its valid.
             var data = {
         	    "userToken" : localStorage.getItem("userToken")
-               // "userToken" : "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySUQiOjMxLCJmYWNlYm9va1VzZXJJRCI6IjEwMjEzNzE4NTUyNjE0MzI2In0.SdWuJQ8uvAt4neH6Pxr0zzh_TRB5un2rKWYQHfo2fpo"
-            };
+             };
             loginFactory.checkUserToken(data).then(function(userDetails) {
     	        //Since the checkUserToken method (in the loginFactory) is performaing a http request we need to use a promise
     	        //to store the userDetails (from the response) into our $scope.userDetails variable. 
@@ -99,8 +98,8 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
      	        console.log("$scope.userDetails" + JSON.stringify($scope.userDetails));
             });
         }
-   // })();
-}
+    })();
+    //}
 
 
     $scope.loginWithFacebook = function(){
