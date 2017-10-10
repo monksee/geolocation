@@ -15,7 +15,7 @@ mapApp.factory('facebookFactory', function($rootScope, phonegapReady, validatorF
 				    facebookConnectPlugin.api('/me?fields=id, email, name, link, picture', ["public_profile"],function(data){
   					    alert("data" + JSON.stringify(data));
 					    //Send the data to the server side. 	
-				
+				        return data;
 				    }
 				    ,function(error){	
 					    //api call failed
@@ -28,9 +28,10 @@ mapApp.factory('facebookFactory', function($rootScope, phonegapReady, validatorF
   					    //handle the response
 					    if(response.status === 'connected'){
 						    //successful login response
-						    alert(JSON.stringify(response));
+					
 						    facebookConnectPlugin.api('/me?fields=id, email, name, link, picture', ["public_profile"],function(data){
   							    alert("data" + JSON.stringify(data));  
+  							    return data;
 						    }
 						    ,function(error_profile){	
 							    //api call failed
