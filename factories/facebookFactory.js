@@ -88,16 +88,17 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 
                 });
             }
+            if(userIsConnected){
+                getProfileDetails().then(function(userData){
+    	            alert('userData' + JSON.stringify(userData));
+                    deferred.resolve(userData); 
+    	        });
+    	    }else{
+                deferred.resolve(null); 
+    	    }
+
         });
 
-        if(userIsConnected){
-            getProfileDetails().then(function(userData){
-    	        alert('userData' + JSON.stringify(userData));
-                deferred.resolve(userData); 
-    	    });
-    	}else{
-            deferred.resolve(null); 
-    	}
         return deferred.promise;
     });
 
