@@ -3,7 +3,7 @@
 //create the stationController for the station.html view
 mapApp.controller("stationController", function($scope, $routeParams, $location, stationFactory){
 	  $scope.pageHeading = "Station"; //this will be inserted to a h2 tag
-	  $scope.introParagraph = "hi"
+	  $scope.introParagraph = ""
 
     $scope.stationDetails =  {};
 
