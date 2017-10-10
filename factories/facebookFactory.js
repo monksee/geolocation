@@ -2,13 +2,36 @@
  * This factory takes in the phonegapReady factory which detects when phonegaps deviceready event occurs.
  * 
  */
-mapApp.factory('facebookFactory', function($rootScope, phonegapReady, validatorFactory){
+mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapReady, validatorFactory){
 
 
-    var getLoginStatus = phonegapReady(function(onSuccess, onError){
+    var getLoginStatus = phonegapReady(function(){
+    	var deferred = $q.defer();
     	/* Gets a user's facebook login status.
     	 */
-    	facebookConnectPlugin.getLoginStatus(onSuccess, onError);
+
+    	facebookConnectPlugin.getLoginStatus(function(response){
+        	//success function
+            if(response.status === 'connected'){
+            $timeout(function() {
+                deferred.resolve(true); //resolve the promise passing in null
+            }, 100);
+			}else{ 
+			
+    		$timeout(function() {
+                deferred.resolve(false); //resolve the promise passing in null
+            }, 100);
+    	    }
+		}, 
+	    function(error){ 
+	    	//error function
+			//error getting login status
+			alert("Facebook get login status Failed: " + error);
+			$timeout(function() {
+                deferred.resolve(false); //resolve the promise passing in null
+            }, 100);
+		});//end getLoginStatus	
+		return deferred.promise;
     });
 
 
@@ -34,29 +57,18 @@ mapApp.factory('facebookFactory', function($rootScope, phonegapReady, validatorF
 
 
     var processFacebookLogin = phonegapReady(function(){
-        var isConnected = getLoginStatus(
-        function(response){
-
-        	//success function
-            if(response.status === 'connected'){
-            	alert('true');
-                   return true;
-			}else{ 
-				alert('false');
-			       return false;
-    		}//end of else statement			
-		}, 
-	    function(error){ 
-	    	//error function
-			//error getting login status
-			alert("Facebook get login status Failed: " + error);
-			return false;
-		});
+    	//var deferred = $q.defer();
+        getLoginStatus().then(function(isConnected) {
+    	        //Since the checkLoginDetails method (in the loginFactory) is performaing a http request we need to use a promise
+    	        //to store the userDetails (from the response) into our $scope.userDetails variable. 
+      	       
+     	      alert('is connected' + isConnected);
+        });
 
 
         //onSuccess, onError); 
 
-        alert('is connected' + isConnected);
+       // alert('is connected' + isConnected);
         if(isConnected){
             var userData = getProfileDetails();
             if(userData !== null){
