@@ -5,7 +5,7 @@
 mapApp.factory('facebookFactory', function($rootScope, phonegapReady, validatorFactory){
 
 
-    var getLoginStatus = function(){
+    var getLoginStatus = phonegapReady(function(){
     	/* Gets a user's facebook login status.
     	 */
         facebookConnectPlugin.getLoginStatus(function(response){
@@ -23,10 +23,10 @@ mapApp.factory('facebookFactory', function($rootScope, phonegapReady, validatorF
 			return false;
 		});//end getLoginStatus	
 
-    };
+    });
 
 
-    var getProfileDetails = function(){
+    var getProfileDetails = phonegapReady(function(){
         //var isConnected = getLoginStatus();    
        // alert('is connected' + isConnected);
 
@@ -44,7 +44,7 @@ mapApp.factory('facebookFactory', function($rootScope, phonegapReady, validatorF
     	    }
     	); //end api call
 
-    };
+    });
 
 
     var processFacebookLogin = phonegapReady(function(){
