@@ -72,22 +72,11 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
     });
     }
 
-    (function() {
 
-      document.addEventListener('pause', function () {
-            alert('pause fired');
-            
-        }, false);
-        document.addEventListener('resume', function () {
-            alert('resume fired');
-            
-        }, false);
-    })();
-
-    (function() {
-        alert('anonymous function');
-   // $scope.anonymousFunction = function(){
-   
+   // (function() {
+       
+    $scope.anonymousFunction = function(){
+   alert('anonymous function');
     	//Anonymous function to be run when app opens.
     	if(localStorage.getItem("userToken") === null){
     		//If there is no userToken in local storage, then we will not want the userDetails object to have any user Details.
@@ -109,8 +98,8 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
      	        console.log("$scope.userDetails" + JSON.stringify($scope.userDetails));
             });
         }
-    })();
-//}
+   // })();
+}
 
 
     $scope.loginWithFacebook = function(){
