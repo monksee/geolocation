@@ -35,7 +35,7 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
         //var href = $(this).attr('href');
         var ref = window.open(href, '_blank', 'location=yes');
 	}
-	$scope.goBack = function() {
+	$scope.goBack1 = function() {
 		//Set the leftToRight variable to false so our page transition goes from right to left
         window.history.back();
         $scope.transitionFromLeftToRight();
@@ -59,7 +59,7 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
 		$scope.transitionFromLeftToRight();
 	}
 
-
+    $scope.goBack = function(){
     geolocationFactory.getCurrentPosition(function (position) {
     alert('Latitude: '              + position.coords.latitude          + '\n' +
           'Longitude: '             + position.coords.longitude         + '\n' +
@@ -70,9 +70,22 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
           'Speed: '                 + position.coords.speed             + '\n' +
           'Timestamp: '             + position.timestamp                + '\n');
     });
+    }
 
     (function() {
 
+      document.addEventListener('pause', function () {
+            alert('pause fired');
+            
+        }, false);
+        document.addEventListener('resume', function () {
+            alert('resume fired');
+            
+        }, false);
+    })();
+
+    (function() {
+        alert('anonymous function');
    // $scope.anonymousFunction = function(){
    
     	//Anonymous function to be run when app opens.
