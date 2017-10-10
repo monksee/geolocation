@@ -14,6 +14,7 @@ mapApp.factory('phonegapReady', function() {
             queue.push(Array.prototype.slice.call(arguments));
         };
         document.addEventListener('deviceready', function () {
+            alert('deviceReady fired');
             queue.forEach(function (args) {
                 fn.apply(this, args);
             });
