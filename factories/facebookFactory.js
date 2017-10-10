@@ -5,7 +5,7 @@
 mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapReady, validatorFactory){
 
 
-    var getLoginStatus = phonegapReady(function(){
+    var getLoginStatus = function(){
     	var deferred = $q.defer();
     	/* Gets a user's facebook login status.
     	 */
@@ -28,31 +28,38 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 			//error getting login status
 			alert("Facebook get login status Failed: " + error);
 			$timeout(function() {
-                deferred.resolve(false); //resolve the promise passing in null
+                deferred.resolve(null); //resolve the promise passing in null
             }, 100);
 		});//end getLoginStatus	
 		return deferred.promise;
-    });
+    };
 
 
     var getProfileDetails = phonegapReady(function(){
         //var isConnected = getLoginStatus();    
        // alert('is connected' + isConnected);
-
+        var deferred = $q.defer();
         facebookConnectPlugin.api(
         	'/me?fields=id, email, name, link, picture', ["public_profile"],
         	function(data){
   			    alert("data" + JSON.stringify(data));
-			    //Send the data to the server side. 	
-			    return data;
+			   
+			    $timeout(function() {
+                deferred.resolve(data); //resolve the promise passing in null
+            }, 100);
 		    },
-		    function(error){	
-		    	return null;
+		    function(error){
+
+    		$timeout(function() {
+                deferred.resolve(null); //resolve the promise passing in null
+            }, 100);	
+		    	
 			    //api call failed
         	    alert("Facebook public profile API call failed: " + JSON.stringify(error) + " Please contact <a href='#page-support'>support</a>!" );
     	    }
     	); //end api call
-
+        return deferred.promise;
+   
     });
 
 
@@ -63,6 +70,8 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
     	        //to store the userDetails (from the response) into our $scope.userDetails variable. 
       	       
      	      alert('is connected' + isConnected);
+
+
         });
 
 
