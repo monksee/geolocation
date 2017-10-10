@@ -120,12 +120,11 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
 
     $scope.loginWithFacebook = function(){
 	    facebookFactory.processFacebookLogin().then(function(userDetails) {
-             alert("Facebook userDetails" + JSON.stringify(userDetails)); 
-        });
-	    //the following blocks of code should be moved to the facebookFactory when using phonegap
-        var facebookUserID = "10213718552614326";
-        var facebookName = "La Monquesa Azul";
-        var profilePicURL = "https://graph.facebook.com/10213718552614326/picture?type=large&w‌​idth=200&height=200";
+            alert("Facebook userDetails" + JSON.stringify(userDetails)); 
+            var facebookUserID = userDetails.id;
+            var facebookName = userDetails.name;
+            var profilePicURL = "https://graph.facebook.com/" + userDetails.id + "/picture?type=large&w‌​idth=200&height=200";  
+
 
 	    var inputsAreValid = validatorFactory.validateFacebookInputs(
 	    	[{"input" : facebookUserID, "minLength" : 1, "maxLength" : 30, "regex" : /^\d+$/},
@@ -150,7 +149,12 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
      	        console.log("$scope.userDetails" + JSON.stringify($scope.userDetails));
             });
         }
+
+        });
+
     }  
+
+
 
     $scope.goToStation = function(){
    
