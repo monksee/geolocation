@@ -29,8 +29,8 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory){
 
             return $http({
                 method: 'GET',
-               // url: 'http://localhost/API/station/' + stationID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
-                url: 'http://gamuzic.com/API/station/' + stationID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+                url: 'http://localhost/API/station/' + stationID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+                //url: 'http://gamuzic.com/API/station/' + stationID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 headers: {
                    'Content-Type': 'application/json;charset=utf-8'
                 },

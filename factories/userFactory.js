@@ -16,7 +16,7 @@ mapApp.factory('userFactory', function(){
             "userID" : null,
             "facebookUserID" : "",
             "facebookName" : "",
-            "facebookProfilePic" : "",
+            "profilePicURL" : "",
             "userPrivilegeID" : 1,
             "userToken" : "",
             "isLoggedIn" : false
@@ -47,7 +47,7 @@ mapApp.factory('userFactory', function(){
                 "userID" : responseData.userID,
                 "facebookUserID" : responseData.facebookUserID,
                 "facebookName" : responseData.facebookName,
-                "facebookProfilePic" : responseData.profilePicURL,
+                "profilePicURL" : responseData.profilePicURL,
                 "userPrivilegeID" : responseData.userPrivilegeID,
                 "userToken" : responseData.userToken,
                 "isLoggedIn" : true
@@ -61,7 +61,7 @@ mapApp.factory('userFactory', function(){
                 "userID" : null,
                 "facebookUserID" : "",
                 "facebookName" : "",
-                "facebookProfilePic" : "",
+                "profilePicURL" : "",
                 "userPrivilegeID" : 1,
                 "userToken" : "",
                "isLoggedIn" : false

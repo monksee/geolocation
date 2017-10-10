@@ -44,7 +44,7 @@ width: 100%;
 			<div id="login_with_facebook" data-ng-click="loginWithFacebook()" data-ng-show="!checkIfLoggedIn()">Login with Facebook</div>
 			<div id="login_info_area" ng-show="checkIfLoggedIn()">
 			    <span class="user_profile_pic">
-			        <img src="{{userDetails.facebookProfilePic}}" width="70" height="70" alt="Facebook profile pic">
+			        <img src="{{userDetails.profilePicURL}}" width="70" height="70" alt="">
 			    </span> 
 			    {{userDetails.facebookName}}
 			</div>
@@ -90,11 +90,11 @@ width: 100%;
 
 alert('scripts being called');
       document.addEventListener('pause', function () {
-            alert('pause fired');
+          //  alert('pause fired');
             
         }, false);
         document.addEventListener('resume', function () {
-            alert('resume fired');
+           // alert('resume fired');
             
         }, false);
 
