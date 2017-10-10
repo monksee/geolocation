@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="mapModule" >
+<html data-ng-app="mapModule" >
 <head>
 <meta charset="utf-8">
 <!--specify user scalable as no, in order to mimick a native app-->
@@ -8,11 +8,11 @@
 <script src="js/angular.min.js"></script>
 <script src="js/angular-route.min.js"></script>
 <script src="js/angular-touch.min.js"></script>
-
+<script src="js/angular-animate.min.js"></script>
 <script src="phonegap.js"></script>
 
 <link rel="stylesheet" type="text/css" href="css/index.css"/>	
-<link rel="stylesheet" type="text/css" href="css/font-awesome.css"/>	
+<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css"/>	
 <style>
 #map {
 margin: 0px auto;
@@ -26,46 +26,59 @@ width: 100%;
 	<!--use the html5 header tag-->
 	<header>
 
-		<ul class="header_nav" ng-class="{'swipe_left': panelIsOpen == true}">
-			<li class="header_menu_item" ng-click="goBack()">
+		<ul class="header_nav" data-ng-class="{'swipe_left': panelIsOpen == true}">
+			<li class="header_menu_item" data-ng-click="goBack()">
 				<span id="back_header_link" class="header_menu_link normal_link"><i class="fa fa-arrow-left"></i></span>
 				
 			</li>
         		<li class="header_menu_item navicon" data-ng-click="toggleSidePanel()">
-				    <span class="header_menu_link" ng-class="{'current': panelIsOpen == true}">
+				    <span class="header_menu_link" data-ng-class="{'current': panelIsOpen == true}">
 					    <i class="fa fa-navicon"></i>
 				    </span>
 			    </li>  	  
        	</ul><!--/header_nav-->		
 	</header>
 
-	<div id="container_wrapper" class="scrollable" ng-class="{'swipe_left': panelIsOpen == true}" ng-swipe-left="panelIsOpen = true">
+	<div id="container_wrapper" class="scrollable" data-ng-class="{'swipe_left': panelIsOpen == true}" data-ng-swipe-left="panelIsOpen = true">
 		<div class="container"> 
-			<div id="login_with_facebook" data-ng-click="loginWithFacebook()" ng-show="!checkIfLoggedIn()">Login with Facebook</div>
+			<div id="login_with_facebook" data-ng-click="loginWithFacebook()" data-ng-show="!checkIfLoggedIn()">Login with Facebook</div>
 			<div id="login_info_area" ng-show="checkIfLoggedIn()">
 			    <span class="user_profile_pic">
-			        <img src="{{userDetails.facebookProfilePic}}" width="200" height="200" alt="Facebook profile pic">
+			        <img src="{{userDetails.facebookProfilePic}}" width="70" height="70" alt="Facebook profile pic">
 			    </span> 
 			    {{userDetails.facebookName}}
 			</div>
 
 			<span class="logo" ng-show="checkIfUserIsAdmin()"><i class="fa fa-check-circle"></i></span>
-			<div ng-view>
+			 <div class="view-animate-container">
+			<div data-ng-view class="view-animate" data-ng-class="{'left_to_right': leftToRight == true}">
 				<!--our individual views will be displayed here-->
 
+			</div> 
 			</div>
 		</div><!--/container-->
 	</div><!--/container_wrapper-->
-	<div id="panel_area" class="scrollable" ng-swipe-right="panelIsOpen = false">		
+	<div id="panel_area" class="scrollable" data-ng-swipe-right="panelIsOpen = false">		
 		<div class="panel_container">
 			<div class="panel_header"><p>Menu</p></div>
 			<ul>
 				
 					<!--when any link is clicked we want to slide the main container back over to main focus so we call the toggleSidePanel() function to achieve this-->
 					<!--we also call the selectMenuItem() function so that we can style the new current nav item in the header of the app-->
-			
+			    <li class="side_menu_item">
+					<a class="side_menu_link normal_link" href="#home" data-ng-click="toggleSidePanel();selectMenuItem($index)">
+						<i class="panel_icon fa fa-home"></i>Home<i class="fa fa-chevron-right"></i>
+					</a>
+					
+				</li>
+				 <li class="side_menu_item">
+					<a class="side_menu_link" data-ng-click="goToExternalLink($event)" href="http://www.gamuzic.com">
+						<i class="panel_icon fa fa-external-link"></i>Open our website<i class="fa fa-chevron-right"></i>
+					</a>
+					
+				</li>
 				<li class="side_menu_item" ng-show="checkIfLoggedIn()">
-					<span id="logout_button" class="side_menu_link login normal_link" data-ng-click="logOut()">
+					<span class="side_menu_link normal_link" data-ng-click="toggleSidePanel();logOut()">
 						<i class="panel_icon fa fa-power-off"></i>Log Out<i class="fa fa-chevron-right"></i>
 					</span>
 					
@@ -81,8 +94,11 @@ width: 100%;
 <script src="modules/mapApp.js"></script>
 <script src="routes/routes.js"></script>
 <script src="factories/phonegapReadyFactory.js"></script>
+<script src="factories/validatorFactory.js"></script>
 <script src="factories/sharedFactory.js"></script>
+<script src="factories/userFactory.js"></script>
 <script src="factories/loginFactory.js"></script>
+<script src="factories/stationFactory.js"></script>
 <script src="factories/facebookFactory.js"></script>
 
 <script src="factories/geolocationFactory.js"></script>

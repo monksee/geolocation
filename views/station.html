@@ -1,6 +1,15 @@
-<h2 ng-show="checkIfUserIsAdmin()">{{pageHeading}}</h2>
-<p class="intro_paragraph" ng-show="checkIfLoggedIn()">{{introParagraph}}</p>
+<h2 data-ng-show="checkIfUserIsAdmin()">{{pageHeading}}</h2>
+<p class="intro_paragraph" data-ng-show="checkIfLoggedIn()">{{introParagraph}}</p>
 
+<div class="station_info_area">
+<h3 class="station_name">{{stationDetails.stationName}}</h3>
+<address>
+{{stationDetails.stationAddressLine1}}<br>
+{{stationDetails.stationAddressLine2}}<br>
+{{stationDetails.stationAddressCity}}<br>
+{{stationDetails.stationPhoneNumber}}<br>
+</address>
+</div>
 	<!--use the novalidate attribute to disable the browser's native form validation-->
 	<!--use the form name attribute to publish the form instance into the scope-->
 	<form name="testimonial_form" id="testimonial_form" class="testimonial_form" data-ng-submit="submitTestimonial()" data-ng-model="testimonial_form" novalidate>
@@ -19,8 +28,8 @@
 
 
 			<!--if the form is submitted or if the task name field is "touched" and is not filled in then we display an error message-->
-			<div class="error_message" ng-show="testimonial_form.$submitted || (testimonial_form.testimonial_text.$touched && !(testimonial_form.testimonial_text.$untouched))">
-      				<div ng-show="testimonial_form.testimonial_text.$error.required">Please fill in a task name.</div>
+			<div class="error_message" data-ng-show="testimonial_form.$submitted || (testimonial_form.testimonial_text.$touched && !(testimonial_form.testimonial_text.$untouched))">
+      				<div data-ng-show="testimonial_form.testimonial_text.$error.required">Please fill in a task name.</div>
 			
 			</div>
 		</div><!--/form_divider-->
@@ -28,6 +37,6 @@
 	
 
 		<!--use the ng-disabled attribute to prevent the form from submitting if it is invalid-->
-		<input class="btn btn_blue btn_submit" type="submit" ng-disabled="testimonial_form.$invalid" value="Submit" />
+		<input class="btn btn_blue btn_submit" type="submit" data-ng-disabled="testimonial_form.$invalid" value="Submit" />
 	</form>
 

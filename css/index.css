@@ -29,11 +29,12 @@ list-style: none;
 a{
 text-decoration: none; /*remove the underline from all anchor tags*/
 display: block;
+color: #515252;
 }
 
 body{
 position: relative;
-font-family: Arial, Helvetica, sans-serif;
+font-family: 'Raleway', sans-serif !important;
 color: #515252;
 line-height: 1.2rem;
 font-size: .9rem;
@@ -55,6 +56,15 @@ font-size: 1.1rem;
 h3{
 text-align: center;
 font-size: 1.1rem;
+}
+
+h3.station_name{
+text-align: left;
+}
+
+.station_info_area{
+margin: 20px 0px;
+
 }
 /**************************************/
 /*styling for the container wrapper*/
@@ -126,7 +136,7 @@ overflow: auto; /*we use this instead of overflow scroll so that the scrollbar o
 -moz-transition: .3s;
 -o-transition: .3s;
 transition: .3s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
-background: #2d2d2d;
+background: #fafafa; 
 -webkit-box-shadow: inset 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
 -moz-box-shadow:    inset 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
 box-shadow:         inset 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
@@ -141,7 +151,7 @@ position: relative;
 width: 95%;
 padding: 14px 1% 14px 4%;
 font-weight: normal;
-background: #2d2d2d;
+background: #fafafa;
 -webkit-box-shadow: inset 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
 -moz-box-shadow:    inset 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
 box-shadow:         inset 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
@@ -170,14 +180,13 @@ box-shadow:        inset 0px 1px 0px 0px rgba(100,100,100, 1), inset 0px -1px 0p
 .side_menu_link{
 display: block;
 cursor: pointer;
-color: #fc03e8;
 width: 95%;
 padding: 14px 1% 14px 4%;
 }
 
 .side_menu_link:hover{
 color: #000;
-background: #fc03e8; /*apply pink background on hover*/
+background: #fff; /*apply pink background on hover*/
 }
 
 /*styling for the font-awesome arrow on the right side of the link*/
@@ -200,6 +209,55 @@ text-shadow: none;
 font-size: 18px;
 padding-right: 10px;
 }
+
+
+.view-animate-container {
+position:relative;
+height: 100% !important;
+min-height: 600px;
+overflow:hidden;
+}
+
+
+
+.view-animate.ng-enter, .view-animate.ng-leave {
+transition:all .4s;
+display:block;
+width:100%;
+position:absolute;
+top:0;
+left:0;
+right:0;
+bottom:0;
+}
+
+.view-animate.ng-enter{
+left:100% !important;
+}
+.view-animate.ng-enter.ng-enter-active {
+left:0 !important;
+}
+.view-animate.ng-leave.ng-leave-active {
+left:-100% !important;
+}
+
+/* when the back button is pressed we add a class left_to_right to make the page
+ * transition in from the left. It looks more intuitive.
+ * We also add this class when a menu item in the side panel is clicked.
+ */
+.view-animate.ng-enter.left_to_right{
+right:100%;
+left: auto !important;
+}
+.view-animate.ng-enter.left_to_right.ng-enter-active {
+right:0;
+left: auto !important;
+}
+.view-animate.ng-leave.left_to_right.ng-leave-active {
+right:-100%;
+left: auto !important;
+}
+
 
 
 /*******************************************HEADER NAV MENU **************************************/
@@ -331,35 +389,15 @@ transition-timing-function: linear, linear;
 -webkit-overflow-scrolling: touch;
 }
 /*******************************************************/
-/*styling for individual views*/
-/*styling for the get started section on the home "page"/view.
- *we need this in order to center the button that it contains*/
-#get_started{
-width: 120px;
-margin: 10px auto;
-padding: 10px 0px;
-}
-/*create a container for the to do form*/
-#todo_form_wrapper{
-padding: 10px 0px 10px 0px;
-margin-bottom:15px; 
-}
-
-#todo_form{
-margin: 0px auto; /*centre the to do form in its container*/
-width: 94%;
-}
-
-/*create a container for the to do list*/
-#tasks_list_wrapper{
-padding: 5px 0px 30px 0px;
-clear: both;
+.user_profile_pic{
+	display: block;
+width: 70px;
+height: 70px;
 overflow: hidden;
 }
-/*container for the list of actions on history page*/
-#history_list{
-padding: 5px 0px 30px 0px;
-}
+
+
+
 /**************************************/
 /*reusable styles for text*/
 .pink_text{
@@ -406,7 +444,7 @@ border-radius:2px;  /*opera*/
 -webkit-border-radius:2px;/*chrome and safari*/
 width: 95% !important;
 height:26px;
-font-family: Raleway, FontAwesome; /*need to put font awesome here for the icons in the input fields */
+font-family: 'Raleway', FontAwesome; /*need to put font awesome here for the icons in the input fields */
 font-size: .9rem !important;
 display: block;
 letter-spacing: .7px; 
@@ -428,7 +466,7 @@ border-radius:2px;  /*opera*/
 -webkit-border-radius:2px;/*chrome and safari*/
 padding: 5px 2% 5px 2% !important;
 width: 95% !important;
-font-family: Raleway, FontAwesome; /*need to put font awesome here for the icons in the input fields */
+font-family: 'Raleway', FontAwesome; /*need to put font awesome here for the icons in the input fields */
 font-size: .9rem !important;
 display: block;
 letter-spacing: .7px; 
@@ -679,46 +717,17 @@ margin-left: 4.1666666666%;
 /**************************************************************/
 /*Font Awesome styles. See reference*/
 
+
 @font-face{
-font-family:FontAwesome;
-src:url(../fonts/fontawesome-webfont.eot?v=4.2.0);
-src:url(../fonts/fontawesome-webfont.eot?#iefix&v=4.2.0) format('embedded-opentype'),
-url(../fonts/fontawesome-webfont.woff?v=4.2.0) format('woff'),
-url(../fonts/fontawesome-webfont.ttf?v=4.2.0) format('truetype'),
-url(../fonts/fontawesome-webfont.svg?v=4.2.0#fontawesomeregular) format('svg');
+font-family: 'Raleway';
+src:url("../fonts/Raleway.eot");
+src:url("../fonts/Raleway.eot?#iefix") format('embedded-opentype'),
+url("../fonts/Raleway.woff2") format("woff2"),
+url("../fonts/Raleway.woff") format('woff'),
+url("../fonts/Raleway.ttf") format('truetype'),
+url("../fonts/Raleway.svg#Raleway") format('svg');
 font-weight:400;
 font-style:normal;
 }
 
-.fa{
-display:inline-block;
-font:normal normal normal 14px/1 FontAwesome;
-font-size:inherit;
-text-rendering:auto;
--webkit-font-smoothing:antialiased;
--moz-osx-font-smoothing:grayscale
-}
 
-.fa-navicon:before{content:"\f0c9"}
-.fa-home:before{content:"\f015"}
-.fa-plus-square:before{content:"\f0fe"}
-.fa-check:before{content:"\f00c"}
-.fa-check-circle:before{content:"\f058"}
-.fa-check-square-o:before{content:"\f046"}
-.fa-square-o:before{content:"\f096"}
-.fa-times-circle:before{content:"\f057"}
-.fa-clock-o:before{content:"\f017"}
-.fa-calendar-times-o:before{content:"\f273"}
-.fa-close:before,.fa-remove:before,.fa-times:before{content:"\f00d"}
-.fa-refresh:before{content:"\f021"}
-.fa-chevron-left:before{content:"\f053"}
-.fa-chevron-right:before{content:"\f054"}
-.fa-caret-left:before{content:"\f0d9"}
-.fa-caret-right:before{content:"\f0da"}
-.fa-minus-square:before{content:"\f146"}
-.fa-minus-square-o:before{content:"\f147"}
-.fa-thumbs-up:before{content:"\f164"}
-.fa-thumbs-down:before{content:"\f165"}
-.fa-copyright:before{content:"\f1f9"}
-.fa-history:before{content:"\f1da"}
-.fa-pencil:before{content:"\f040"}

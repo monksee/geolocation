@@ -1,7 +1,7 @@
 //create a module using the Angular objects module() method
 //inject two dependencies to our module. ngRoute for routing to different "pages" 
 //and ngTouch for detecting swiping on touch devices
-var mapApp = angular.module("mapModule", ['ngRoute', 'ngTouch'], function($httpProvider) {
+var mapApp = angular.module("mapModule", ['ngRoute', 'ngTouch', 'ngAnimate'], function($httpProvider) {
   // Use x-www-form-urlencoded Content-Type
   $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
  
