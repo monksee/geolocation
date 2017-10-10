@@ -21,16 +21,16 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory){
              * This method makes a http GET request to our station Endpoint to retrieve details of a station based on a stationID
              * Each time the user chooses to view a station we call this method to get the data for that chosen station
              * so we can output it to the station.html view.
-             * We return a promise with the stationDetails or if an error occurs we return null to the promise.
+             * We return the stationDetails or if an error occurs we return null.
              */
             //Firstly define a variable self to reference "this".
             //We do it this way (instead of using bind) as it is more cross-browser compatible.
             var self = this; 
-            var deferred = $q.defer();
-            $http({
+
+            return $http({
                 method: 'GET',
-                url: 'http://localhost/API/station/' + stationID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
-                //url: 'http://gamuzic.com/API/facebookAuth?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+               // url: 'http://localhost/API/station/' + stationID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+                url: 'http://gamuzic.com/API/station/' + stationID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 headers: {
                    'Content-Type': 'application/json;charset=utf-8'
                 },
@@ -55,29 +55,22 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory){
                 //After the checks to see if the response is valid then store our station data from the API in the stationDetails object.
                 if(responseDataIsValid){
                     self.stationDetails = response.data;
-                    //return the stationDetails to the controller in the promise
-                    $timeout(function() {
-                        deferred.resolve(self.stationDetails);
-                    }, 100);
+                    //return the stationDetails to the controller
+                    return self.stationDetails;
+                 
                 }else{
-                    //Even if the data is not valid (or there has been an error) we still want to resolve the promise so that
-                    //we can process this in the station controller(or other) and redirect to another page/view if necessary.
-                    //The controller is expecting the stationDetails returned. We pass in null instead.
-                    $timeout(function() {
-                        deferred.resolve(null);
-                    }, 100);
+                    //There has been an error. The controller is expecting the stationDetails returned from this method. We pass in null instead and check for null in controller.
+                    return null;
+                 
                 }
 
             },function errorCallback(response){
                 console.log('error');
                 sharedFactory.buildErrorNotification(response);
                 //There has been an error. The controller is expecting the stationDetails returned from this method. We pass in null instead and check for null in controller.
-                $timeout(function() {
-                    deferred.resolve(null);
-                }, 100);
+                return null;
             });
        
-            return deferred.promise;
         }
  	}; //end stationService object
 
