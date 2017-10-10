@@ -6,22 +6,21 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 
 
     var getLoginStatus = function(){
-    	var deferred = $q.defer();
     	/* Gets a user's facebook login status.
     	 */
         var deferred = $q.defer();
     	facebookConnectPlugin.getLoginStatus(function(response){
         	//success function
-            if(response.status === 'connected'){
+           // if(response.status === 'connected'){
            // $timeout(function() {
-                deferred.resolve(true); //resolve the promise passing in null
+                deferred.resolve(response.status); //resolve the promise passing in null
           //  }, 100);
-			}else{ 
+		//	}else{ 
 			
     		//$timeout(function() {
-                deferred.resolve(false); //resolve the promise passing in null
+          //      deferred.resolve(false); //resolve the promise passing in null
            // }, 100);
-    	    }
+    	   // }
 		}, 
 	    function(error){ 
 	    	//error function
@@ -33,6 +32,8 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 		});//end getLoginStatus	
 		return deferred.promise;
     };
+
+
     var performFacebookLogin = function(){
     	
     	/* the user is not logged into facebook therefore send them to log in.
@@ -90,10 +91,19 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 
     var processFacebookLogin = phonegapReady(function(){
     	var deferred = $q.defer();
-        getLoginStatus().then(function(isConnected) {     
-     	    alert('is connected' + isConnected);
-            if(!isConnected){
+        getLoginStatus().then(function(responseStatus) {     
+     	    alert('responseStatus ' + responseStatus);
+            if(responseStatus === "connected"){
+                getProfileDetails().then(function(userData) {
+    	            alert('userData' + JSON.stringify(userData));
+    	            //if(userData !== null){
+                    //  alert("userData" + userData);
+                   // $timeout(function() {
+                        deferred.resolve(userData); //resolve the promise passing in null
+                    //}, 100);  
+    	        });
 
+    	    }else{
               	performFacebookLogin().then(function(isConnectedNow) {
     	            //Since the checkLoginDetails method (in the loginFactory) is performaing a http request we need to use a promise
     	            //to store the userDetails (from the response) into our $scope.userDetails variable. 
@@ -112,15 +122,6 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
                     }
 
                 });
-            }else{
-                getProfileDetails().then(function(userData) {
-    	            alert('userData' + JSON.stringify(userData));
-    	            //if(userData !== null){
-                    //  alert("userData" + userData);
-                   // $timeout(function() {
-                        deferred.resolve(userData); //resolve the promise passing in null
-                    //}, 100);  
-    	        });
             }
         });
          return deferred.promise;
