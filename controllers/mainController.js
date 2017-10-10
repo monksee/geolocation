@@ -60,6 +60,7 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
 	}
 
     $scope.goBack = function(){
+          alert(JSON.stringify(userFactory.userService.userDetails));
     geolocationFactory.getCurrentPosition(function (position) {
     alert('Latitude: '              + position.coords.latitude          + '\n' +
           'Longitude: '             + position.coords.longitude         + '\n' +
