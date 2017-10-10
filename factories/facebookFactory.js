@@ -116,6 +116,18 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
                     }
 
                 });
+            }else{
+                getProfileDetails().then(function(userData) {
+    
+    	            alert('userData' + JSON.stringify(userData));
+    	            //if(userData !== null){
+                    //  alert("userData" + userData);
+                    $timeout(function() {
+                        deferred.resolve(userData); //resolve the promise passing in null
+                    }, 100);
+                              //  return userData;
+                           //}
+    	        });
             }
         });
          return deferred.promise;
