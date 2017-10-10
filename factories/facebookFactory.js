@@ -33,6 +33,39 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 		});//end getLoginStatus	
 		return deferred.promise;
     };
+    var performLogin = function(){
+    	var deferred = $q.defer();
+    	/* 
+    	 */
+    //the user is not logged into facebook therefore send them to log in.
+      				facebookConnectPlugin.login(["public_profile"], function(response){
+  					    //handle the response
+					    if(response.status === 'connected'){
+						    //successful login response
+					 $timeout(function() {
+                deferred.resolve(true); //resolve the promise passing in null
+            }, 100);
+					}else{ 
+			
+    		$timeout(function() {
+                deferred.resolve(false); //resolve the promise passing in null
+            }, 100);
+    	    }	
+					   
+				    }
+				    ,function(error){
+            $timeout(function() {
+                deferred.resolve(null); //resolve the promise passing in null
+            }, 100);
+
+
+        			    alert("FB login Failed: " + JSON.stringify(error));
+    				});
+		return deferred.promise;
+    };
+
+
+
 
 
     var getProfileDetails = phonegapReady(function(){
@@ -70,8 +103,15 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
     	        //to store the userDetails (from the response) into our $scope.userDetails variable. 
       	       
      	      alert('is connected' + isConnected);
+              if(!isConnected){
 
-
+              	performLogin().then(function(isConnectedNow) {
+    	        //Since the checkLoginDetails method (in the loginFactory) is performaing a http request we need to use a promise
+    	        //to store the userDetails (from the response) into our $scope.userDetails variable. 
+      	        alert('is isConnectedNow' +isConnectedNow);
+     	
+                 });
+              	}
         });
 
 
