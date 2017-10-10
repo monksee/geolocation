@@ -5,24 +5,10 @@
 mapApp.factory('facebookFactory', function($rootScope, phonegapReady, validatorFactory){
 
 
-    var getLoginStatus = phonegapReady(function(){
+    var getLoginStatus = phonegapReady(function(onSuccess, onError){
     	/* Gets a user's facebook login status.
     	 */
-        facebookConnectPlugin.getLoginStatus(function(response){
-        	//success function
-            if(response.status === 'connected'){
-                   return true;
-			}else{ 
-			       return false;
-    		}//end of else statement			
-		}, 
-	    function(error){ 
-	    	//error function
-			//error getting login status
-			alert("Facebook get login status Failed: " + error);
-			return false;
-		});//end getLoginStatus	
-
+    	facebookConnectPlugin.getLoginStatus(onSuccess, onError);
     });
 
 
@@ -48,7 +34,28 @@ mapApp.factory('facebookFactory', function($rootScope, phonegapReady, validatorF
 
 
     var processFacebookLogin = phonegapReady(function(){
-        var isConnected = getLoginStatus();  
+        var isConnected = getLoginStatus(
+        function(response){
+
+        	//success function
+            if(response.status === 'connected'){
+            	alert('true');
+                   return true;
+			}else{ 
+				alert('false');
+			       return false;
+    		}//end of else statement			
+		}, 
+	    function(error){ 
+	    	//error function
+			//error getting login status
+			alert("Facebook get login status Failed: " + error);
+			return false;
+		});
+
+
+        //onSuccess, onError); 
+
         alert('is connected' + isConnected);
         if(isConnected){
             var userData = getProfileDetails();
