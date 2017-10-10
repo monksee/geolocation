@@ -9,18 +9,18 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
     	var deferred = $q.defer();
     	/* Gets a user's facebook login status.
     	 */
-
+        var deferred = $q.defer();
     	facebookConnectPlugin.getLoginStatus(function(response){
         	//success function
             if(response.status === 'connected'){
-            $timeout(function() {
+           // $timeout(function() {
                 deferred.resolve(true); //resolve the promise passing in null
-            }, 100);
+          //  }, 100);
 			}else{ 
 			
-    		$timeout(function() {
+    		//$timeout(function() {
                 deferred.resolve(false); //resolve the promise passing in null
-            }, 100);
+           // }, 100);
     	    }
 		}, 
 	    function(error){ 
@@ -34,20 +34,21 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 		return deferred.promise;
     };
     var performFacebookLogin = function(){
-    	var deferred = $q.defer();
+    	
     	/* the user is not logged into facebook therefore send them to log in.
     	 */
+    	var deferred = $q.defer();
      	facebookConnectPlugin.login(["public_profile"], function(response){
   			//handle the response
 			if(response.status === 'connected'){
 				//successful login response
-				$timeout(function() {
+				//$timeout(function() {
                     deferred.resolve(true); //resolve the promise passing in null
-                }, 100);
+               // }, 100);
 			}else{ 
-    		    $timeout(function() {
+    		  //  $timeout(function() {
                     deferred.resolve(false); //resolve the promise passing in null
-                }, 100);
+              //  }, 100);
     	    }				   
 		},
 		function(error){
@@ -63,33 +64,29 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 
 
 
-    var getProfileDetails = phonegapReady(function(){
-        //var isConnected = getLoginStatus();    
-       // alert('is connected' + isConnected);
+    var getProfileDetails = function(){
+      
         var deferred = $q.defer();
         facebookConnectPlugin.api(
         	'/me?fields=id, email, name, link, picture', ["public_profile"],
         	function(data){
   			    alert("data" + JSON.stringify(data));
 			   
-			    $timeout(function() {
-                deferred.resolve(data); //resolve the promise passing in null
-            }, 100);
+			  //  $timeout(function() {
+                    deferred.resolve(data); //resolve the promise passing in null
+               // }, 100);
 		    },
 		    function(error){
 
-    		$timeout(function() {
-                deferred.resolve(null); //resolve the promise passing in null
-            }, 100);	
+    		   // $timeout(function() {
+                    deferred.resolve(null); //resolve the promise passing in null
+              //  }, 100);	
 		    	
 			    //api call failed
         	    alert("Facebook public profile API call failed: " + JSON.stringify(error) + " Please contact <a href='#page-support'>support</a>!" );
-    	    }
-    	); //end api call
+    	    }); //end api call
         return deferred.promise;
-   
-    });
-
+    };
 
     var processFacebookLogin = phonegapReady(function(){
     	var deferred = $q.defer();
@@ -107,35 +104,30 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
     	                    alert('userData' + JSON.stringify(userData));
     	                    //if(userData !== null){
                               //  alert("userData" + userData);
-                              $timeout(function() {
-                                 deferred.resolve(userData); //resolve the promise passing in null
-                              }, 100);
-                              //  return userData;
-                           //}
+                           // $timeout(function() {
+                                deferred.resolve(userData); //resolve the promise passing in null
+                           // }, 100);
+                          
     	                });
                     }
 
                 });
             }else{
                 getProfileDetails().then(function(userData) {
-    
     	            alert('userData' + JSON.stringify(userData));
     	            //if(userData !== null){
                     //  alert("userData" + userData);
-                    $timeout(function() {
+                   // $timeout(function() {
                         deferred.resolve(userData); //resolve the promise passing in null
-                    }, 100);
-                              //  return userData;
-                           //}
+                    //}, 100);  
     	        });
             }
         });
          return deferred.promise;
     });
 
-    
-     //return public API so that we can access it in all controllers
+    //return public API so that we can access it in all controllers
   	return{
-      processFacebookLogin: processFacebookLogin
+        processFacebookLogin: processFacebookLogin
  	};
 });
