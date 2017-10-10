@@ -1,7 +1,7 @@
 
 //create the mainController which will be associated with the body of the index file as we will use this controller throughout all
 //"pages" for the header menu items and side panel menu.
-mapApp.controller("mainController", function($scope, $http, $timeout, geolocationFactory, facebookFactory, loginFactory, sharedFactory, userFactory, validatorFactory, stationFactory){
+mapApp.controller("mainController", function($scope, $http, $timeout, geolocationFactory, facebookFactory, loginFactory, sharedFactory, userFactory, validatorFactory, stationFactory, localStorageFactory){
 
 	//the boolean variable "panelIsOpen" will initially be set to false as the side panel with initially be closed on page load
 	var panelIsOpen = false;
@@ -72,7 +72,7 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
           'Timestamp: '             + position.timestamp                + '\n');
     });
     }
-
+   localStorageFactory.checkLocalStorage();
 
    // (function() {
        
