@@ -87,6 +87,8 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
                 alert('get login status responseStatus' + responseStatus);
             	userIsConnected = true;  
             	getProfileDetails().then(function(userData){
+            		alert("userData " + userData); 
+                    var preparedData = validateFacebookDetails(userData);
                     deferred.resolve(userData); 
     	        });
     	    }else if(responseStatus !== null){
