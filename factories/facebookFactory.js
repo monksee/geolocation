@@ -89,7 +89,7 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
             	getProfileDetails().then(function(userData){
             		alert("userData " + userData); 
                     var preparedData = validateFacebookDetails(userData);
-                    deferred.resolve(userData); 
+                    deferred.resolve(preparedData); 
     	        });
     	    }else if(responseStatus !== null){
     	    	//If the user is not "connected" then log the user into facebook and our app
