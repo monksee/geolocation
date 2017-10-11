@@ -99,7 +99,8 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
                     	userIsConnected = true;
                     	getProfileDetails().then(function(userData){   
                     	    alert("userData " + userData); 
-                            deferred.resolve(userData); 
+                    	    var preparedData = validateFacebookDetails(userData);
+                            deferred.resolve(preparedData); 
     	                });
 
                     }else{
