@@ -97,11 +97,9 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
                         alert('perform login responseStatus' + responseStatus);
                     	//the user is now logged into facebook and our app
                     	userIsConnected = true;
-                    	getProfileDetails().then(function(userData){
-                            var preparedData = validateFacebookDetails(userData);
-                            alert("preparedData " + JSON.stringify(preparedData));
-
-                            deferred.resolve(preparedData); 
+                    	getProfileDetails().then(function(userData){   
+                    	    alert("userData " + userData); 
+                            deferred.resolve(userData); 
     	                });
 
                     }else{
@@ -123,7 +121,7 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 
     var validateFacebookDetails = function(userDetails){
         //check if userDetails is null
-        alert("Facebook userDetails" + JSON.stringify(userDetails)); 
+
         var facebookUserID = userDetails.id;
         var facebookName = userDetails.name;
         var profilePicURL = "https://graph.facebook.com/" + userDetails.id + "/picture?type=large&w‌​idth=200&height=200";  
