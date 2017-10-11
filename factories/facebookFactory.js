@@ -6,8 +6,8 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 
     var getLoginStatus = function(){
     	/* 
-    	 * This function gets a user's facebook login status.
-    	 * We will receive response status of "connected" if the user is logged into our app and facebook.
+    	 * This function uses the facebookConnectPlugin.getLoginStatus function which gets a user's current facebook login status.
+    	 * It returns a response.status of "connected" if the user is logged into our app and facebook.
     	 */
         var deferred = $q.defer();
     	facebookConnectPlugin.getLoginStatus(function(response){
@@ -27,9 +27,11 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 
     var performFacebookLogin = function(){
     	/* 
-    	 * This function logs a user into facebook.
-    	 * On successful login we get a response with a status of "connected" which means 
-    	 * the user is now logged into our app and facebook.
+    	 * This function uses the facebookConnectPlugin.login function.
+    	 * When we call the facebookConnectPlugin.login function, it firstly detects if a user is logged into facebook.
+    	 * If they are logged in, it returns a response.status of "connected".
+    	 * If they are not currently logged into facebook, a facebook login dialog will pop up for them to log in.
+    	 * If they enter the correct login details in the facebook dialog, it returns a response.status of "connected".
     	 */
     	var deferred = $q.defer();
      	facebookConnectPlugin.login(["public_profile"], function(response){
@@ -46,12 +48,11 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 
     var getProfileDetails = function(){
         /* 
-    	 * This function makes a call to the facebook API and gets a users facebook public profile data 
+    	 * This function makes a call to the facebook API (using the facebookConnectPlugin.api function) and gets a user's facebook public profile data 
     	 * The user must be logged in first before we can call this function
     	 */
         var deferred = $q.defer();
-        facebookConnectPlugin.api(
-        	'/me?fields=id, email, name, link, picture', ["public_profile"],
+        facebookConnectPlugin.api('/me?fields=id,email,name,link,picture',["public_profile"],
         	function(data){
   			    alert("data" + JSON.stringify(data));
                 deferred.resolve(data); 
@@ -67,9 +68,9 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
     var processFacebookLogin = phonegapReady(function(){
     	/* 
     	 * Wrap this function in the phonegapReady function so that it doesn't get called before the phonegap deviceready event occurs.
-    	 * We can only use the facebookConnectPlugin after the deviceready event occurs.
-    	 * This function checks a users facebook login status and returns their public profile data.
-    	 * We call this function in our mainController
+    	 * (Note: We can only use the facebookConnectPlugin after the deviceready event occurs).
+    	 * This function checks a user's facebook login status and returns their public profile data.
+    	 * We call this function in our mainController.
     	 */
     	var deferred = $q.defer();
     	var userIsConnected = false;
@@ -100,16 +101,6 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
                 alert('response status not passed');
 
             }
-
-           // if(userIsConnected){
-            	//If we have received a response status of "connected" now we can get the users profile data.
-               // getProfileDetails().then(function(userData){
-               //     deferred.resolve(userData); 
-    	        //});
-    	   // }else{
-               // deferred.resolve(null); 
-    	   // }
-
         });
 
         return deferred.promise;
