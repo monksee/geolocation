@@ -119,9 +119,9 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
     };
 
     $scope.loginWithFacebook = function(){
-	    facebookFactory.processFacebookLogin().then(function(data) {
+	    facebookFactory.processFacebookLogin().then(function(userDetails) {
             //check if userDetails is null
-            alert("Facebook userDetails" + JSON.stringify(data)); 
+            alert("Facebook userDetails" + JSON.stringify(userDetails)); 
             var facebookUserID = userDetails.id;
             var facebookName = userDetails.name;
             var profilePicURL = "https://graph.facebook.com/" + userDetails.id + "/picture?type=large&w‌​idth=200&height=200";  
