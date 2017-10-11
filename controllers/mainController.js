@@ -122,26 +122,26 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
 	    facebookFactory.processFacebookLogin().then(function(data) {
             //check if userDetails is null
             alert("Facebook userDetails" + JSON.stringify(data)); 
-          //  var facebookUserID = userDetails.id;
-          //  var facebookName = userDetails.name;
-          //  var profilePicURL = "https://graph.facebook.com/" + userDetails.id + "/picture?type=large&w‌​idth=200&height=200";  
+            var facebookUserID = userDetails.id;
+            var facebookName = userDetails.name;
+            var profilePicURL = "https://graph.facebook.com/" + userDetails.id + "/picture?type=large&w‌​idth=200&height=200";  
 
 
-	   // var inputsAreValid = validatorFactory.validateFacebookInputs(
-	   // 	[{"input" : facebookUserID, "minLength" : 1, "maxLength" : 30, "regex" : /^\d+$/},
-       //      {"input" : facebookName, "minLength" : 1, "maxLength" : 60},
-       //      {"input" : profilePicURL, "minLength" : 1, "maxLength" : 250}]);
+	    var inputsAreValid = validatorFactory.validateFacebookInputs(
+	    	[{"input" : facebookUserID, "minLength" : 1, "maxLength" : 30, "regex" : /^\d+$/},
+             {"input" : facebookName, "minLength" : 1, "maxLength" : 60},
+             {"input" : profilePicURL, "minLength" : 1, "maxLength" : 250}]);
 
        // console.log("inputsAreValid " + inputsAreValid);
-
-       // if(inputsAreValid){
+         alert(inputsAreValid);
+        if(inputsAreValid){
         	//After inputs are checked for validity then we call the checkLoginDetails method to perform the http request to the server side
-          //  var data = {
-            //    "facebookUserID" : facebookUserID, 
-           //     "facebookName" : facebookName, 
+            var data = {
+            "facebookUserID" : facebookUserID, 
+               "facebookName" : facebookName, 
                 //"profilePicURL" : "https://scontent.xx.fbcdn.net/v/t1.0-1/p50x50/21617751_10213716829451248_7798041643913998634_n.jpg?oh=7242e13b731a211fa7ac77ed443ec96f&oe=5A483F35"
-           //     "profilePicURL" : profilePicURL
-          //  };
+                "profilePicURL" : profilePicURL
+            };
 
             loginFactory.checkLoginDetails(data).then(function(userDetails) {
     	        //Since the checkLoginDetails method (in the loginFactory) is performaing a http request we need to use a promise
@@ -149,11 +149,11 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
       	        $scope.userDetails = userDetails;
      	        console.log("$scope.userDetails" + JSON.stringify($scope.userDetails));
             });
-        //}
+        }
 
         });
 
-    }  
+    };
     $scope.loginWithFacebook1 = function(){
 
         //the following blocks of code should be moved to the facebookFactory when using phonegap
