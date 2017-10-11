@@ -99,6 +99,8 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
                     	userIsConnected = true;
                     	getProfileDetails().then(function(userData){
                             var preparedData = validateFacebookDetails(userData);
+                            alert("preparedData " + JSON.stringify(preparedData));
+
                             deferred.resolve(preparedData); 
     	                });
 
@@ -133,7 +135,7 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
              {"input" : profilePicURL, "minLength" : 1, "maxLength" : 250}]);
 
         console.log("inputsAreValid " + inputsAreValid);
-
+        alert(inputsAreValid);
         if(inputsAreValid){
         	//After inputs are checked for validity then we call the checkLoginDetails method to perform the http request to the server side
             var data = {

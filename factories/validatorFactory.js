@@ -74,6 +74,7 @@ mapApp.factory('validatorFactory', function(){
         inputArray.forEach(function(inputObject){
             //as some of the inputObjects dont have a regex property we want them to return true for validity
             //so we assign inputIsValid to true (by default) for each inputObject.
+            alert(inputObject.input);
             var inputIsValid = true; 
             if(inputObject.hasOwnProperty('regex')){
         
