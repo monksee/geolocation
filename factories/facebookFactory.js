@@ -59,7 +59,9 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
         	function(data){
         		//success-handle the response
   			    alert("data" + JSON.stringify(data));
-                deferred.resolve(data); 
+  			    var preparedData = validateFacebookDetails(data);
+                deferred.resolve(preparedData); 
+            
 		    },
 		    function(error){
 			    //api call failed
@@ -78,17 +80,19 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
     	 * We call this function in our mainController.
     	 */
     	var deferred = $q.defer();
-    	var userIsConnected = false;
+
         getLoginStatus().then(function(responseStatus){   
             //Check the current login status of the user
             alert('get login status responseStatus' + responseStatus);
 
             if(responseStatus === "connected"){
                 alert('get login status responseStatus' + responseStatus);
-            	userIsConnected = true;  
-            	getProfileDetails().then(function(userData){
-            		alert("userData " + userData); 
-                    var preparedData = validateFacebookDetails(userData);
+            	
+            	getProfileDetails().then(function(preparedData){ 
+            		//preparedData will be null if there was an error when getProfileDetails() was called
+            		//or if the user data was invalid after calling validateFacebookDetails
+            		alert("preparedData " + preparedData); 
+
                     deferred.resolve(preparedData); 
     	        });
     	    }else if(responseStatus !== null){
@@ -98,23 +102,24 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
                     if(responseStatus === "connected"){
                         alert('perform login responseStatus' + responseStatus);
                     	//the user is now logged into facebook and our app
-                    	userIsConnected = true;
-                    	getProfileDetails().then(function(userData){   
-                    	    alert("userData " + userData); 
-                    	    var preparedData = validateFacebookDetails(userData);
+                        getProfileDetails().then(function(preparedData){
+            		        //preparedData will be null if there was an error when getProfileDetails() was called
+            		        //or if the user data was invalid after calling validateFacebookDetails
+            		        alert("preparedData " + preparedData); 
+                        
                             deferred.resolve(preparedData); 
     	                });
-
+                    
                     }else{
-                    	//response data is null or other
+                    	//response data is null so return null.
+                    	//We will check for null when this method is called and stop the process there.
                     	deferred.resolve(null);                   
                     }
                 });
             }else{
-            	//response data is null or other
+            	//response data is null so return null.
+            	//We will check for null when this method is called and stop the process there.
             	deferred.resolve(null);   
-                alert('response status not passed');
-
             }
         });
 
@@ -124,7 +129,7 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 
     var validateFacebookDetails = function(userDetails){
         //check if userDetails is null
-
+     
         var facebookUserID = userDetails.id;
         var facebookName = userDetails.name;
         var profilePicURL = "https://graph.facebook.com/" + userDetails.id + "/picture?type=large&w‌​idth=200&height=200";  
@@ -132,13 +137,13 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 
 	    var inputsAreValid = validatorFactory.validateFacebookInputs(
 	    	[{"input" : facebookUserID, "minLength" : 1, "maxLength" : 30, "regex" : /^\d+$/},
-             {"input" : facebookName, "minLength" : 1, "maxLength" : 60},
-             {"input" : profilePicURL, "minLength" : 1, "maxLength" : 250}]);
-
+            {"input" : facebookName, "minLength" : 1, "maxLength" : 60},
+            {"input" : profilePicURL, "minLength" : 1, "maxLength" : 250}]);
+  
         console.log("inputsAreValid " + inputsAreValid);
         alert(inputsAreValid);
         if(inputsAreValid){
-        	//After inputs are checked for validity then we call the checkLoginDetails method to perform the http request to the server side
+              	//After inputs are checked for validity then we call the checkLoginDetails method to perform the http request to the server side
             var data = {
                 "facebookUserID" : facebookUserID, 
                 "facebookName" : facebookName, 
@@ -151,6 +156,7 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 
         }
     };
+
 
     //return public API so that we can access it in all controllers
   	return{
