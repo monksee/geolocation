@@ -120,7 +120,7 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
         });
     };
 
-    $scope.loginWithFacebook1 = function(){
+    $scope.loginWithFacebook = function(){
         /*
          * This function calls the processFacebookLogin() method from the facebookFactory.
          * The facebookFactory uses the facebookConnectPlugin (cordova-plugin-facebook4) in order to authenticate the 
@@ -145,7 +145,7 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
         });
 
     };
-    $scope.loginWithFacebook = function(){
+    $scope.loginWithFacebook1 = function(){
 
         //the following blocks of code should be moved to the facebookFactory when using phonegap
         var facebookUserID = "10213718552614326";
