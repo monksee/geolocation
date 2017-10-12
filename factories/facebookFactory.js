@@ -41,8 +41,8 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 		    function(error){   
 		        //error function   
 		      
-		       // alert("Facebook login failed: " + handleFacebookErro);
-                alert("Facebook login failed: " + error);
+		       alert("Facebook login failed: " + handleFacebookError(error));
+                //alert("Facebook login failed: " + error);
                 deferred.resolve(null); 
     	});
 		    return deferred.promise;
@@ -96,7 +96,7 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
     	 * Wrap this function in the phonegapReady function so that it doesn't get called before the phonegap deviceready event occurs.
     	 * (Note: We can only use the facebookConnectPlugin after the deviceready event occurs).
     	 * This function checks a user's facebook login status and returns their public profile data.
-    	 * We call this function in our mainController.
+    	 * If an error occurs along the way, we return null so that we can check for this in our mainCntroller (when this function is called).
     	 */
     	var deferred = $q.defer();
 
