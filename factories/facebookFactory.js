@@ -40,7 +40,9 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 		    },
 		    function(error){   
 		        //error function   
-                alert("Facebook login failed: " + JSON.stringify(error));
+		      
+		       // alert("Facebook login failed: " + handleFacebookErro);
+                alert("Facebook login failed: " + error);
                 deferred.resolve(null); 
     	});
 		    return deferred.promise;
@@ -70,6 +72,23 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
     	}); 
 
         return deferred.promise;
+    };
+
+
+
+    var handleFacebookError = function(error){
+    	/* 
+    	 * This function uses the facebookConnectPlugin.getLoginStatus function which gets a user's current facebook login status.
+    	 * It returns a response.status of "connected" if the user is logged into our app and facebook.
+    	 */
+        if(error !== null && typeof error === 'object'){
+        	//therefore error is a json
+            alert("object " + error);
+
+        }else{
+            alert("not object " + error);
+
+        }
     };
 
     var processFacebookLogin = phonegapReady(function(){
