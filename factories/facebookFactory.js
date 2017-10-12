@@ -78,31 +78,23 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 
     var handleFacebookError = function(error){
     	/* 
-    	 * This function uses 
-    	 * The facebook API returns errors as objects on android and strings on iOS.
+    	 * The facebook API returns errors as objects on android and returns strings on iOS.
     	 * So this function firstly checks what "type" the error is and then handles it
     	 */
         if(error !== null && typeof error === 'object'){
         	//Error is an object so therefore we are on android 
-        	//Now check the errorCode property exists.
         	//The errorCode returned for "User cancelled dialog" is 4201.
             //Whenever we get this error we should not output an error to the user.
-            //So we check now that the errorCode is not 4201 and
-            alert("object " + error);
+            //So we check now that the errorCode is not 4201
+
             if(!(error.hasOwnProperty('errorCode') && error.errorCode === "4201")){
-               alert("Not error 4201 " + error.errorCode);
                 //This is not a "User cancelled dialog" error so we can output the error to the user   
                 alert("We're sorry but there was a problem processing your request " + error.errorMessage); 
-            }else{
-            	alert("message" + error.errorMessage); 
-                alert("error 4201 " + error.errorCode);
-
             }
 
-
         }else{
-        	//Error is not an object therefor we are on iOS and the error is a string.
-        	//Check if the error string equals "User cancelled" because this is what iOS returns. 
+        	//Error is not an object therefore we are on iOS and the error is a string.
+        	//Check if the error string equals "User cancelled" because this is what iOS returns when user cancels out of logging in to facebook. 
         	if(error.indexOf("User cancelled") == -1){
         		//The error string does not contain User cancelled so we can output the error.
                 alert("We're sorry but there was a problem processing your request " + error);
