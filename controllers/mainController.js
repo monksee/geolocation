@@ -138,7 +138,7 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
                 });
             }else{
                 //data is null therefore there was an error in facebookFactory of the facebook user details did not pass validation checks
-                alert("data " + data); 
+                alert("login data " + data); 
             }
 
 
