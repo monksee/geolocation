@@ -65,7 +65,7 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 		    },
 		    function(error){
 			    //api call failed
-        	    alert("Facebook public profile API call failed: " + JSON.stringify(error));
+        	    handleFacebookError(error);
         	    deferred.resolve(null); 
     	}); 
 
