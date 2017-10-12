@@ -17,7 +17,7 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 		    }, 
 	        function(error){ 
 	    	    //error function
-			    alert("Facebook getLoginStatus failed: " + JSON.stringify(error));
+			    handleFacebookError(error);
                 deferred.resolve(null);      
 		});
 		return deferred.promise;
@@ -41,8 +41,6 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 		    function(error){   
 		        //error function   
 		        handleFacebookError(error);
-		       alert("Facebook login failed: " + error);
-                //alert("Facebook login failed: " + error);
                 deferred.resolve(null); 
     	});
 		    return deferred.promise;
@@ -57,7 +55,7 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
         var deferred = $q.defer();
         //Note: On iOS it causes an error if there are spaces between the properties here (issue 338 for cordova-plugin-facebook4 on github)
         //thats why we need to do it as follows: /me?fields=id,email,name,link,picture
-        facebookConnectPlugin.api('/me?fields=id,name,link,picture',["public_profile"],
+        facebookConnectPlugin.api('/me?fields=id,name,lin,picture',["public_profile"],
         	function(data){
         		//success-handle the response
   			    alert("data" + JSON.stringify(data));
@@ -78,17 +76,17 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 
     var handleFacebookError = function(error){
     	/* 
-    	 * The facebook API returns errors as objects on android and returns strings on iOS.
-    	 * So this function firstly checks what "type" the error is and then handles it
+    	 * The facebook API returns errors as objects on android and returns an error as a string on iOS.
+    	 * So this function firstly checks what "type" the error is (object or string) and then handles it
+    	 * Also looking out for the "User cancelled dialog" error as we do not want to output a message to user when this error occurs.
     	 */
         if(error !== null && typeof error === 'object'){
         	//Error is an object so therefore we are on android 
         	//The errorCode returned for "User cancelled dialog" is 4201.
             //Whenever we get this error we should not output an error to the user.
-            //So we check now that the errorCode is not 4201
 
             if(!(error.hasOwnProperty('errorCode') && error.errorCode === "4201")){
-                //This is not a "User cancelled dialog" error so we can output the error to the user   
+                //This is not a "User cancelled dialog" (4201) error so we can output the error to the user   
                 alert("We're sorry but there was a problem processing your request " + error.errorMessage); 
             }
 
@@ -99,17 +97,7 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
         		//The error string does not contain User cancelled so we can output the error.
                 alert("We're sorry but there was a problem processing your request " + error);
 
-        	}else{
-                alert("not object " + error);
-
         	}
-           
-            if(error.indexOf("box") == -1){
-        		//The error string does not contain User cancelled so we can output the error.
-                alert("does not contain box " + error);
-
-        	}
-
 
          }
     };
