@@ -122,26 +122,19 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
 
     $scope.loginWithFacebook = function(){
         /*
-         * This function calls the processFacebookLogin() method from the facebookFactory.
-         * The facebookFactory uses the facebookConnectPlugin (cordova-plugin-facebook4) in order to authenticate the 
-         * users facebook login details and get their public profile data. 
-         * Once authenticated, we validate the public profile data (in the facebookFactory) and then return it to the following function
+         * This function calls the facebookFactory processFacebookLogin() function which returns a user's faceobok public profile data 
+         * It returns null if there was an error during processing.
+         * We pass this data to the loginFactory checkLoginDetails function in order to make a http POST request 
+         * to the server to further process the data there.
          */
 	    facebookFactory.processFacebookLogin().then(function(data) {
             if(data !== null){
-                alert("Facebook userDetails" + JSON.stringify(data)); 
+                //If the data returned from the processFacebookLogin function is not null then continue processing the data.
                 loginFactory.checkLoginDetails(data).then(function(userDetails) {
-    	            //Since the checkLoginDetails method (in the loginFactory) is performaing a http request we need to use a promise
-    	            //to store the userDetails (from the response) into our $scope.userDetails variable. 
+    	            //Store the userDetails (from the response of the http request) into our $scope.userDetails variable. 
       	            $scope.userDetails = userDetails;
-     	            console.log("$scope.userDetails" + JSON.stringify($scope.userDetails));
                 });
-            }else{
-                //data is null therefore there was an error in facebookFactory of the facebook user details did not pass validation checks
-                alert("login data " + data); 
             }
-
-
         });
 
     };
