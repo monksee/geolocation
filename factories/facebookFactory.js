@@ -1,9 +1,12 @@
 /*
- * This factory takes in the phonegapReady factory which detects when phonegaps deviceready event occurs.
+ * This factory consists of functions for working with the facebook API using the phonegap facebookConnectPlugin (cordova-plugin-facebook4) 
+ * We take in the phonegapReady factory as a parameter which detects when phonegaps deviceready event occurs.
+ * This is because we cannot use the facebookConnectPlugin before the deviceready event occurs
  * 
  */
-mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapReady, validatorFactory){
+mapApp.factory('facebookFactory', function($q, phonegapReady, validatorFactory){
 
+    //Define our private variables
     var getLoginStatus = function(){
     	/* 
     	 * This function uses the facebookConnectPlugin.getLoginStatus function which gets a user's current facebook login status.
@@ -12,14 +15,15 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
         var deferred = $q.defer();
     	facebookConnectPlugin.getLoginStatus(
     		function(response){
-        	    //success-handle the response
+        	    //Success. Return the status of the response
                 deferred.resolve(response.status); 
 		    }, 
 	        function(error){ 
-	    	    //error function
+	    	    //Handle the error, outputing a message to the user if necessary
 			    handleFacebookError(error);
                 deferred.resolve(null);      
-		});
+		    }
+		);
 		return deferred.promise;
     };
 
@@ -35,40 +39,43 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
     	var deferred = $q.defer();
      	facebookConnectPlugin.login(["public_profile"], 
      		function(response){
-  			    //success-handle the response
+  			    //Success. Return the status of the response
 			    deferred.resolve(response.status); 			   
 		    },
 		    function(error){   
-		        //error function   
+		        //Handle the error, outputing a message to the user if necessary
 		        handleFacebookError(error);
                 deferred.resolve(null); 
-    	});
-		    return deferred.promise;
+    	    }
+    	);
+		return deferred.promise;
     };
 
 
     var getProfileDetails = function(){
         /* 
-    	 * This function makes a call to the facebook API (using the facebookConnectPlugin.api function) and gets a user's facebook public profile data 
+    	 * This function makes a call to the facebook API (using the facebookConnectPlugin.api function) 
+    	 * and gets a user's facebook public profile data.
     	 * The user must be logged in first before we can call this function
     	 */
         var deferred = $q.defer();
-        //Note: On iOS it causes an error if there are spaces between the properties here (issue 338 for cordova-plugin-facebook4 on github)
-        //thats why we need to do it as follows: /me?fields=id,email,name,link,picture
-        facebookConnectPlugin.api('/me?fields=id,name,lin,picture',["public_profile"],
+        /* 
+         * Note: On iOS it causes an error if there are spaces between the properties in the api call below
+         * (e.g /me?fields=id, name, link, picture, ...issue 338 for cordova-plugin-facebook4 on github)
+         * So we need to write it as follows: /me?fields=id,name,link,picture
+         */
+        facebookConnectPlugin.api('/me?fields=id,name,link,picture',["public_profile"],
         	function(data){
-        		//success-handle the response
-  			    alert("data" + JSON.stringify(data));
+        		//Success. Validate and prepare the data before returning it
   			    var preparedData = validateFacebookDetails(data);
                 deferred.resolve(preparedData); 
-            
 		    },
 		    function(error){
-			    //api call failed
+			    //Handle the error, outputing a message to the user if necessary
         	    handleFacebookError(error);
         	    deferred.resolve(null); 
-    	}); 
-
+    	    }
+    	); 
         return deferred.promise;
     };
 
@@ -76,92 +83,39 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 
     var handleFacebookError = function(error){
     	/* 
-    	 * The facebook API returns errors as objects on android and returns an error as a string on iOS.
+    	 * The facebook API returns an error as an object on android and as a string on iOS.
     	 * So this function firstly checks what "type" the error is (object or string) and then handles it
-    	 * Also looking out for the "User cancelled dialog" error as we do not want to output a message to user when this error occurs.
+    	 * Also looking out for the "User cancelled dialog" error (errorCode: 4201 on android),
+    	 * as we do not want to output a message to the user when this error occurs.
     	 */
         if(error !== null && typeof error === 'object'){
         	//Error is an object so therefore we are on android 
-        	//The errorCode returned for "User cancelled dialog" is 4201.
-            //Whenever we get this error we should not output an error to the user.
-
             if(!(error.hasOwnProperty('errorCode') && error.errorCode === "4201")){
-                //This is not a "User cancelled dialog" (4201) error so we can output the error to the user   
-                alert("We're sorry but there was a problem processing your request " + error.errorMessage); 
+                //This is not a "User cancelled dialog" (4201) error so we will output the error to the user   
+                alert("We're sorry but the following error occured when trying to process your request: " + error.errorMessage); 
             }
-
         }else{
         	//Error is not an object therefore we are on iOS and the error is a string.
         	//Check if the error string equals "User cancelled" because this is what iOS returns when user cancels out of logging in to facebook. 
         	if(error.indexOf("User cancelled") == -1){
-        		//The error string does not contain User cancelled so we can output the error.
-                alert("We're sorry but there was a problem processing your request " + error);
-
+        		//The error string does not contain "User cancelled" so we will output an error message.
+                alert("We're sorry but the following error occured when trying to process your request: " + error);
         	}
-
          }
     };
 
-    var processFacebookLogin = phonegapReady(function(){
-    	/* 
-    	 * Wrap this function in the phonegapReady function so that it doesn't get called before the phonegap deviceready event occurs.
-    	 * (Note: We can only use the facebookConnectPlugin after the deviceready event occurs).
-    	 * This function checks a user's facebook login status and returns their public profile data.
-    	 * If an error occurs along the way, we return null so that we can check for this in our mainCntroller (when this function is called).
-    	 */
-    	var deferred = $q.defer();
-
-        getLoginStatus().then(function(responseStatus){   
-            //Check the current login status of the user
-            alert('get login status responseStatus' + responseStatus);
-
-            if(responseStatus === "connected"){
-                alert('get login status responseStatus' + responseStatus);
-            	
-            	getProfileDetails().then(function(preparedData){ 
-            		//preparedData will be null if there was an error when getProfileDetails() was called
-            		//or if the user data was invalid after calling validateFacebookDetails
-            		alert("preparedData " + preparedData); 
-
-                    deferred.resolve(preparedData); 
-    	        });
-    	    }else if(responseStatus !== null){
-    	    	//If the user is not "connected" then log the user into facebook and our app
-              	performFacebookLogin().then(function(responseStatus){
-              		alert('perform login responseStatus' + responseStatus);
-                    if(responseStatus === "connected"){
-                        alert('perform login responseStatus' + responseStatus);
-                    	//the user is now logged into facebook and our app
-                        getProfileDetails().then(function(preparedData){
-            		        //preparedData will be null if there was an error when getProfileDetails() was called
-            		        //or if the user data was invalid after calling validateFacebookDetails
-            		        alert("preparedData " + preparedData); 
-                        
-                            deferred.resolve(preparedData); 
-    	                });
-                    
-                    }else{
-                    	//response data is null so return null.
-                    	//We will check for null when this method is called and stop the process there.
-                    	deferred.resolve(null);                   
-                    }
-                });
-            }else{
-            	//response data is null so return null.
-            	//We will check for null when this method is called and stop the process there.
-            	deferred.resolve(null);   
-            }
-        });
-
-        return deferred.promise;
-    });
-
 
     var validateFacebookDetails = function(userDetails){
-        //check if userDetails is null
-     
+        /* 
+    	 * This function checks if the facebook user details are valid
+    	 * If they are valid then we prepare them (for sending to the server later, in our http request in the loginFactory)
+    	 * and return an object called data.
+    	 * If they are not valid we return null.
+    	 */
         var facebookUserID = userDetails.id;
         var facebookName = userDetails.name;
+        //The "picture" returned from the facebook api call is the tiny thumbnail so instead of using that we get a larger size picture
+        //by using the user's id in the following way:
         var profilePicURL = "https://graph.facebook.com/" + userDetails.id + "/picture?type=large&w‌​idth=200&height=200";  
 
 
@@ -169,23 +123,66 @@ mapApp.factory('facebookFactory', function($rootScope, $timeout, $q, phonegapRea
 	    	[{"input" : facebookUserID, "minLength" : 1, "maxLength" : 30, "regex" : /^\d+$/},
             {"input" : facebookName, "minLength" : 1, "maxLength" : 60},
             {"input" : profilePicURL, "minLength" : 1, "maxLength" : 250}]);
-  
-        console.log("inputsAreValid " + inputsAreValid);
-        alert(inputsAreValid);
         if(inputsAreValid){
-              	//After inputs are checked for validity then we call the checkLoginDetails method to perform the http request to the server side
+            //After inputs are checked for validity then we prepare the data
             var data = {
                 "facebookUserID" : facebookUserID, 
                 "facebookName" : facebookName, 
-                //"profilePicURL" : "https://scontent.xx.fbcdn.net/v/t1.0-1/p50x50/21617751_10213716829451248_7798041643913998634_n.jpg?oh=7242e13b731a211fa7ac77ed443ec96f&oe=5A483F35"
                 "profilePicURL" : profilePicURL
             };
             return data;
         }else{
+        	//If the inputs are not valid then return null
             return null;
-
         }
     };
+
+
+
+    var processFacebookLogin = phonegapReady(function(){
+    	/* 
+    	 * This function checks a user's facebook login status, logs them into facebook if necessary, retrieves and returns their public profile data.
+    	 * If an error occurs along the way, we return null so that we can check for this in our mainController (when this function is called).
+    	 * We wrap this function in the phonegapReady function so that it doesn't get called before the phonegap deviceready event occurs.
+    	 */
+    	var deferred = $q.defer();
+
+        getLoginStatus().then(function(responseStatus){   
+            //Check the current login status of the user
+            if(responseStatus === "connected"){
+                //the user is logged into facebook and our app
+            	
+            	getProfileDetails().then(function(preparedData){ 
+            		//preparedData will be null if there was an error when getProfileDetails() was called
+            		//or if the user data (returned from the api call) was invalid after calling validateFacebookDetails
+                    deferred.resolve(preparedData); 
+    	        });
+    	    }else if(responseStatus !== null){
+    	    	//If the user is not "connected" then log the user into facebook and our app
+              	performFacebookLogin().then(function(responseStatus){
+                    if(responseStatus === "connected"){
+                    	//the user is now logged into facebook and our app
+                        getProfileDetails().then(function(preparedData){
+            		        //preparedData will be null if there was an error when getProfileDetails() was called
+            		        //or if the user data (returned from the api call) was invalid after calling validateFacebookDetails
+                            deferred.resolve(preparedData); 
+    	                });
+                    
+                    }else{
+                    	//responseStatus is not "connected" so we cannot retrieve the profile data. Therefore return null.
+                    	//We will check for null when this function is called in the controller and stop the rest of the processing there.
+                    	deferred.resolve(null);                   
+                    }
+                });
+            }else{
+            	//responseStatus is null so an error occured. Therefore return null.
+            	//We will check for null when this function is called in the controller and stop the rest of the processing there.
+            	deferred.resolve(null);   
+            }
+        });
+
+        return deferred.promise;
+    });
 
 
     //return public API so that we can access it in all controllers
