@@ -170,6 +170,7 @@ mapApp.controller("mainController", function($scope, $http, $timeout, $location,
         userFactory.userService.processLogin().then(function(userDetails) {
             //Store the userDetails (from the response of the http request) into our $scope.userDetails variable. 
             $scope.userDetails = userDetails;
+            $location.path('home');
         });
     };
 
