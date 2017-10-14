@@ -26,7 +26,7 @@ width: 100%;
 	<!--use the html5 header tag-->
 	<header>
 
-		<ul class="header_nav" data-ng-class="{'swipe_left': panelIsOpen == true}" data-ng-show="checkHeaderStatus()">
+		<ul class="header_nav" data-ng-class="{'swipe_left': panelIsOpen == true}" data-ng-show="!detectLoginView()">
 			<li class="header_menu_item" data-ng-click="goBack()">
 				<span id="back_header_link" class="header_menu_link normal_link"><i class="fa fa-arrow-left"></i></span>
 				
@@ -41,8 +41,8 @@ width: 100%;
 
 	<div id="container_wrapper" class="scrollable" data-ng-class="{'swipe_left': panelIsOpen == true}" data-ng-swipe-left="panelIsOpen = true">
 		<div class="container"> 
-            <div data-ng-show="checkHeaderStatus()">Hi</div>
-			<div id="login_info_area" ng-show="checkIfLoggedIn()">
+            <div data-ng-show="!detectLoginView()">Hi</div>
+			<div id="login_info_area" ng-show="!detectLoginView();checkIfLoggedIn()">
 			    <span class="user_profile_pic">
 			        <img src="{{userDetails.profilePicURL}}" width="70" height="70" alt="">
 			    </span> 
