@@ -3,12 +3,12 @@
  * This is the mainController which will be associated with the body of the index file as we will use this controller throughout all
  * "pages" for the header menu items and side panel menu and other details.
  */
-mapApp.controller("mainController", function($scope, $http, $timeout, geolocationFactory, facebookFactory, loginFactory, sharedFactory, userFactory, validatorFactory, stationFactory){
+mapApp.controller("mainController", function($scope, $http, $timeout, $location, geolocationFactory, facebookFactory, loginFactory, sharedFactory, userFactory, validatorFactory, stationFactory){
 
     /* Define our scope variables */
 	//the boolean variable "panelIsOpen" will initially be set to false as the side panel with initially be closed on page load
 	$scope.panelIsOpen = false;
-
+    $scope.headerIsShown = false;
     //The default page transition effect will be that the content of the view will move from right to left
     //So set our scope variable of leftToRight to false.
     //This will be set to true any time we press the back button.
@@ -47,6 +47,25 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
         }
     })();
 
+    $scope.$on('$viewContentLoaded', function(){
+        $scope.currentLocation = $location.path();
+       // if($location.path() !== "\login"){ 
+        if($scope.currentLocation.indexOf("login") == -1){
+            //This is not the login view therefore show the header.
+            $scope.headerIsShown = true;
+            console.log('shown' + $scope.currentLocation);
+        }else{
+            $scope.headerIsShown = false;
+
+        }
+
+        //Here your view content is fully loaded !!
+    });
+
+   $scope.checkHeaderStatus = function(){
+
+        return $scope.headerIsShown;
+    }
 
 	$scope.toggleSidePanel = function(){
 		/*
@@ -120,7 +139,7 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
         });
     };
 
-    $scope.loginWithFacebook = function(){
+    $scope.loginWithFacebook1 = function(){
         /*
          * This function calls the facebookFactory processFacebookLogin() function which returns a user's faceobok public profile data 
          * It returns null if there was an error during processing.
@@ -138,7 +157,25 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
         });
 
     };
-    $scope.loginWithFacebook1 = function(){
+
+    $scope.loginWithFacebook = function(){
+        /*
+         * This function calls the facebookFactory processFacebookLogin() function which returns a user's faceobok public profile data 
+         * It returns null if there was an error during processing.
+         * We pass this data to the loginFactory checkLoginDetails function in order to make a http POST request 
+         * to the server to further process the data there.
+         */
+     
+        //If the data returned from the processFacebookLogin function is not null then continue processing the data.
+        userFactory.userService.processLogin().then(function(userDetails) {
+            //Store the userDetails (from the response of the http request) into our $scope.userDetails variable. 
+            $scope.userDetails = userDetails;
+        });
+    };
+
+
+
+    $scope.loginWithFacebook2 = function(){
 
         //the following blocks of code should be moved to the facebookFactory when using phonegap
         var facebookUserID = "10213718552614326";
@@ -161,14 +198,14 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
                 "profilePicURL" : profilePicURL
             };
 
-            loginFactory.checkLoginDetails(data).then(function(userDetails) {
+            userFactory.userService.checkLoginDetails(data).then(function(userDetails) {
                 //Since the checkLoginDetails method (in the loginFactory) is performaing a http request we need to use a promise
                 //to store the userDetails (from the response) into our $scope.userDetails variable. 
                 $scope.userDetails = userDetails;
                 console.log("$scope.userDetails" + JSON.stringify($scope.userDetails));
+                $location.path('home');
             });
         }
-
 
     }  
 
@@ -192,6 +229,7 @@ mapApp.controller("mainController", function($scope, $http, $timeout, geolocatio
             userFactory.userService.resetUserDetails(); 
             //clear the userToken from local storage.
             localStorage.clear();
+            $location.path('login');
         }
 
     }
