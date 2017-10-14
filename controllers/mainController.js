@@ -36,7 +36,7 @@ mapApp.controller("mainController", function($scope, $http, $timeout, $location,
         }else{
             //userToken key exists in local storage so check this token on the server side to make sure its valid.
             var data = {
-                "userToken" :  userFactory.userService.getUserToken();
+                "userToken" :  userFactory.userService.getUserToken()
              };
             userFactory.userService.checkUserToken(data).then(function(userDetails) {
                 //Since the checkUserToken method (in the userFactory) is performaing a http request we need to use a promise
