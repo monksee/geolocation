@@ -8,7 +8,7 @@ mapApp.controller("mainController", function($scope, $http, $timeout, $location,
     /* Define our scope variables */
 	//the boolean variable "panelIsOpen" will initially be set to false as the side panel with initially be closed on page load
 	$scope.panelIsOpen = false;
-    $scope.headerIsShown = false;
+    $scope.loginViewIsShowing = true;
     //The default page transition effect will be that the content of the view will move from right to left
     //So set our scope variable of leftToRight to false.
     //This will be set to true any time we press the back button.
@@ -36,10 +36,10 @@ mapApp.controller("mainController", function($scope, $http, $timeout, $location,
         }else{
             //userToken key exists in local storage so check this token on the server side to make sure its valid.
             var data = {
-                "userToken" : localStorage.getItem("userToken")
+                "userToken" :  userFactory.userService.getUserToken();
              };
-            loginFactory.checkUserToken(data).then(function(userDetails) {
-                //Since the checkUserToken method (in the loginFactory) is performaing a http request we need to use a promise
+            userFactory.userService.checkUserToken(data).then(function(userDetails) {
+                //Since the checkUserToken method (in the userFactory) is performaing a http request we need to use a promise
                 //to store the userDetails (from the response) into our $scope.userDetails variable. 
                 $scope.userDetails = userDetails;
                 console.log("$scope.userDetails" + JSON.stringify($scope.userDetails));
@@ -49,22 +49,20 @@ mapApp.controller("mainController", function($scope, $http, $timeout, $location,
 
     $scope.$on('$viewContentLoaded', function(){
         $scope.currentLocation = $location.path();
-       // if($location.path() !== "\login"){ 
+
         if($scope.currentLocation.indexOf("login") == -1){
-            //This is not the login view therefore show the header.
-            $scope.headerIsShown = true;
+            //This is not the login view.
+            $scope.loginViewIsShowing = false;
             console.log('shown' + $scope.currentLocation);
         }else{
-            $scope.headerIsShown = false;
-
+            $scope.loginViewIsShowing = true;
         }
-
         //Here your view content is fully loaded !!
     });
 
-   $scope.checkHeaderStatus = function(){
+   $scope.detectLoginView = function(){
 
-        return $scope.headerIsShown;
+        return $scope.loginViewIsShowing;
     }
 
 	$scope.toggleSidePanel = function(){
@@ -162,12 +160,12 @@ mapApp.controller("mainController", function($scope, $http, $timeout, $location,
         /*
          * This function calls the facebookFactory processFacebookLogin() function which returns a user's faceobok public profile data 
          * It returns null if there was an error during processing.
-         * We pass this data to the loginFactory checkLoginDetails function in order to make a http POST request 
+         * We pass this data to the userFactory checkLoginDetails function in order to make a http POST request 
          * to the server to further process the data there.
          */
      
         //If the data returned from the processFacebookLogin function is not null then continue processing the data.
-        userFactory.userService.processLogin().then(function(userDetails) {
+        userFactory.userService.login().then(function(userDetails) {
             //Store the userDetails (from the response of the http request) into our $scope.userDetails variable. 
             $scope.userDetails = userDetails;
             $location.path('home');
