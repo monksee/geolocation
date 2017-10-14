@@ -133,7 +133,7 @@ mapApp.factory('userFactory', function($http, $q, sharedFactory, facebookFactory
             });
     };
 
-    userService.processLogin = function(){
+    userService.login = function(){
         var self = this;   
         var deferred = $q.defer();
         facebookFactory.processFacebookLogin().then(function(data) {
@@ -207,6 +207,10 @@ mapApp.factory('userFactory', function($http, $q, sharedFactory, facebookFactory
             });   
     };
 
+    userService.getUserToken = function(){
+        //get the userToken value in localStorage
+        localStorage.getItem('userToken');
+    };
 
     userService.setUserToken = function(userToken){
         //setting the userToken value in localStorage like this will overwrite any value thats currently there (if the "userToken" key exists)

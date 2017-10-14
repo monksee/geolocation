@@ -7,14 +7,12 @@
  */
 mapApp.factory('phonegapReady', function() {
     return function (fn) {
-
         var queue = [];
 
         var impl = function () {
             queue.push(Array.prototype.slice.call(arguments));
         };
         document.addEventListener('deviceready', function () {
-            alert('deviceReady fired');
             queue.forEach(function (args) {
                 fn.apply(this, args);
             });
