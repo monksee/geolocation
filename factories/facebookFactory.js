@@ -183,10 +183,21 @@ mapApp.factory('facebookFactory', function($q, phonegapReady, validatorFactory){
 
         return deferred.promise;
     });
+    var logOutOfFacebook = phonegapReady(function(){
+        facebookConnectPlugin.logout(
+            function(data){
+                //Success. Validate and prepare the data before returning it
+                alert(JSON.stringify(data));
+            },
+            function(error){
+                alert(JSON.stringify(error));
+            }
 
-
+        );
+    });
     //return public API so that we can access it in all controllers
   	return{
-        processFacebookLogin: processFacebookLogin
+        processFacebookLogin: processFacebookLogin,
+        logOutOfFacebook: logOutOfFacebook
  	};
 });
