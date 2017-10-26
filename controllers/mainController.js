@@ -239,6 +239,8 @@ mapApp.controller("mainController", function($scope, $http, $q, $timeout, $locat
             //clear the userToken from local storage.
             localStorage.clear();
             $location.path('login');
+            //log out of facebook
+            facebookFactory.logOutOfFacebook();
         }
 
     }
