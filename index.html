@@ -9,9 +9,12 @@
 <script src="js/angular-route.min.js"></script>
 <script src="js/angular-touch.min.js"></script>
 <script src="js/angular-animate.min.js"></script>
+<script src="js/angular-sanitize.js"></script>
 <script src="phonegap.js"></script>
 
 <link rel="stylesheet" type="text/css" href="css/index.css"/>	
+<link rel="stylesheet" type="text/css" href="css/header.css"/>	
+<link rel="stylesheet" type="text/css" href="css/station_and_reviews.css"/>	
 <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css"/>	
 <style>
 #map {
@@ -41,17 +44,15 @@ width: 100%;
 
 	<div id="container_wrapper" class="scrollable" data-ng-class="{'swipe_left': panelIsOpen == true}" data-ng-swipe-left="panelIsOpen = true">
 		<div class="container"> 
-            <div data-ng-show="!detectLoginView()">Hi</div>
-			<div id="login_info_area" ng-show="!detectLoginView();checkIfLoggedIn()">
+			<div id="login_info_area" data-ng-show="showUserProfileArea()">
 			    <span class="user_profile_pic">
-			        <img src="{{userDetails.profilePicURL}}" width="70" height="70" alt="">
+			        <img src="{{userDetails.profilePicURL}}" data-ng-class="{'profile_pic_size': checkIfLoggedIn() == true}" alt="">
 			    </span> 
 			    {{userDetails.facebookName}}
 			</div>
 
-			<span class="logo" ng-show="checkIfUserIsAdmin()"><i class="fa fa-check-circle"></i></span>
-			 <div class="view-animate-container">
-			<div data-ng-view class="view-animate" data-ng-class="{'left_to_right': leftToRight == true}">
+			 <div class="view_animatecontainer">
+			<div data-ng-view class="viewanimate" data-ng-class="{'left_toright': leftToRight == true}">
 				<!--our individual views will be displayed here-->
 
 			</div> 
@@ -83,7 +84,7 @@ width: 100%;
 					</a>
 					
 				</li>
-				<li class="side_menu_item" ng-show="checkIfLoggedIn()">
+				<li class="side_menu_item" data-ng-show="checkIfLoggedIn()">
 					<span class="side_menu_link normal_link" data-ng-click="toggleSidePanel();logOut()">
 						<i class="panel_icon fa fa-power-off"></i>Log Out<i class="fa fa-chevron-right"></i>
 					</span>
@@ -94,7 +95,7 @@ width: 100%;
 	</div><!--/panel_area-->
 <script>
 
-alert('scripts being called');
+//alert('scripts being called');
       document.addEventListener('pause', function () {
           //  alert('pause fired');
             
@@ -113,11 +114,12 @@ alert('scripts being called');
 <script src="factories/validatorFactory.js"></script>
 
 <script src="factories/sharedFactory.js"></script>
+<script src="factories/facebookFactory.js"></script>
 <script src="factories/userFactory.js"></script>
 <script src="factories/loginFactory.js"></script>
-
+<script src="factories/reviewFactory.js"></script>
 <script src="factories/stationFactory.js"></script>
-<script src="factories/facebookFactory.js"></script>
+
 
 <script src="factories/geolocationFactory.js"></script>
 <script src="controllers/mainController.js"></script>
