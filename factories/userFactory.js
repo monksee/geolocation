@@ -1,9 +1,5 @@
 /*
- * This factory consists of objects and methods which will process data associated with a user.
- * i.e Their facebook profile details.
- * Whether or not they are currently logged in.
- * Whether or not they are a regular user or an admin (determined by their userPrivilegeID).
- * We can use this data throughout our controllers by passing the factory in as a parameter to our controllers.
+ * This factory consists of the userService object which contains methods for processing data associated with a user.
  */
 mapApp.factory('userFactory', function($http, $q, sharedFactory, facebookFactory){
     "use strict";
@@ -23,27 +19,10 @@ mapApp.factory('userFactory', function($http, $q, sharedFactory, facebookFactory
         "isLoggedIn" : false
     };
 
-    userService.checkIfUserIsAdmin = function(){
-        /*
-         * This method checks if the user is an admin or not.
-         * A userPrivilegeID of 1 is a regular user and 2 is an admin user.
-         * Admin privileges will include being able to reply to a user testimonial/review
-         * and also being able to delete a testimonial/review
-         */
-        var userPrivilegeID = this.userDetails.userPrivilegeID;
-        if(userPrivilegeID === 2){
-            console.log("userPrivilegeID " + userPrivilegeID);
-            return true;
-        }else{
-            console.log("userPrivilegeID " + userPrivilegeID);
-            return false;
-        }
-    };
-
     userService.setUserDetails = function(responseData){
         /*
          * This method takes in the response data of a http request to our auth endpoints of our API 
-         * and stores the new values (within the response data) in the userDetails object.
+         * and stores the new values in the userDetails object.
          */
         this.userDetails = {
             "userID" : responseData.userID,
@@ -70,6 +49,7 @@ mapApp.factory('userFactory', function($http, $q, sharedFactory, facebookFactory
             "isLoggedIn" : false
         };
     };
+
     userService.checkIfUserIsLoggedIn = function(){
         /*
          * This method returns the isLoggedIn boolean value of the userDetails object.
@@ -78,9 +58,24 @@ mapApp.factory('userFactory', function($http, $q, sharedFactory, facebookFactory
        
     }; 
 
+    userService.checkIfUserIsAdmin = function(){
+        /*
+         * This method checks if the user is an admin or not.
+         * A userPrivilegeID of 1 is a regular user and 2 is an admin user.
+         */
+        var userPrivilegeID = this.userDetails.userPrivilegeID;
+        if(userPrivilegeID === 2){
+           // console.log("userPrivilegeID " + userPrivilegeID);
+            return true;
+        }else{
+          //  console.log("userPrivilegeID " + userPrivilegeID);
+            return false;
+        }
+    };
+
     userService.checkLoginDetails = function(data){
         /*
-         * This function makes a POSt request to the facebookAuth endpoint to process a user's facebook login details
+         * This method makes a POSt request to the facebookAuth endpoint to process a user's facebook login details
          * If the facebook details are validated on the server side we get return the profile data for that user
          * We then populate the userService.userDetails object with this data 
          * If an error occurs in the process we return null (instead of the userDetails)
@@ -89,7 +84,7 @@ mapApp.factory('userFactory', function($http, $q, sharedFactory, facebookFactory
 
         return $http({
                 method: 'POST',
-                //url: 'http://localhost/API/facebookAuth?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+               // url: 'http://localhost/API/facebookAuth?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 url: 'http://gamuzic.com/API/facebookAuth?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 data: JSON.stringify(data),
                 headers: {
@@ -104,16 +99,14 @@ mapApp.factory('userFactory', function($http, $q, sharedFactory, facebookFactory
                         if(response.data.hasOwnProperty('userID') && response.data.userID !== null){
                            //Check if the userID property exists and also is not null in the response.
                             //This is the best way to determine whether the user details were successfully generated. 
-                          
                             responseUserDataIsValid = true;
                         }
-                }else{
-                    //data property is not present in the response or it is present but it is null
-                    sharedFactory.buildErrorNotification(response);
                 }
+
+
                 //After the checks to see if the response is valid then store our user data in the userDetails object of the userFactory.
                 if(responseUserDataIsValid){        
-                    console.log("this" + JSON.stringify(self.userDetails));       
+                    console.log("response.data" + JSON.stringify(response.data));       
                     self.setUserDetails(response.data);
                     //store the userToken in local storage.
                     self.setUserToken(self.userDetails.userToken);
@@ -134,6 +127,13 @@ mapApp.factory('userFactory', function($http, $q, sharedFactory, facebookFactory
     };
 
     userService.login = function(){
+        /*
+         * This method calls the facebookFactory.processFacebookLogin() in order to implement the facebook login process and 
+         * return the users facebook public profile details.
+         * It then calls the userService.checkLoginDetails method in order to send the details to the server side and process them there.
+         * We call this method in our mainController.
+         */
+
         var self = this;   
         var deferred = $q.defer();
         facebookFactory.processFacebookLogin().then(function(data) {
@@ -142,9 +142,9 @@ mapApp.factory('userFactory', function($http, $q, sharedFactory, facebookFactory
                 alert("self userDetails2 " + JSON.stringify(self.userDetails));
                 //If the data returned from the processFacebookLogin function is not null then continue processing the data.
                 self.checkLoginDetails(data).then(function(userDetails) {
-                    //Store the userDetails (from the response of the http request) into our $scope.userDetails variable. 
+                    //resolve the userDetails 
                     deferred.resolve(userDetails);
-                   // $scope.userDetails = userDetails;
+               
                 });
             }
         });
@@ -172,6 +172,7 @@ mapApp.factory('userFactory', function($http, $q, sharedFactory, facebookFactory
                 },
                 responseType:'json'
             }).then(function successCallback(response){
+                console.log(response.data);
                 //Do checks to see if the response data is valid. If not valid then build the error notification
                 var responseUserDataIsValid = false; //initialize boolean to false
                 if(response.hasOwnProperty('data') && response.data !== null){
@@ -180,8 +181,6 @@ mapApp.factory('userFactory', function($http, $q, sharedFactory, facebookFactory
                             //Check if the userID property exists and also is not null in the response.
                             //This is the best way to determine whether the user details were successfully generated. 
                             responseUserDataIsValid = true;
-                        }else{
-                            console.log("userID is not valid");
                         }
                 }
                 //After the checks to see if the response is valid then store our user data in the userDetails object of the userFactory.
@@ -209,7 +208,7 @@ mapApp.factory('userFactory', function($http, $q, sharedFactory, facebookFactory
 
     userService.getUserToken = function(){
         //get the userToken value in localStorage
-        localStorage.getItem('userToken');
+        return localStorage.getItem('userToken');
     };
 
     userService.setUserToken = function(userToken){

@@ -2,7 +2,7 @@
  * This factory consists of functions for working with the facebook API using the phonegap facebookConnectPlugin (cordova-plugin-facebook4) 
  * We take in the phonegapReady factory as a parameter which detects when phonegaps deviceready event occurs.
  * This is because we cannot use the facebookConnectPlugin before the deviceready event occurs
- * 
+ * We use this factory in our userFactory.
  */
 mapApp.factory('facebookFactory', function($q, phonegapReady, validatorFactory){
 
@@ -108,7 +108,7 @@ mapApp.factory('facebookFactory', function($q, phonegapReady, validatorFactory){
     var validateFacebookDetails = function(userDetails){
         /* 
     	 * This function checks if the facebook user details are valid
-    	 * If they are valid then we prepare them (for sending to the server later, in our http request in the loginFactory)
+    	 * If they are valid then we prepare them (for sending to the server later, in our http request in the userFactory)
     	 * and return an object called data.
     	 * If they are not valid we return null.
     	 */
@@ -142,7 +142,7 @@ mapApp.factory('facebookFactory', function($q, phonegapReady, validatorFactory){
     var processFacebookLogin = phonegapReady(function(){
     	/* 
     	 * This function checks a user's facebook login status, logs them into facebook if necessary, retrieves and returns their public profile data.
-    	 * If an error occurs along the way, we return null so that we can check for this in our mainController (when this function is called).
+    	 * If an error occurs along the way, we return null so that we can check for this when this function is called.
     	 * We wrap this function in the phonegapReady function so that it doesn't get called before the phonegap deviceready event occurs.
     	 */
     	var deferred = $q.defer();

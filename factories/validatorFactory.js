@@ -92,6 +92,7 @@ mapApp.factory('validatorFactory', function(){
 
   	//return public API so that we can access it in all controllers
   	return{
-      validateFacebookInputs: validateFacebookInputs
+      validateFacebookInputs: validateFacebookInputs,
+      checkInputLengthsAreValid: checkInputLengthsAreValid
  	  };
 });

@@ -1,6 +1,10 @@
 /**********************************************************
 * Author: Sarah Monks
+* 
+* CSS styling for general parts of the application
+*
 ***********************************************************/
+
 /*reset all html elements to 0 margin and padding etc*/
 html, body, div, span, object, iframe,
 h1, h2, h3, h4, h5, h6, p, address, em, img, q,small, strong, b, i,
@@ -54,20 +58,18 @@ font-size: 1.1rem;
 }
 
 h3{
-text-align: center;
+text-align: left;
+letter-spacing: .9px !important;
 font-size: 1.1rem;
 }
 
-h3.station_name{
-text-align: left;
+h4{
+letter-spacing: .9px !important;
 }
 
-.station_info_area{
-margin: 20px 0px;
 
-}
 /**************************************/
-/*styling for the container wrapper*/
+/* styling for the container wrapper (where the main content will be) */
 #container_wrapper{
 position: absolute;
 left: 0px;
@@ -85,6 +87,10 @@ z-index: 4;
 -moz-transition: .3s;
 -o-transition: .3s;
 transition: .3s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
+/*put a drop shadow on the right so that when the side panel is open it looks like the main container sticks out*/
+-webkit-box-shadow: 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
+-moz-box-shadow:    2px 0px 4px 0px rgba(0, 0, 0, 0.5);
+box-shadow:         2px 0px 4px 0px rgba(0, 0, 0, 0.5);
 }
 
 .container{
@@ -98,33 +104,22 @@ overflow: hidden;
 z-index: 4;
 }
 
-.logo{
-display: block;
-width: 34px;
-overflow: visible;
-margin: 3px auto;
-color: #fc03e8;
-font-size: 40px;
-}
-.container_small{
-margin: 10px auto;
-width: 96%;
-padding: 0px 1%;
--webkit-box-shadow:	inset 0px 1px 0px 0px rgba(100, 100,100, 1), inset 0px -1px 0px 0px rgba(25, 25,25, 1);
--moz-box-shadow:    	inset 0px 1px 0px 0px rgba(72, 72,72,1), inset 0px -1px 0px 0px rgba(25, 25,25, 1);
-box-shadow:         	inset 0px 1px 0px 0px rgba(100,100,100, 1), inset 0px -1px 0px 0px rgba(25, 25,25, 1);
-border-radius:4px;  /*opera*/
--moz-border-radius:4px;/*firefox*/
--webkit-border-radius:4px;/*chrome and safari*/
-overflow: hidden;
-}
+
 .intro_paragraph{
 width: 97%;
 text-align: center;
 padding: 5px 1% 2px 2%;
 }
+
+/*this class will be added to container_wrapper and header when the user opens the side panel using the ng-class directive*/
+.swipe_left{
+-webkit-transform: translateX(-80%); 
+-moz-transform: translateX(-80%);  
+-o-transform: translateX(-80%);  
+transform: translateX(-80%);
+}
 /*******************************************************/
-/*styling for side panel area and container*/
+/*styling for side panel area */
 #panel_area{
 position:absolute; /*use position absolute so we can lay the container_wrapper div element over it*/
 top: 0px;
@@ -137,9 +132,6 @@ overflow: auto; /*we use this instead of overflow scroll so that the scrollbar o
 -o-transition: .3s;
 transition: .3s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
 background: #fafafa; 
--webkit-box-shadow: inset 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
--moz-box-shadow:    inset 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
-box-shadow:         inset 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
 z-index: 2; /*the z-index of this panel_area needs to be lower than the container_wrapper z-index so that it sits underneath it*/
 }
 .panel_container{
@@ -158,43 +150,38 @@ box-shadow:         inset 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
 overflow: hidden;
 }
 
-/*this class will be added to container_wrapper and header when the user opens the side panel using the ng-class directive*/
-.swipe_left{
--webkit-transform: translateX(-80%); 
--moz-transform: translateX(-80%);  
--o-transform: translateX(-80%);  
-transform: translateX(-80%);
-}
 
-/****************************************************/
 /*styling for side panel menu*/
 .side_menu_item{
 width: 100%;
--webkit-box-shadow: inset 0px 1px 0px 0px rgba(100, 100,100, 1), inset 0px -1px 0px 0px rgba(25, 25,25, 1);
--moz-box-shadow:    inset 0px 1px 0px 0px rgba(72, 72,72,1), inset 0px -1px 0px 0px rgba(25, 25,25, 1);
-box-shadow:        inset 0px 1px 0px 0px rgba(100,100,100, 1), inset 0px -1px 0px 0px rgba(25, 25,25, 1);
 }
 
 /*create a class to style the a tags within the side panel menu 
  *as this is more efficient than targeting the a tags through DOM traversal*/
 .side_menu_link{
-display: block;
-cursor: pointer;
 width: 95%;
 padding: 14px 1% 14px 4%;
+display: block;
+cursor: pointer;
+color: rgba(0, 0, 0, .7); 
+text-shadow: 1px 1px 0px #fff, 0 0 0 #000;
+overflow: hidden;
+-webkit-box-shadow: inset 0px -1px 0px 0px rgba(162, 162,162);
+-moz-box-shadow:    inset 0px -1px 0px 0px rgba(162, 162,162,1);
+box-shadow:        inset 0px -1px 0px 0px rgba(162, 162,162, 1);
 }
 
 .side_menu_link:hover{
 color: #000;
-background: #fff; /*apply pink background on hover*/
+background: #c7c4c4; 
 }
 
 /*styling for the font-awesome arrow on the right side of the link*/
 .fa-chevron-right{
 font-size: 16px;
-color: #fc03e8;
-text-shadow: -1px -1px 0px #1e1e1e, 0 0 0 #000;
-float:right;
+color: #7b7b7b;
+text-shadow: -1px -1px 0px #fff, 0 0 0 #000;
+float: right;
 margin: 0px 9px 0px 0px;
 }
 
@@ -211,16 +198,17 @@ padding-right: 10px;
 }
 
 
-.view-animate-container {
+/******************************************************/
+/* Styling for animating the view on entering a new view*/
+
+.view_animate_container {
 position:relative;
 height: 100% !important;
 min-height: 600px;
 overflow:hidden;
 }
 
-
-
-.view-animate.ng-enter, .view-animate.ng-leave {
+.view_animate.ng-enter, .view_animate.ng-leave {
 transition:all .4s;
 display:block;
 width:100%;
@@ -231,13 +219,13 @@ right:0;
 bottom:0;
 }
 
-.view-animate.ng-enter{
+.view_animate.ng-enter{
 left:100% !important;
 }
-.view-animate.ng-enter.ng-enter-active {
+.view_animate.ng-enter.ng-enter-active {
 left:0 !important;
 }
-.view-animate.ng-leave.ng-leave-active {
+.view_animate.ng-leave.ng-leave-active {
 left:-100% !important;
 }
 
@@ -245,104 +233,18 @@ left:-100% !important;
  * transition in from the left. It looks more intuitive.
  * We also add this class when a menu item in the side panel is clicked.
  */
-.view-animate.ng-enter.left_to_right{
+.view_animate.ng-enter.left_to_right{
 right:100%;
 left: auto !important;
 }
-.view-animate.ng-enter.left_to_right.ng-enter-active {
+.view_animate.ng-enter.left_to_right.ng-enter-active {
 right:0;
 left: auto !important;
 }
-.view-animate.ng-leave.left_to_right.ng-leave-active {
+.view_animate.ng-leave.left_to_right.ng-leave-active {
 right:-100%;
 left: auto !important;
 }
-
-
-
-/*******************************************HEADER NAV MENU **************************************/
-/*styling for the header navigation menu*/
-header{
-width: 100%;
-display: block;
-
-}
-
-.header_nav{   	
-background: #1d8ccd;
-position: fixed;
-top: 0px;
-left: 0px;
-width: 100%; 
-/*add a high z-index value so that this fixed header stays on top of everything else on the page*/ 
-z-index: 20; 
-/*add css transitions for when the headernav is swiped to the left and right*/
-/*the swiping transition will take .3 seconds*/
--webkit-transition: .3s; /* Android 2.1+, Chrome 1-25, iOS 3.2-6.1, Safari 3.2-6  */
--moz-transition: .3s;
--o-transition: .3s;
-transition: .3s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
-overflow: hidden; /*add this to clear below the floats*/
-height: 48px;
--webkit-box-shadow: inset 0px -2px 0px 0px rgba(4, 114,169);
--moz-box-shadow:    inset 0px -2px 0px 0px rgba(4, 114,169,1);
-box-shadow:        inset 0px -2px 0px 0px rgba(4,114,169, 1);
-}
-
-.header_menu_item{
-position: relative; 
-float: left; 
-width: 20%;
-height: 100%;
-}
-
-.header_menu_item.navicon{
-float: right; 
-}
-
-/*for centre company logo*/
-.header_menu_item.logo_list_item{
-width: 40%;
-float: left; 
-margin-left: 16%;
-}
-
-/*the following class is applied to the anchor tags in the header navigation*/
-.header_menu_link{
-position: relative;
-display:block;  
-padding: 12px 0px 0px 0px;
-text-align: center;
-width: 100%;
-height: 100%;
-font-size: 22px;
-color: rgba(23, 27, 30, .8) !important; 
-text-shadow: 1px 1px 0px #2e9fe1, 0 0 0 #000;
-
-cursor: pointer;
--webkit-box-sizing:	border-box;
--moz-box-sizing:	border-box; 
-box-sizing:		border-box;
-}
-
-
-.header_menu_link.logo_link{
-padding-top: 4px;
-margin: 0 auto;
-}
-
-.header_menu_link.logo_link, .small_logo_link img{
-width: 94px;
-max-width: 80%;
-height: auto;
-margin: 0 auto;
-}
-
-
-.header_menu_link.current, .header_menu_link:active{
-color: #fff !important;
-}
-
 
 
 /******************************************************/
@@ -364,14 +266,14 @@ border-radius: 2px;
 background-color: #939396; 
 }  
 ::-webkit-scrollbar-thumb:hover {  
-background-color: #fc03e8; /*the thumb of the scrollbar will be pink on hover*/
+background-color: #828282; 
 } 
 
 /*we need to add scrolling to the container_wrapper and to the side panel*/
 /*the following css transitions will create smooth scrolling on all modern devices*/
 
 .scrollable{
-overflow: scroll; /*overflow scroll is not supported on android 2.3 or below however in future iterations we can incorporate a fallback*/
+overflow: scroll; 
 -webkit-transition-property: top, bottom;
 -moz-transition-property: top, bottom;
 -o-transition-property: top, bottom;
@@ -390,22 +292,18 @@ transition-timing-function: linear, linear;
 }
 /*******************************************************/
 .user_profile_pic{
-	display: block;
-width: 70px;
-height: 70px;
+display: block;
+max-height: 70px;
+max-width: 70px;
 overflow: hidden;
 }
-
-
+.profile_pic_size{
+width: 70px;
+height: 70px;
+}
 
 /**************************************/
 /*reusable styles for text*/
-.pink_text{
-color: #fc03e8;
-}
-.green_text{
-color: #37e34b;
-}
 .text_center{
 text-align: center;
 }
@@ -418,18 +316,19 @@ font-weight: bold;
 .text_shadow{
 text-shadow: -1px -1px 0px #000;
 }
-
+.red_text{
+color: #d60c40;
+}
 /*******************************************************/
 label{
 display:block;
-margin:12px 0px 0px 0px;
+margin:4px 0px 4px 0px;
 color: #414141; /*off white color for the text*/
-padding: 12px 0px 0px 0px;
+padding: 5px 0px 0px 0px;
 z-index: 3;
 font-size: .9rem !important;
 }
 
-/*target the input field where the task name will be entered*/
 input[type="text"], input[type="password"], input[type="email"], input[type="tel"]{
 box-shadow: none;
 -moz-box-shadow: none;
@@ -439,9 +338,9 @@ outline: 0px;
 background:#f7f7f7;
 border:1px solid #c1c1c1;
 color:#414141;
-border-radius:2px;  /*opera*/
--moz-border-radius:2px;/*firefox*/
--webkit-border-radius:2px;/*chrome and safari*/
+border-radius:4px;  /*opera*/
+-moz-border-radius:4px;/*firefox*/
+-webkit-border-radius:4px;/*chrome and safari*/
 width: 95% !important;
 height:26px;
 font-family: 'Raleway', FontAwesome; /*need to put font awesome here for the icons in the input fields */
@@ -458,12 +357,12 @@ box-shadow: none;
 margin: 0px auto;
 border: 0px;
 outline: 0px;
-background:#f7f7f7;
+background:#e6e7e7;
 border:1px solid #c1c1c1;
 color:#414141;
-border-radius:2px;  /*opera*/
--moz-border-radius:2px;/*firefox*/
--webkit-border-radius:2px;/*chrome and safari*/
+border-radius:4px;  /*opera*/
+-moz-border-radius:4px;/*firefox*/
+-webkit-border-radius:4px;/*chrome and safari*/
 padding: 5px 2% 5px 2% !important;
 width: 95% !important;
 font-family: 'Raleway', FontAwesome; /*need to put font awesome here for the icons in the input fields */
@@ -476,7 +375,7 @@ letter-spacing: .7px;
 input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, input[type="tel"]:focus, textarea:focus{
 overflow: visible;
 color: #000; 
-border:1px solid #999898;
+border:1px solid #29a2e6;
 box-shadow: inset 0px 0px 0px 100px #fff;
 -moz-box-shadow: inset 0px 0px 0px 100px #fff;
 -webkit-box-shadow: inset 0px 0px 0px 100px #fff;
@@ -495,6 +394,7 @@ cursor: pointer;
 
 /*use this to divide different sections of our form so that we can clear any floats*/
 .form_divider{
+
 overflow: hidden;
 clear: both;
 padding-bottom: 15px;
@@ -506,52 +406,7 @@ clear: both;
 width: 99%;
 color: #d60c40;
 }
-/*styling for displaying what the user types in the new task input field.*/
-.new_task{
-float: left;
-display: block;
-min-height: 20px; /*create a minium height so that the page doesnt look like it jumps when this section is empty*/
-padding: 8px 1% 0px 0%;
-width: 79%;
-color: #fc03e8;
-}
 
-/*styling for the feedback icon which we will display to the user to show if their input is valid in a particular field*/
-.feedback_icon{
-width: 24px;
-height: 24px;
-max-width: 20%;
-float: left;
-padding: 6px 3px 0px 3px;
-}
-
-/*red color text for the X symbol which is displayed when the input is not valid*/
-.feedback_icon .fa-times-circle{
-color: #d60c40;
-
-}
-/*green text for the check symbol which is displayed when input is valid*/
-.feedback_icon .fa-check-circle{
-color: #37e34b;
-}
-
-.feedback_icon .fa-times-circle, .feedback_icon .fa-check-circle{
-font-size: 22px;
-display: none; /*initialize the symbols to not display*/
-}
-/*make the background of the input field red when the input is invalid on blur*/
-.todo_form input.ng-invalid.ng-touched{
-background-color: #d60c40;
-}
-
-/*display the X symbol when input is invalid*/
-.todo_form input.ng-invalid.ng-touched + .feedback_icon .fa-times-circle{
-display: block;
-}
-/*display the check symbol when input is valid*/
-.todo_form input.ng-valid.ng-touched + .feedback_icon .fa-check-circle{
-display: block;
-}
 
 /*********************************************/
 /*styling for our checkboxes in our to do list*/
@@ -643,76 +498,60 @@ text-align: center;
 margin: 5px 8px;	
 
 }
-/********************************************/
-/*reusable style to create a full width row*/
-/*rows can then contain the column classes as seen below to divide the row into different width columns*/
-/*this is based on the bootstrap idea for the 12 grid layout*/
-.item_row{
-width: 100%;
-position: relative;
-}
-/*reusable class for list items used in the to do list and the history page*/
-.list_item{
-padding: 2px 0px 7px 0px;
-min-height: 40px;
-word-wrap: break-word; /*if a word spills over its container than break the word*/
--webkit-box-shadow: inset 0px 1px 0px 0px rgba(100, 100,100, 1), inset 0px -1px 0px 0px rgba(25, 25,25, 1);
--moz-box-shadow:    inset 0px 1px 0px 0px rgba(72, 72,72,1), inset 0px -1px 0px 0px rgba(25, 25,25, 1);
-box-shadow:        inset 0px 1px 0px 0px rgba(100,100,100, 1), inset 0px -1px 0px 0px rgba(25, 25,25, 1);
-overflow: hidden;
-}
-/*basic item-column class used in conjunction with the following column classes*/
-.item-column{
-display: block;
-float: left;
-padding: 8px 0px 3px 0px; /*padding top, right, bottom, left*/
 
+/* facebook login button*/
+.facebook-login-button{
+position: relative;
+display: block;
+outline: 0; 		/*override the default button outline*/
+border: 0;  		/*override the default button border*/
+border-radius: 2px; 	
+-webkit-border-radius: 2px;
+-moz-border-radius: 2px;
+-webkit-box-shadow:	0px 0px 0px 1px rgba(50, 73, 136, 1);
+-moz-box-shadow:	0px 0px 0px 1px rgba(50, 73, 136, 1);
+box-shadow: 		0px 0px 0px 1px rgba(50, 73, 136, 1);
+color: #fff; 
+background: #3d57a3;
+cursor: pointer;
+margin: 2px;
+z-index: 3;
+max-width: 100%;
 }
-/**************************************************************/
-/*styling for different column widths based on the 12 grid idea*/
-/*we will use these for creating columns in our todo list*/
-.column-xxs-12{
-width: 100%;
+
+
+.button_text{
+letter-spacing: .2px;
+font-weight: bold;
+text-shadow: -1px -1px 0px #26345a;
+font-size: 16px;
+-webkit-box-shadow: inset 1px 0px 0px 0px rgba(84, 115, 200,1);
+-moz-box-shadow:    inset 1px 0px 0px 0px rgba(84, 115, 200, 1);
+box-shadow:         inset 1px 0px 0px 0px rgba(84, 115, 200, 1);
+-webkit-box-shadow: inset 1px 0px 0px 0px rgba(90, 119, 200,1);
+-moz-box-shadow:    inset 1px 0px 0px 0px rgba(90, 119, 200, 1);
+box-shadow:         inset 1px 0px 0px 0px rgba(90, 119, 200, 1);
+padding: 10px 0px;
+display: block;
+text-align: center;
+width: 190px;
+height: 20px;
+float: left;
 }
-.column-xxs-11{
-width: 91.6%;
+
+.facebook_button_icon{
+text-align: center;
+text-shadow: -1px -1px 0px #26345a;
+font-size: 24px;
+float: left;
+display: block;
+width: 40px;
+padding-top: 6px;
+height: 34px;
+-webkit-box-shadow: inset -1px 0px 0px 0px rgba(50, 73, 136, 1);
+-moz-box-shadow:    inset -1px 0px 0px 0px rgba(50, 73, 136, 1);
+box-shadow:         inset -1px 0px 0px 0px rgba(50, 73, 136, 1);
 }
-.column-xxs-10{
-width: 83.3%;
-}
-.column-xxs-9{
-width: 75%;
-}
-.column-xxs-8{
-width: 66.6666666666%;
-}
-.column-xxs-7{
-width: 58.3333333333%;
-}
-.column-xxs-6{
-width: 50%;
-}  
-.column-xxs-5{
-width: 41.6666666666%;
-}   
-.column-xxs-4{
-width: 33.333333333333%;
-}     
-.column-xxs-3{
-width: 25%;
-}     
-.column-xxs-2{
-width: 16.666666666666%;
-}   
-.column-xxs-1{
-width: 8.3333333333%;
-}  
-.column-xxs-offset-1{
-margin-left: 8.3333333333%;
-} 
-.column-xxs-offset-half{
-margin-left: 4.1666666666%;
-} 
 
 /**************************************************************/
 /*Font Awesome styles. See reference*/

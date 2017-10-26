@@ -21,10 +21,18 @@ mapApp.factory('sharedFactory', function(){
             alert("We\'re sorry but an unexpected error has occured. Please contact support!");
         }
     };
+    var checkIfEmptyObject = function(obj) {
+        for(var key in obj) {
+            if(obj.hasOwnProperty(key))
+            return false;
+        }
+        return true;
+    };
 
   	//return public API so that we can access it in all controllers
   	return{
-        buildErrorNotification: buildErrorNotification
+        buildErrorNotification: buildErrorNotification,
+        checkIfEmptyObject: checkIfEmptyObject
        
  	};
 });

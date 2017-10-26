@@ -1,42 +1,178 @@
-<h2 data-ng-show="checkIfUserIsAdmin()">{{pageHeading}}</h2>
-<p class="intro_paragraph" data-ng-show="checkIfLoggedIn()">{{introParagraph}}</p>
 
 <div class="station_info_area">
-<h3 class="station_name">{{stationDetails.stationName}}</h3>
-<address>
-{{stationDetails.stationAddressLine1}}<br>
-{{stationDetails.stationAddressLine2}}<br>
-{{stationDetails.stationAddressCity}}<br>
-{{stationDetails.stationPhoneNumber}}<br>
-</address>
+    <h3 class="station_name">{{stationDetails.stationName}}</h3>
+    <address>
+    {{stationDetails.stationAddressLine1}}<br>
+    {{stationDetails.stationAddressLine2}}<br>
+    {{stationDetails.stationAddressLine3}}<br>
+    {{stationDetails.stationPhoneNumber}}<br>
+    </address>
+
+    <ul class="list_of_station_services">
+        <li class="station_service_list_item" data-ng-repeat="currentService in stationDetails.stationServices">
+        <div>
+                {{currentService.serviceName}}       
+        </div>
+        </li>
+    </ul>
+
 </div>
-	<!--use the novalidate attribute to disable the browser's native form validation-->
-	<!--use the form name attribute to publish the form instance into the scope-->
-	<form name="testimonial_form" id="testimonial_form" class="testimonial_form" data-ng-submit="submitTestimonial()" data-ng-model="testimonial_form" novalidate>
-		<div class="form_divider">
-			<!--use data-ng-model to bind the user input to our model and display it straight away below-->
+
+<div id="station_reviews_area">
+	<h3>User Reviews</h3>
+	<p id="no_reviews_message" data-ng-show="!checkForReviews()">There are no reviews yet.</p>
+
+    <!--only show the average_rating_area if the reviews array is populated for this station-->
+    <div id="average_rating_area" data-ng-show="checkForReviews()">
+	    <h4 class="average_rating_heading">Average Rating:</h4>
+	        <div class="average_rating_star_area rating_star_area">
+
+		    <span data-ng-repeat="currentStar in stationDetails.averageRatingData.ratingInStars">
+			    <i class="fa {{currentStar.starClass}}"></i>
+		    </span>
+		    <span class="number_of_ratings">(Based on {{stationDetails.averageRatingData.numberOfRatings}} reviews)</span>
+	    </div>
+    </div>
+
+	<!--detect whether current user has already written a review for this station and if not then show the following "write a review" button-->
+	<div id="write_a_review_button_area" data-ng-show="displayWriteAReviewButton()" >
+        <button class="btn btn_blue" data-ng-click="writeAReview()">
+            <span>Write a review</span>
+        </button>
+    </div>
+
+	<div id="write_a_review_form_area" data-ng-show="displayReviewForm && checkIfLoggedIn()">
+        <h4>Write your review here:</h4>
+        <p class="review_form_users_name">
+            <span class="bold_text">Name:</span> {{userDetails.facebookName}}
+        </p>
+
+        <div class="review_form_rating">
+            <span class="bold_text">Rating:</span> 
+
+            <div id="review_form_stars">
+               <span ng-repeat="i in [1,2,3,4,5]">
+                <i class="fa" data-ng-class="(selectedStar >= ($index + 1) ? 'fa-star' : 'fa-star-o')" data-ng-click="selectStar($index + 1)"></i>
+                </span>
+        
+
+                <!--When a user selects a rating, output the quantity of stars selected in text. 
+                Show the singular of "star" if one star is selected, and the plural if more than one is selected-->
+                <span data-ng-show="selectedStar > 0">
+                    {{selectedStar}} star<span data-ng-show="selectedStar > 1">s</span>
+                    <span class="feedback_icon">
+			            <i class="fa fa-check-circle"></i>
+		            </span>
+                </span>
+
+                <!--output error to the user if the form is submitted but no rating has been selected i.e the rating value is still 0-->         
+                <span data-ng-show="review_form.$submitted && selectedStar === 0">
+      		        <span class="red_text">Rating is required.</span>
+                    <span class="feedback_icon">
+			            <i class="fa fa-times-circle"></i>
+		            </span>
+		        </span>
+            </div>
+        </div>
+        <!--use the novalidate attribute to disable the browser's native form validation-->
+        <!--use the form name attribute to publish the form instance into the scope-->
+        <form name="review_form" id="review_form" class="review_form" data-ng-submit="submitReview(stationDetails.stationID, userDetails.userID)" data-ng-model="review_form" novalidate>
+
+	        <div class="form_divider">
+		        <label for="review_text" class="bold_text">Review text:</label>	
+		        <textarea id="review_text" name="review_text" data-ng-model="review.text" maxlength="2000" placeholder="Write your review here..."  rows="4" required></textarea>
+                 <!--Display the tick (fa-check-circle) symbol when there are more than 9 characters in the textarea
+                 and also tell the user how many characters are remaining-->
+                <span data-ng-show="review.text.length >= 10">
+                    <span class="feedback_icon under_textarea">
+			            <i class="fa fa-check-circle"></i>
+		            </span>
+		            <span class="character_count">{{2000 - review.text.length}} characters remaining</span>
+                </span>  
+
+                <!--Display the X (fa-times-circle) symbol when there are less than 10 characters in the textarea-->
+                <span data-ng-show="review.text.length < 10">
+                    <span class="feedback_icon under_textarea">
+			            <i class="fa fa-times-circle"></i>
+		            </span>
+		            <span class="character_count">
+		                You need {{10 - review.text.length}} more character<span data-ng-show="review.text.length !== 9">s</span>
+		            </span>
+                </span>  
+      
+
+		        <!--if the form is submitted or if the review text textarea is "touched" and is not filled in then we display an error message-->
+		        <div class="error_message" data-ng-show="review_form.$submitted && (review_form.review_text.$touched && !(review_form.review_text.$untouched))">
+		        
+      		        <span data-ng-show="review_form.review_text.$error.required">Review text is required.</span>
+		        </div>
+	        </div><!--/form_divider-->
+
+            <div class="form_divider">
+	            <input class="btn btn_blue btn_submit" type="submit" value="Submit" />
+	        </div>
+        </form>
+    </div><!--/write_a_review_form_area-->
+
+
+
+
+	<ul id="list_of_station_reviews">
+		<!--Loop through the reviews for this station with ng-repeat-->
+		<li class="station_review" data-ng-repeat="currentReview in stationDetails.reviews">
+            <div class="main_user_review">
+                <div>
+                    <span class="profile_pic_thumbnail">
+                        <img src="{{currentReview.reviewUserData.profilePicURL}}" width="70" height="70" />
+                    </span>
+                    <p class="users_name">{{currentReview.reviewUserData.facebookName}}</p>
+                    <p class="date_of_review">{{currentReview.reviewTime}}</p>
+                    <span class="edit_review_button review_comment_button" data-ng-click="editReview(currentReview.reviewID)" data-ng-show="checkForUserPrivileges(currentReview.reviewUserData.userID)">
+                        <i class="fa fa-pencil"></i>
+                    </span>
+                    <span class="remove_review_button review_comment_button" data-ng-click="deleteReview(currentReview.reviewID, stationDetails.stationID)" data-ng-show="checkForHigherUserPrivileges(currentReview.reviewUserData.userID)">
+                        <i class="fa fa-times"></i>
+                    </span>
+
+                </div>
+	            <div class="rating_star_area">
 					
-			<label for="testimonial_text">Write your testmonial</label>	
-	
-			<textarea id="testimonial_text" name="testimonial_text" data-ng-model="testimonial.text" minlength="2" maxlength="2000" placeholder="Write your testimonial here..."  rows="2" required></textarea>
-			<span class="feedback_icon">
-		
-				<i class="fa fa-check-circle"></i><!--we use a css class .ng-invalid.ng-touched (in index.css) to display the check symbol when user input is valid-->
-				<i class="fa fa-times-circle"></i><!--and to display the X symbol when user input is invalid-->
-			</span>
-			<span class="character_count">{{2000 - testimonial.text.length}} characters remaining</span>
+				    <span data-ng-repeat="currentStar in currentReview.ratingInStars">
+					<i class="fa {{currentStar.starClass}}"></i>
+				    </span>
+			    </div>
+                <!--Use ng-bind-html to sanitize the data. htmlentities has been used on the server side before sending here anyway-->
+                <p class="review_text" ng-bind-html="currentReview.reviewText"></p>
+            </div>
 
+            <!--Each main user review will have a list of replies.-->
+            <ul class="list_of_replies">
+                <li class="review_reply" data-ng-repeat="currentReply in currentReview.replies">
+                    <div>
+                        <span class="profile_pic_thumbnail">
+                            <img src="{{currentReply.replyUserData.profilePicURL}}" width="70" height="70" />
+                        </span>
+                        <p class="users_name">{{currentReply.replyUserData.facebookName}}</p>
+                        <p class="date_of_review">{{currentReply.replyTime}}</p>
 
-			<!--if the form is submitted or if the task name field is "touched" and is not filled in then we display an error message-->
-			<div class="error_message" data-ng-show="testimonial_form.$submitted || (testimonial_form.testimonial_text.$touched && !(testimonial_form.testimonial_text.$untouched))">
-      				<div data-ng-show="testimonial_form.testimonial_text.$error.required">Please fill in a task name.</div>
-			
-			</div>
-		</div><!--/form_divider-->
+                        <span class="edit_review_button review_comment_button" data-ng-show="checkForUserPrivileges(currentReply.replyUserData.userID)">
+                            <i class="fa fa-pencil"></i>
+                        </span>
+                        <span class="remove_review_button review_comment_button" data-ng-click="deleteReply(currentReply.replyID, currentReview.reviewID)" data-ng-show="checkForHigherUserPrivileges(currentReply.replyUserData.userID)">
+                            <i class="fa fa-times"></i>
+                        </span>
 
-	
+                    </div>
 
-		<!--use the ng-disabled attribute to prevent the form from submitting if it is invalid-->
-		<input class="btn btn_blue btn_submit" type="submit" data-ng-disabled="testimonial_form.$invalid" value="Submit" />
-	</form>
+                    <p class="reply_text" ng-bind-html="currentReply.replyText"></p>
+                </li>
+            </ul>
+
+            <!--Only the user who created the review and an administrator can reply-->
+            <!--so we need to detect if the current user is either of the two before showing the form.-->
+            <div data-ng-show="checkForHigherUserPrivileges(currentReview.reviewUserData.userID)">Reply form goes here</div>
+
+        </li>
+    </ul>
+</div>
 

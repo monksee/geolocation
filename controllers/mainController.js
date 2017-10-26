@@ -3,7 +3,7 @@
  * This is the mainController which will be associated with the body of the index file as we will use this controller throughout all
  * "pages" for the header menu items and side panel menu and other details.
  */
-mapApp.controller("mainController", function($scope, $http, $timeout, $location, geolocationFactory, facebookFactory, loginFactory, sharedFactory, userFactory, validatorFactory, stationFactory){
+mapApp.controller("mainController", function($scope, $http, $q, $timeout, $location, geolocationFactory, facebookFactory, sharedFactory, userFactory, validatorFactory, stationFactory){
 
     /* Define our scope variables */
 	//the boolean variable "panelIsOpen" will initially be set to false as the side panel with initially be closed on page load
@@ -15,9 +15,7 @@ mapApp.controller("mainController", function($scope, $http, $timeout, $location,
     $scope.leftToRight = false;
 
 	//userDetails should be stored in the mainController scope
-	$scope.userDetails = userFactory.userService.userDetails;
-
-
+    $scope.userDetails = userFactory.userService.userDetails;
     /* Define our functions */
 
     /*
@@ -26,8 +24,8 @@ mapApp.controller("mainController", function($scope, $http, $timeout, $location,
      * If the app has been in a state of 'paused' (a phonegap event) then this will not execute on 'resume' (only when the scripts are initially loaded)
      */
     (function() {
-        "use strict";
-        alert('anonymous function');
+       // "use strict";
+       // alert('anonymous function');
         if(localStorage.getItem("userToken") === null){
             //If there is no userToken in local storage, then we will not want the userDetails object to have any user Details.
             //So reset the userDetails object.
@@ -35,14 +33,17 @@ mapApp.controller("mainController", function($scope, $http, $timeout, $location,
             userFactory.userService.resetUserDetails();
         }else{
             //userToken key exists in local storage so check this token on the server side to make sure its valid.
+
             var data = {
-                "userToken" :  userFactory.userService.getUserToken()
+                "userToken" : userFactory.userService.getUserToken()
              };
             userFactory.userService.checkUserToken(data).then(function(userDetails) {
                 //Since the checkUserToken method (in the userFactory) is performaing a http request we need to use a promise
                 //to store the userDetails (from the response) into our $scope.userDetails variable. 
                 $scope.userDetails = userDetails;
-                console.log("$scope.userDetails" + JSON.stringify($scope.userDetails));
+                 console.log("factory a" + JSON.stringify(userFactory.userService.userDetails));
+                console.log("$scope.userDetailsa" + JSON.stringify($scope.userDetails));
+
             });
         }
     })();
@@ -120,65 +121,59 @@ mapApp.controller("mainController", function($scope, $http, $timeout, $location,
 		$scope.transitionFromLeftToRight();
 	}
 
-    $scope.goBack1 = function(){
-        //wanted to jsut check what the userDetails returns on the phone.
-
-        alert(JSON.stringify(userFactory.userService.userDetails));
-        geolocationFactory.getCurrentPosition(function (position) {
-            alert('Latitude: '              + position.coords.latitude          + '\n' +
-                  'Longitude: '             + position.coords.longitude         + '\n' +
-                  'Altitude: '              + position.coords.altitude          + '\n' +
-                  'Accuracy: '              + position.coords.accuracy          + '\n' +
-                  'Altitude Accuracy: '     + position.coords.altitudeAccuracy  + '\n' +
-                  'Heading: '               + position.coords.heading           + '\n' +
-                  'Speed: '                 + position.coords.speed             + '\n' +
-                  'Timestamp: '             + position.timestamp                + '\n'
-            );
-        });
-    };
-
-    $scope.loginWithFacebook1 = function(){
-        /*
-         * This function calls the facebookFactory processFacebookLogin() function which returns a user's faceobok public profile data 
-         * It returns null if there was an error during processing.
-         * We pass this data to the loginFactory checkLoginDetails function in order to make a http POST request 
-         * to the server to further process the data there.
-         */
-	    facebookFactory.processFacebookLogin().then(function(data) {
-            if(data !== null){
-                //If the data returned from the processFacebookLogin function is not null then continue processing the data.
-                loginFactory.checkLoginDetails(data).then(function(userDetails) {
-    	            //Store the userDetails (from the response of the http request) into our $scope.userDetails variable. 
-      	            $scope.userDetails = userDetails;
-                });
-            }
-        });
-
-    };
-
     $scope.loginWithFacebook = function(){
         /*
-         * This function calls the facebookFactory processFacebookLogin() function which returns a user's faceobok public profile data 
-         * It returns null if there was an error during processing.
-         * We pass this data to the userFactory checkLoginDetails function in order to make a http POST request 
-         * to the server to further process the data there.
-         */
-     
-        //If the data returned from the processFacebookLogin function is not null then continue processing the data.
-        userFactory.userService.login().then(function(userDetails) {
-            //Store the userDetails (from the response of the http request) into our $scope.userDetails variable. 
-            $scope.userDetails = userDetails;
-            $location.path('home');
-        });
+         * This function calls the login method of the userFactory.userService and returns the user's profile data.
+         * This method will be called when the "login with facebook" button is pressed and also when the 
+         * "write a review" button is pressed if it is detected that the user is not logged in.
+         * In the case where it is called from "write a review" then we need to return a promise so that we can display the review from after
+         * the processing is successful
+         */ 
+        var loginIsSuccessful = false; //initialize a boolean to false
+        var deferred = $q.defer();
+
+        if(userFactory.userService.userDetails.isLoggedIn === false){
+            userFactory.userService.login().then(function(userDetails) {
+                //Store the userDetails (from the response of the http request) into our $scope.userDetails variable. 
+
+                if(userDetails !== null){ 
+                    //if userDetails is not null then login was successful 
+                    loginIsSuccessful = true;
+                    deferred.resolve(loginIsSuccessful);    
+                    $scope.userDetails = userDetails;
+
+                    $scope.currentLocation = $location.path();
+
+                    if($scope.currentLocation.indexOf("login") != -1){
+                       //we are on the login view so redirect to the home page. 
+                       //Otherwise do not redirect because we might be calling this login function when the user wants to write a review
+                       $location.path('home');
+                    }
+                }else{
+                    //if userDetails is null then login was not successful 
+                    deferred.resolve(loginIsSuccessful);  
+                }
+            });
+        }else{
+            $scope.currentLocation = $location.path();
+
+            if($scope.currentLocation.indexOf("login") != -1){
+                //we are on the login view so redirect to the home page. 
+                //Otherwise do not redirect because we might be calling this login function when the user wants to write a review
+                $location.path('home');
+            }
+        }
+        return deferred.promise;
     };
 
 
 
-    $scope.loginWithFacebook2 = function(){
-
+    $scope.loginWithFacebook1 = function(){
+        var loginIsSuccessful = false; //initialize a boolean to false
+        var deferred = $q.defer();
         //the following blocks of code should be moved to the facebookFactory when using phonegap
-        var facebookUserID = "10213718552614326";
-        var facebookName = "La Monquesa Azul";
+        var facebookUserID = "10213718552614326";//"10213718552600000"; 
+        var facebookName = "La Monquesa Azul";//"Admin user";
         var profilePicURL = "https://graph.facebook.com/10213718552614326/picture?type=large&w??idth=200&height=200";
 
         var inputsAreValid = validatorFactory.validateFacebookInputs(
@@ -200,11 +195,26 @@ mapApp.controller("mainController", function($scope, $http, $timeout, $location,
             userFactory.userService.checkLoginDetails(data).then(function(userDetails) {
                 //Since the checkLoginDetails method (in the loginFactory) is performaing a http request we need to use a promise
                 //to store the userDetails (from the response) into our $scope.userDetails variable. 
-                $scope.userDetails = userDetails;
-                console.log("$scope.userDetails" + JSON.stringify($scope.userDetails));
-                $location.path('home');
+               
+                if(userDetails !== null){ 
+                    loginIsSuccessful = true;
+                    deferred.resolve(loginIsSuccessful);      
+                    $scope.userDetails = userDetails;
+                    $scope.currentLocation = $location.path();
+
+                    if($scope.currentLocation.indexOf("login") != -1){
+                       //we are on the login view so redirect to the home page. 
+                       //Otherwise do not redirect because we might be calling this login function when the user wants to write a review
+                       $location.path('home');
+                    }
+                }else{
+                    //if login was not successful then do not redirect 
+                    deferred.resolve(loginIsSuccessful);  
+                }
+
             });
         }
+        return deferred.promise;
 
     }  
 
@@ -243,6 +253,20 @@ mapApp.controller("mainController", function($scope, $http, $timeout, $location,
         return isLoggedIn;
 
     }  
+    $scope.showUserProfileArea = function(){
+        /*
+         * We only want to show the user profile area if we're currently not on the login page and also if the user is logged in.
+         */
+       // var userProfileIsShowing = false;
+
+        if(!$scope.detectLoginView() && $scope.checkIfLoggedIn()){
+            return true;
+        }else{
+            return false;
+        }
+    }  
+
+
 
     $scope.checkIfUserIsAdmin = function(){
         /*
@@ -253,6 +277,7 @@ mapApp.controller("mainController", function($scope, $http, $timeout, $location,
 	    var isAdmin = userFactory.userService.checkIfUserIsAdmin(); 
         return isAdmin; 
     } 
+
 
 });
 
