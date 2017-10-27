@@ -1,5 +1,6 @@
+<div class="loading" data-ng-show="dataIsSet === false">Loading...</div>
 
-<div class="station_info_area">
+<div class="station_info_area" data-ng-show="dataIsSet === true">
     <h3 class="station_name">{{stationDetails.stationName}}</h3>
     <address>
     {{stationDetails.stationAddressLine1}}<br>
@@ -18,7 +19,7 @@
 
 </div>
 
-<div id="station_reviews_area">
+<div id="station_reviews_area" data-ng-show="dataIsSet === true">
 	<h3>User Reviews</h3>
 	<p id="no_reviews_message" data-ng-show="!checkForReviews()">There are no reviews yet.</p>
 
