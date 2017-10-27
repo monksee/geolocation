@@ -186,11 +186,12 @@ mapApp.factory('facebookFactory', function($q, phonegapReady, validatorFactory){
     var logOutOfFacebook = phonegapReady(function(){
         facebookConnectPlugin.logout(
             function(data){
-                //Success. Validate and prepare the data before returning it
-                alert(JSON.stringify(data));
+                //Returns "OK" if successful.
+
+                alert(JSON.stringify("success " + data));
             },
             function(error){
-                alert(JSON.stringify(error));
+                alert(JSON.stringify("error " + error));
             }
 
         );
