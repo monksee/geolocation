@@ -7,6 +7,7 @@ mapApp.controller("stationController", function($scope, $routeParams, $location,
     $scope.stationDetails =  {};
     $scope.displayReviewForm = false;
     $scope.selectedStar = 0;
+    $scope.dataIsSet = false;
 
 	if($routeParams.stationID == null || $routeParams.stationID === ""){
 		//If the stationID is not set or if it doesnt contain a value (i.e is the empty string) then redirect to the home page.
@@ -20,6 +21,7 @@ mapApp.controller("stationController", function($scope, $routeParams, $location,
             if(stationDetails !== null){
                  //stationDetails returned from the promise is not null so we store them in scope.
       	        $scope.stationDetails = stationDetails;
+                $scope.dataIsSet = true;
             }else{
                 //stationDetails value will be null if an error occurred in http request
                 //redirect to home page.
