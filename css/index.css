@@ -303,7 +303,16 @@ height: 70px;
 }
 
 /**************************************/
-/*reusable styles for text*/
+/*reusable styles*/
+.loading{
+	position: absolute;
+top: 50px;
+right: 3px;
+color: #1d8ccd;
+letter-spacing: .6px;
+font-weight: bold;
+}
+
 .text_center{
 text-align: center;
 }
@@ -319,6 +328,8 @@ text-shadow: -1px -1px 0px #000;
 .red_text{
 color: #d60c40;
 }
+
+
 /*******************************************************/
 label{
 display:block;
