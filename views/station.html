@@ -322,7 +322,7 @@
                             <!--as there will be one reply form per review we need to create a unique ng-model for each of them so we create an array called 
                             replyFormData and pass in the index of the currentReview--> 
                             <textarea name="reply_text" data-ng-model="replyFormData[$index].text" maxlength="2000" placeholder="Write your reply here..."  rows="2" required></textarea>
-
+                            <p>{{replyFormData[$index].text}}</p>
                             <div class="character_count_container">
                                 <!--Display a tick (fa-check-circle) symbol and a message to say how many characters are left out of 2000-->
                                 <span data-ng-show="replyFormData[$index].text.length >= 5">
