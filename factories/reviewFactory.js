@@ -63,18 +63,26 @@ mapApp.factory('reviewFactory', function($http, sharedFactory){
          * This method takes in an array of reviews for a particular station and calculates the average rating for that station.
          * We return an object called averageRatingData which contains the number of ratings, the average rating and an array called ratingInStars
          */
+
         var averageRatingData = {};
         var sumOfRatings = 0;
         var averageRating = 0;
         //count the reviews array to get the total number of ratings (as each review will have a rating.)
         var numberOfRatings = reviewsArray.length;
+
         if(numberOfRatings > 0){
             //Make sure there are ratings before getting the following calculations otherwise there will be an error 
             //if we call this function and the reviews array is empty.
             reviewsArray.forEach(function(review) {
-                sumOfRatings += review.reviewRating;
+                //was doing sumOfRatings += review.reviewRating; but this was concatenating the values as a string so need to do the following 
+                //to ensure the values are added up as numbers.
+                sumOfRatings = +sumOfRatings + +review.reviewRating;
+                
             }); 
             var averageRating = sumOfRatings/numberOfRatings;
+           // console.log("sumOfRatings " + JSON.stringify(sumOfRatings));
+            //console.log("averageRating " + JSON.stringify(averageRating));
+           // console.log("numberOfRatings " + JSON.stringify(numberOfRatings));
             //round the averageRating down to the nearest half integer and store it into the averagaRatingData object that we will return
             averageRatingData.averageRating = Math.round(averageRating * 2)/2;
             averageRatingData.ratingInStars = this.prepareRatingInStars(averageRatingData.averageRating);
@@ -112,6 +120,9 @@ mapApp.factory('reviewFactory', function($http, sharedFactory){
         for(var x = 0; x < numberOfEmptyStars; x++){
             ratingInStarsArray.push({starClass : "fa-star-o"});
         }
+        //make sure this array has maximum five elements
+        ratingInStarsArray = ratingInStarsArray.slice(0, 5);
+
         return ratingInStarsArray;
     };
 
