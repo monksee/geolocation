@@ -5,9 +5,39 @@ mapApp.controller("stationController", function($scope, $routeParams, $location,
 
 
     $scope.stationDetails =  {};
-    $scope.displayReviewForm = false;
-    $scope.selectedStar = 0;
+
+    //create a scope variable in order to determine when our station data is loaded into scope
+    //so that we can display a loading symbol in the view before hand.
     $scope.dataIsSet = false;
+
+    //create a variable to indicate whether the review form is displayed or not.
+    //We will set it to true if a user chooses to "write a review"
+    $scope.displayReviewForm = false;
+
+    //There will just be one main review form in the station view so we create an object to store the form data.
+    $scope.reviewFormData = {};
+    $scope.reviewFormData.rating = 0; //initialize the rating value of the form to 0.
+
+    //There will be multiple edit review forms (one for each review) in the station view so we will store the data in a zero based indexed array.
+    //Each element of this array will be an object which will hold a text and rating property for that review.
+    $scope.editReviewFormData = [];
+
+    //create a variable which stores the index of the edit_review form which is currently selected.
+    //Initialize it to -1
+    $scope.selectedReviewForEdit = -1; 
+
+    //There will be multiple edit reply forms for each review in the station view so we will store the data in a zero based indexed array.
+    //This will be an array of arrays as we will have an array of replies for each review.
+    $scope.editReplyFormData = [];
+
+    //We create an array where the indexes will correspond to the indexes of the reviews 
+    //The elements will be the index of the reply within that review.
+    //We will use this with ng-show to display selected edit_reply forms
+    $scope.selectedReplyEditForms = [];
+
+    //There will be one reply form underneath each review (for users with the right permissions)
+    //so create an array to hold the form data. The indexes of this array will correspond to the indexes of the reviews 
+    $scope.replyFormData = [];
 
 	if($routeParams.stationID == null || $routeParams.stationID === ""){
 		//If the stationID is not set or if it doesnt contain a value (i.e is the empty string) then redirect to the home page.
@@ -74,6 +104,8 @@ mapApp.controller("stationController", function($scope, $routeParams, $location,
         return stationFactory.stationService.checkUsersReviewStatus();
     }; 
 
+
+
     $scope.displayWriteAReviewButton = function(){
         /*
          * This method checks to see if we should display (with ng-show) the "write a review" button or not.
@@ -115,24 +147,25 @@ mapApp.controller("stationController", function($scope, $routeParams, $location,
          * This method is called when a star (with the review form stars) is clicked i.e a rating is selected.
          * The value passed in to this function will be 1 to 5 inclusive.
          */
-        $scope.selectedStar = rating;
+        $scope.reviewFormData.rating = rating;
     };
 
 
-    $scope.submitReview = function(stationID, userID){
+
+    $scope.submitReview = function(stationID){
         /*
          * This method is called when the review from is submitted
          * The review form will only be visible if a user has logged in so no need to check if user is logged in here.
          */
-        if($scope.review == null || sharedFactory.checkIfEmptyObject($scope.review.text)){
-           //If $scope.review (our ng-model variable) is undefined or the text object is empty 
+        if($scope.reviewFormData == null || sharedFactory.checkIfEmptyObject($scope.reviewFormData.text)){
+           //If $scope.reviewFormData (our ng-model variable) is undefined or the text object is empty 
            //it means there is no text in the textarea so break out of the function.
            //There will be an error message displayed in the form already so no need to output error here.
            return;
         }
-        
-        var reviewText = $scope.review.text; //our ng-model variable
-        var rating = $scope.selectedStar; 
+
+        var reviewText = $scope.reviewFormData.text; //our ng-model variable
+        var rating = $scope.reviewFormData.rating; 
         var userToken = userFactory.userService.getUserToken(); //get userToken from local storage.
 
         //use validator factory to validate the length of the input.
@@ -142,31 +175,33 @@ mapApp.controller("stationController", function($scope, $routeParams, $location,
         if(inputsAreValid && (rating > 0 && rating <=5)){
             //inputs are valid and rating is valid so we can proceed
             console.log("stationID " + stationID);
-            console.log("userID " + userID); 
             console.log("userToken " + userFactory.userService.getUserToken());
             console.log("inputsAreValid" + inputsAreValid);
             console.log("valid" + reviewText);
-            console.log("valid" + $scope.selectedStar);
+            console.log("valid" + $scope.reviewFormData.rating);
 
             //create review and get back all of the reviews data for this station.
-            stationFactory.stationService.createReview(stationID, userID, userToken, reviewText, rating).then(function(reviewsData){
+            stationFactory.stationService.createReview(stationID, userToken, reviewText, rating).then(function(reviewsData){
                 //remove the review form 
                 $scope.displayReviewForm = false;
                 $scope.resetReviewFormValues();
+               // $scope.stationDetails.reviews = reviewsData.reviews;
+                                 console.log(JSON.stringify(reviewsData));
             });
-        }else{
-            //inputs are not valid 
         }
     };
+
 
     $scope.resetReviewFormValues = function(){
         /*
          * This method resets our review form values.
          * We call this after a review has been submitted.
          */
-        $scope.review = {}; //our ng-model for the review form is called review so reset this.
-        $scope.selectedStar = 0; //reset the rating
+        $scope.reviewFormData = {}; //our ng-model for the review form is called review so reset this.
+        $scope.reviewFormData.rating = 0; //reset the rating
     }; 
+
+
 
     $scope.deleteReview = function(reviewID, stationID){
         /*
@@ -176,11 +211,167 @@ mapApp.controller("stationController", function($scope, $routeParams, $location,
          */
         var confirmation = confirm("Are you sure you want to delete this review?");
         if(confirmation){
+            //remove any edit review forms that are displaying.
+            $scope.selectedReviewForEdit = -1; 
             stationFactory.stationService.deleteReview(reviewID, stationID);
         }
     }; 
 
-   $scope.deleteReply = function(replyID, reviewID){
+
+    /*Methods for editing a review*/
+    $scope.displayEditReviewForm = function(reviewIndex, originalReviewRating, originalReviewText){
+        /*
+         * This method is called when a user chooses to edit a review (by clicking the pencil icon).
+         * The edit review button will only be shown (with ng-show) to the user if the current userID (from userDetails) is equal to the userID
+         * of the review creator so no need to check privileges here.
+         * We take in (as parameters) the original rating and original review text so that we can display them in the form to be edited.
+         * We also pass in the index of the review so that we can display that paricular form.
+         */
+        //A form should be displayed to the user now.
+        $scope.selectedReviewForEdit = reviewIndex; 
+
+        $scope.editReviewFormData[reviewIndex] = {
+            text : originalReviewText,
+            rating : originalReviewRating
+        };
+        console.log("edit review form data " + JSON.stringify($scope.editReviewFormData));
+    };
+
+    $scope.selectStarForEdit = function(reviewIndex, rating){
+        /*
+         * This method is called when a star (with the review form stars) is clicked i.e a rating is selected.
+         * The value passed in to this function will be 1 to 5 inclusive.
+         */
+
+        $scope.editReviewFormData[reviewIndex].rating = rating; 
+    };
+
+    $scope.submitEditedReview = function(reviewIndex, reviewID, stationID){
+        /*
+         * This method is called when the edited review from is submitted
+         */
+
+        if($scope.editReviewFormData[reviewIndex] == null || sharedFactory.checkIfEmptyObject($scope.editReviewFormData[reviewIndex].text)){
+           //If $scope.editReviewFormData (our ng-model variable) is undefined or the text object is empty 
+           //it means there is no text in the textarea so break out of the function.
+           //There will be an error message displayed in the form already so no need to output error here.
+           return;
+        }
+        //get the text and rating from our ng-model object 
+        var editedReviewText = $scope.editReviewFormData[reviewIndex].text; 
+        var newRating = $scope.editReviewFormData[reviewIndex].rating;
+
+        var userToken = userFactory.userService.getUserToken(); //get userToken from local storage.
+
+        //use validator factory to validate the length of the input.
+        var inputsAreValid = validatorFactory.checkInputLengthsAreValid(
+            [{"input" : editedReviewText, "minLength" : 10, "maxLength" : 2000}]);
+
+        if(inputsAreValid && (newRating > 0 && newRating <=5)){
+            //inputs are valid and rating is valid so we can proceed
+            //edit the review and get back all of the reviews data for this station.
+            stationFactory.stationService.editReview(reviewID, stationID, userToken, editedReviewText, newRating).then(function(reviewsData){
+                //reset the edit form
+                $scope.selectedReviewForEdit = -1; 
+                //the reviews array will be already updated in scope 
+                //because it comes from the stationDetails object in the factory so we dont need to do it here.
+            });
+        }else{
+            //inputs are not valid 
+        }
+    };
+
+    $scope.cancelReviewEdit = function(){
+        $scope.selectedReviewForEdit = -1; 
+    };
+
+    $scope.displayEditReplyForm = function(reviewIndex, replyIndex, originalReplyText){
+        /*
+         * This method is called when a user chooses to edit a reply (by clicking the pencil icon).
+         * The edit reply button will only be shown (with ng-show) to the user if the current userID (from userDetails) is equal to the userID
+         * of the reply creator so no need to check privileges here.
+         * We take in (as parameters) the original reply text so that we can display it in the form to be edited.
+         * We also pass in the reviewIndex and replyIndex of this reply so that we can create the data scope object..
+         */
+        if (typeof $scope.editReplyFormData[reviewIndex] == "undefined" || !($scope.editReplyFormData[reviewIndex] instanceof Array)) {
+            //If the array does not already exist then declare it here.
+            $scope.editReplyFormData[reviewIndex] = [];
+        }
+        //Store the originalReplyText into our ng-model
+        //We could not do the following unless we declared the array first (as above)
+        $scope.editReplyFormData[reviewIndex][replyIndex] = {
+            text : originalReplyText
+        };
+        //The following variable is used with ng-show in order to display the edit form for the selected reply.
+        $scope.selectedReplyEditForms[reviewIndex] = replyIndex; 
+        console.log("edit reply form data " + JSON.stringify($scope.editReplyFormData[reviewIndex]));
+        console.log("edit reply form data " + JSON.stringify($scope.editReplyFormData));
+    };
+
+
+    $scope.submitEditedReply = function(replyID, reviewID, reviewIndex, replyIndex){
+        console.log("submitted");
+        if($scope.editReplyFormData[reviewIndex][replyIndex] == null || sharedFactory.checkIfEmptyObject($scope.editReplyFormData[reviewIndex][replyIndex].text)){
+           //If $scope.editReplyFormData[reviewIndex][replyIndex] (our ng-model variable) is undefined or the text object is empty 
+           //it means there is no text in the textarea so break out of the function.
+           //There will be an error message displayed in the form already so no need to output error here.
+           return;
+        }
+        //get the text from our ng-model object 
+        var editedReplyText = $scope.editReplyFormData[reviewIndex][replyIndex].text; 
+        var userToken = userFactory.userService.getUserToken(); //get userToken from local storage.
+
+        //use validator factory to validate the length of the input.
+        var inputsAreValid = validatorFactory.checkInputLengthsAreValid(
+            [{"input" : editedReplyText, "minLength" : 5, "maxLength" : 2000}]);
+
+        if(inputsAreValid){
+            //inputs are valid so we can proceed
+            //edit the reply and get back all of the replies data.
+            stationFactory.stationService.editReply(replyID, reviewID, userToken, editedReplyText).then(function(repliesData){
+                //reset the edit reply form selected index so that it is not showing anymore
+                $scope.selectedReplyEditForms[reviewIndex] = -1; 
+ 
+                //the replies array will be already updated in scope 
+                //because it comes from the stationDetails object in the factory so we dont need to do it here.
+            });
+        }else{
+            //inputs are not valid 
+        }
+    };
+
+    $scope.cancelReplyEdit = function(reviewIndex){
+
+        $scope.selectedReplyEditForms[reviewIndex] = -1; 
+        
+    };
+
+    
+    $scope.submitReply = function(reviewIndex, reviewID){
+        /*
+         */
+        if($scope.replyFormData[reviewIndex] == null || sharedFactory.checkIfEmptyObject($scope.replyFormData[reviewIndex].text)){
+      
+           return;
+        }
+        var replyText = $scope.replyFormData[reviewIndex].text; //our ng-model variable
+        var userToken = userFactory.userService.getUserToken(); //get userToken from local storage.
+
+        //use validator factory to validate the length of the input.
+        var inputsAreValid = validatorFactory.checkInputLengthsAreValid(
+            [{"input" : replyText, "minLength" : 5, "maxLength" : 2000}]);
+
+        if(inputsAreValid){
+            //inputs are valid so we can proceed
+            stationFactory.stationService.createReply(reviewID, userToken, replyText).then(function(){
+                $scope.replyFormData[reviewIndex] = {};
+            });
+        }
+
+        
+    }; 
+
+    $scope.deleteReply = function(replyID, reviewID, reviewIndex){
         /*
          * This method is called when a user chooses to delete a reply of a review.
          * The delete reply button will only be shown (with ng-show) to the user if the current userID (from userDetails) is equal to the userID
@@ -188,6 +379,9 @@ mapApp.controller("stationController", function($scope, $routeParams, $location,
          */
         var confirmation = confirm("Are you sure you want to delete this comment?");
         if(confirmation){
+            console.log($scope.selectedReplyEditForms[reviewIndex]);
+            //reset any reply edit forms that are showing for this review
+            $scope.selectedReplyEditForms[reviewIndex] = -1; 
             console.log(reviewID);
             stationFactory.stationService.deleteReply(replyID, reviewID);
         }

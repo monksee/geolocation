@@ -172,8 +172,8 @@ mapApp.controller("mainController", function($scope, $http, $q, $timeout, $locat
         var loginIsSuccessful = false; //initialize a boolean to false
         var deferred = $q.defer();
         //the following blocks of code should be moved to the facebookFactory when using phonegap
-        var facebookUserID = "10213718552614326";//"10213718552600000"; 
-        var facebookName = "La Monquesa Azul";//"Admin user";
+        var facebookUserID = "10213718552600000"; //"10213718552614326";
+        var facebookName ="Admin user";//"La Monquesa Azul";
         var profilePicURL = "https://graph.facebook.com/10213718552614326/picture?type=large&w??idth=200&height=200";
 
         var inputsAreValid = validatorFactory.validateFacebookInputs(
