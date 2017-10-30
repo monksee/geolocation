@@ -354,9 +354,10 @@ mapApp.controller("stationController", function($scope, $routeParams, $location,
       
            return;
         }
-        var replyText = $scope.replyFormData[reviewIndex].text; //our ng-model variable
+        var replyText = "😉😇😅😬😕😕😁😁😉😊😑😉😇😕 " + $scope.replyFormData[reviewIndex].text; //our ng-model variable
         var userToken = userFactory.userService.getUserToken(); //get userToken from local storage.
 
+        alert("$scope.replyFormData[reviewIndex].text " + $scope.replyFormData[reviewIndex].text);
         //use validator factory to validate the length of the input.
         var inputsAreValid = validatorFactory.checkInputLengthsAreValid(
             [{"input" : replyText, "minLength" : 5, "maxLength" : 2000}]);
