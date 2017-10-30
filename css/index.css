@@ -200,7 +200,11 @@ padding-right: 10px;
 
 /******************************************************/
 /* Styling for animating the view on entering a new view*/
-
+.view{
+position: relative;
+overflow: hidden;
+min-height: 60px; /* need a min height so that the loading sign will appear as it is position absolute*/
+}
 .view_animate_container {
 position:relative;
 height: 100% !important;
@@ -306,12 +310,13 @@ height: 70px;
 /*reusable styles*/
 .loading{
 	position: absolute;
-top: 50px;
+top: -5px;
 right: 3px;
 color: #1d8ccd;
 letter-spacing: .6px;
 font-weight: bold;
-z-index: 50;
+z-index: 50 !important;
+min-height: 50px;
 }
 
 .text_center{
@@ -409,7 +414,7 @@ cursor: pointer;
 
 overflow: hidden;
 clear: both;
-padding-bottom: 15px;
+padding-bottom: 5px;
 }
 
 /*use this error_message class for the error that we display to the user when the input is invalid*/
@@ -487,6 +492,13 @@ color: #f1f3f3;
 border: 2px solid #1d8ccd;
 background: #1d8ccd !important;
 }
+
+.btn_white{
+box-sizing: border-box;
+border: 2px solid #747474;
+background: #f4f2f2 !important;
+}
+
 .btn_blue.btn_blue_text {
 color: #1d8ccd !important;
 }
@@ -499,7 +511,16 @@ box-shadow: 0px 0px 0px 2px #fff inset;
 transition: all 0.2s ease;	
 }
 
-.btn_submit{
+.btn_white:hover, .btn_white:active{
+background: #747474 !important;
+color: #fff !important;
+border-color: #747474;
+box-shadow: 0px 0px 0px 2px #fff inset; 
+transition: all 0.2s ease;	
+}
+
+
+.btn_float_right{
 float: right;
 }
 #scroll_down{

@@ -10,10 +10,22 @@ text-align: left;
 }
 
 #station_info_area{
+	position: relative;
+	z-index: 20;
 margin: 20px 0px;
 }
 
 
+.reply_form{
+border-top: 1px solid #bdbebf;
+margin-top: 15px;
+padding-top: 20px;
+}
+
+.reply_form textarea{
+margin-bottom: 7px;
+
+}
 #station_reviews_area{
 margin: 30px 0px 20px 0px;
 
@@ -26,7 +38,7 @@ font-size: 1.0rem;
 }
 
 
-h4.average_rating_heading{
+h4#average_rating_heading{
 padding-top: 10px;
 
 }
@@ -45,7 +57,7 @@ padding: 15px 0px;
 }
 
 #write_a_review_form_area{
-	background: #d1d2d2;
+background: #d1d2d2;
 margin: 30px 0px 35px 0px;
 width: 93%;
 padding: 10px 3%;
@@ -55,19 +67,19 @@ border-radius:4px;  /*opera*/
 -webkit-border-radius:4px;/*chrome and safari*/
 }
 
-.review_form_users_name, .review_form_rating{
+.review_form_user_name, .review_form_rating{
 margin: 10px 0px 4px 0px;
-
+padding-top: 10px;
 }
-#review_form_stars{
-padding-top: 4px;
+.review_form_stars{
+padding-top: 0px;
 overflow: hidden;
 }
-#review_form_stars i:not(.fa-check-circle){
+.review_form_stars i:not(.fa-check-circle){
 	cursor: pointer;
 color: #1d8ccd;
-padding-top: 5px;
-font-size: 18px;
+padding: 5px 4px 0px 4px;
+font-size: 24px;
 }
 #list_of_station_reviews{
 margin-top: 18px;
@@ -116,7 +128,7 @@ height: auto;
 
 
 /*this is the name of the user who posted a review*/
-.users_name{
+.user_name{
 font-size: .9rem;
 margin: 0px 0px 2px 0px;
 padding-top: 5px;
@@ -128,7 +140,7 @@ color: #3d57a3;
 }
 
 
-p.date_of_review{
+p.date_of_review_or_reply{
 margin: 0px !important;
 font-size: .8rem !important;
 color: #7c7c7c;
@@ -156,37 +168,45 @@ font-size: 14px;
 .average_rating_star_area .fa-star, .average_rating_star_area .fa-star-o, .average_rating_star_area .fa-star-half-o{
 font-size: 16px;
 }
-/*this is the styling of a container for the small x symbol that appears for an administrator to remove a review*/
-.review_comment_button{
+
+/*this is the styling of a container for the small buttons that appear within a review or reply*/
+.review_area_button{
 outline: 0; 		/*override the default button outline*/
 border: 0;  		/*override the default button border*/
 -webkit-box-shadow: 	none !important;
 -moz-box-shadow: 	none !important;
 box-shadow: 		none !important;
 border: none !important; 
-padding-right: 3px;
-padding-left: 3px;
+padding-right: 0px;
+padding-left: 5px;
 display: block;
 position: absolute;
 top: 4px;
 right: 0px;
-width: 16px !important;
+width: 18px !important;
 height: 25px;
 color: rgba(111, 111, 111, .8); 
 text-shadow: 1px 1px 0px #fff, 0 0 0 #000;
 cursor: pointer;
-font-size: 14px;
-
-
-}
-.edit_review_button{
-
-right: 20px;
+font-size: 18px;
+font-family: Raleway, FontAwesome; /*need to put font awesome here for the icons in the input fields */
 }
 
-.review_reply .review_comment_button{
+/*this is the pencil button that appears within a review or reply*/
+.edit_button{
+right: 22px;
+}
+
+.cancel_button{
+position: absolute;
+top: 4px;
+right: 7px;
+cursor: pointer;
+font-weight: bold;
 
 }
+
+
 .list_of_replies{
 padding-left: 45px;
 
@@ -245,6 +265,15 @@ border:1px solid #d60c40;
 
 .small_break_between_paragraphs{
 display: block;
-height: 6px;
+height: 3px;
+}
+
+.character_count_container{
+min-height: 30px;
+
+}
+
+.btn_cancel{
+margin-right: 10px;
 
 }
