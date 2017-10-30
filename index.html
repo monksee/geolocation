@@ -44,19 +44,18 @@ width: 100%;
 
 	<div id="container_wrapper" class="scrollable" data-ng-class="{'swipe_left': panelIsOpen == true}" data-ng-swipe-left="panelIsOpen = true">
 		<div class="container"> 
-			<div id="login_info_area" data-ng-show="showUserProfileArea()">
+            <div id="login_info_area" data-ng-show="showUserProfileArea()">
 			    <span class="user_profile_pic">
 			        <img src="{{userDetails.profilePicURL}}" data-ng-class="{'profile_pic_size': checkIfLoggedIn() == true}" alt="">
 			    </span> 
 			    {{userDetails.facebookName}}
 			</div>
+			<div data-ng-view class="view" >
 
-			 <div class="view_animatecontainer">
-			<div data-ng-view class="viewanimate" data-ng-class="{'left_toright': leftToRight == true}">
 				<!--our individual views will be displayed here-->
 
 			</div> 
-			</div>
+	
 		</div><!--/container-->
 	</div><!--/container_wrapper-->
 	<div id="panel_area" class="scrollable" data-ng-swipe-right="panelIsOpen = false">		
