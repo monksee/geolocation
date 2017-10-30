@@ -246,7 +246,7 @@
             <!--Each main_user_review will have a list of replies.-->
             <ul class="list_of_replies">
                 <li class="review_reply" data-ng-repeat="currentReply in currentReview.replies">
-                    <div>
+                    <div class="user_profile_area">
                         <span class="profile_pic_thumbnail">
                             <img src="{{currentReply.replyUserData.profilePicURL}}" width="70" height="70" />
                         </span>
@@ -271,14 +271,14 @@
                     <!--use ng-bind-html to display the html properly within the replyText-->
                     <p class="reply_text"  data-ng-show="selectedReplyEditForms[$parent.$index] !== $index" ng-bind-html="currentReply.replyText"></p>
                     <!--show the edit_reply_form if this reply has been selected for editing with the edit_button above.-->
-                    <form name="edit_reply_form" 
-                        data-ng-show="selectedReplyEditForms[$parent.$index] === $index"
+                    <div class="edit_reply_form_area" data-ng-show="selectedReplyEditForms[$parent.$index] === $index">
+                        <form name="edit_reply_form" 
                         data-ng-submit="submitEditedReply(currentReply.replyID, currentReview.reviewID, $parent.$index, $index)" 
                         data-ng-model="edit_reply_form" novalidate>
 
                         <div class="form_divider">
                     
-                            <textarea name="edit_reply_text" data-ng-model="editReplyFormData[$parent.$index][$index].text" maxlength="2000" rows="2" required></textarea>
+                            <textarea name="edit_reply_text" data-ng-model="editReplyFormData[$parent.$index][$index].text" maxlength="2000" rows="3" required></textarea>
                             <!--Display a tick (fa-check-circle) symbol and a message to say how many characters are left out of 2000-->
                             <div class="character_count_container">
                                 <span data-ng-show="editReplyFormData[$parent.$index][$index].text.length >= 5">
@@ -305,15 +305,16 @@
                             <!--pass in the index of the current review to the cancelReplyEdit method so we can hide the edit form again-->
                             <!--also we need to use a span tag instead of button tag for the cancel button otherwise angular will think its a form submission-->
                             <span class="btn btn_white btn_float_right btn_cancel" data-ng-click="cancelReplyEdit($parent.$index)" >Cancel</span>                   
-                       </div>
-                    </form><!--/edit_reply_form-->
+                        </div>
+                        </form><!--/edit_reply_form-->
+                    </div>
                 </li><!--/review_reply-->
 
                 <!--The following is the reply form for the current review-->
                 <!--Only the user who created the review and an administrator can reply so we need to detect if the current 
                 user is either of the two before showing the following list item.-->
                 <!--also we are now outside of the currentReview.replies ng-repeat loop so the index will correspond to the currentReview in the station.Details.reviews loop-->
-                <li id="reply_form_area" data-ng-show="checkForHigherUserPrivileges(currentReview.reviewUserData.userID)">
+                <li class="reply_form_area" data-ng-show="checkForHigherUserPrivileges(currentReview.reviewUserData.userID)">
 
                     <form name="reply_form" data-ng-submit="submitReply($index, currentReview.reviewID)" data-ng-model="reply_form" novalidate>
 
