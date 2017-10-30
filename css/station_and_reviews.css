@@ -16,13 +16,13 @@ margin: 20px 0px;
 }
 
 
-.reply_form{
+.reply_form_area{
 border-top: 1px solid #bdbebf;
 margin-top: 15px;
 padding-top: 20px;
 }
 
-.reply_form textarea{
+.reply_form_area textarea{
 margin-bottom: 7px;
 
 }
@@ -261,6 +261,14 @@ color: #14ba24;
 .review_form textarea.ng-invalid.ng-touched{
 
 border:1px solid #d60c40;
+}
+.user_profile_area{
+overflow:hidden;
+
+}
+.edit_reply_form_area{
+padding-top: 15px;
+
 }
 
 .small_break_between_paragraphs{
