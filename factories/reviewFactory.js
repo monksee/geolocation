@@ -4,7 +4,7 @@
 mapApp.factory('reviewFactory', function($http, sharedFactory){
     "use strict";
     var reviewService = {};
-
+    
 
     reviewService.prepareReviews = function(reviewsArray){ 
         /*
@@ -16,9 +16,11 @@ mapApp.factory('reviewFactory', function($http, sharedFactory){
          */
         var self = this; 
         reviewsArray.forEach(function(review) {
+            review.originalReviewText = review.reviewText;
             review.reviewText = self.filterTextForLineBreaks(review.reviewText);
             review.replies = self.prepareReviewReplies(review.replies);
             review.ratingInStars = self.prepareRatingInStars(review.reviewRating);
+            console.log("prep" + review.originalReviewText);
         }); 
         return reviewsArray;
     };
@@ -30,6 +32,7 @@ mapApp.factory('reviewFactory', function($http, sharedFactory){
          */
         var self = this; 
         repliesArray.forEach(function(reply) {
+            reply.originalReplyText = reply.replyText;
             reply.replyText = self.filterTextForLineBreaks(reply.replyText);
 
         }); 
@@ -46,8 +49,8 @@ mapApp.factory('reviewFactory', function($http, sharedFactory){
         var self = this; 
         reviewsArray.forEach(function(review) {
             if(review.reviewID === reviewID){
-           //set the replies to equal the new replies array
-            review.replies = self.prepareReviewReplies(repliesArray);
+                //set the replies to equal the new replies array
+                review.replies = self.prepareReviewReplies(repliesArray);
 
             }
         }); 

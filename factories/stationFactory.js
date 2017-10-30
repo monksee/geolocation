@@ -87,7 +87,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
         });
  	}; 
 
-    stationService.createReview = function(stationID, userID, userToken, reviewText, rating){
+    stationService.createReview = function(stationID, userToken, reviewText, rating){
         /**
          * This method makes a http POST request to our createReview Endpoint to create a new review (for a particular station) with data entered by the user
          * We return the new review data and also store it into our stationDetails object.
@@ -96,15 +96,65 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
         var self = this; 
         var data = {
             "stationID" : stationID, 
-            "userID" : userID, 
             "userToken" : userToken,
             "reviewText" : reviewText,
             "reviewRating" : rating
         };
         return $http({
                 method: 'POST',
-                //url: 'http://localhost/API/createReview?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+               // url: 'http://localhost/API/createReview?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 url: 'http://gamuzic.com/API/createReview?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+                data: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                responseType:'json'
+            }).then(function successCallback(response){
+                 //console.log(JSON.stringify(response));
+                //Do checks to see if the response data is valid. If not valid then build the error notification
+                var responseDataIsValid = false; //initialize boolean to false
+                if(response.hasOwnProperty('data') && response.data !== null){
+                    //check if the data property is present in the response and it is not null    
+                    if(!response.data.hasOwnProperty('error')){     
+                        //response does not have error property therefore it is valid       
+                        responseDataIsValid = true;
+                    }
+                }
+                //After the checks to see if the response is valid then store our review data into our stationDetails object
+                if(responseDataIsValid){        
+                    console.log("reviews " + JSON.stringify(response.data));
+                    var averageRatingData = reviewFactory.reviewService.getAverageRating(response.data);
+                    var reviews = reviewFactory.reviewService.prepareReviews(response.data); 
+                    self.stationDetails.averageRatingData = averageRatingData;
+                    self.stationDetails.reviews = reviews;
+                    //create an object with the new reviews data to return from this method
+                    var reviewsData = {"averageRatingData" : self.stationDetails.averageRatingData, "reviews" : self.stationDetails.reviews};
+                    return reviewsData;
+                }else{
+                    //The data is not valid (or there has been an error)
+                    sharedFactory.buildErrorNotification(response);
+                    return null;
+                }
+            },function errorCallback(response){
+                sharedFactory.buildErrorNotification(response);
+                return null;
+            });
+    }; 
+
+    stationService.editReview = function(reviewID, stationID, userToken, editedReviewText, newRating){
+        /**
+         */
+        var self = this; 
+        var data = {
+            "stationID" : stationID, 
+            "userToken" : userToken,
+            "editedReviewText" : editedReviewText,
+            "newRating" : newRating
+        };
+        return $http({
+                method: 'PUT',
+              // url: 'http://localhost/API/editReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+                url: 'http://gamuzic.com/API/editReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 data: JSON.stringify(data),
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8'
@@ -156,7 +206,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
         };
         return $http({
                 method: 'DELETE',
-               // url: 'http://localhost/API/deleteReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+              // url: 'http://localhost/API/deleteReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 url: 'http://gamuzic.com/API/deleteReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 data: JSON.stringify(data),
                 headers: {
@@ -196,6 +246,110 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
                 return null;
             });
     }; 
+
+
+    stationService.createReply = function(reviewID, userToken, replyText){
+        /**
+         */
+        var self = this; 
+        var data = {
+            "reviewID" : reviewID, 
+            "userToken" : userToken,
+            "replyText" : replyText
+        };
+        return $http({
+                method: 'POST',
+              //  url: 'http://localhost/API/createReply?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+                url: 'http://gamuzic.com/API/createReply?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+                data: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                responseType:'json'
+            }).then(function successCallback(response){
+                 //console.log(JSON.stringify(response));
+                //Do checks to see if the response data is valid. If not valid then build the error notification
+                var responseDataIsValid = false; //initialize boolean to false
+                if(response.hasOwnProperty('data') && response.data !== null){
+                    //check if the data property is present in the response and it is not null    
+                    if(!response.data.hasOwnProperty('error')){     
+                        //response does not have error property therefore it is valid       
+                        responseDataIsValid = true;
+                    }
+                }
+                if(responseDataIsValid){        
+                    console.log("replies " + JSON.stringify(response.data));
+                    console.log("self.stationDetails.reviews " + JSON.stringify(self.stationDetails.reviews));
+                    var replies = response.data;
+                    var currentReviewsArray = self.stationDetails.reviews;
+                    //store the replies array that came back in the response in stationDetails reviews array for the review with ID of reviewID
+                    //the scope will be automatically updated with the new reviews array now so need to return the array here
+                    reviewFactory.reviewService.setReviewReplies(reviewID, currentReviewsArray, replies);
+                    console.log("self.stationDetails.reviews2 " + JSON.stringify(self.stationDetails.reviews));
+           
+                }else{
+                    //The data is not valid (or there has been an error)
+                    sharedFactory.buildErrorNotification(response);
+                    return null;
+                }
+            },function errorCallback(response){
+                sharedFactory.buildErrorNotification(response);
+                return null;
+            });
+    }; 
+
+    stationService.editReply = function(replyID, reviewID, userToken, editedReplyText){
+        /**
+         */
+        var self = this; 
+        var data = {
+            "reviewID" : reviewID, 
+            "userToken" : userToken,
+            "editedReplyText" : editedReplyText
+        };
+        return $http({
+                method: 'PUT',
+                //url: 'http://localhost/API/editReply/' + replyID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+                url: 'http://gamuzic.com/API/editReply/' + replyID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+                data: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                responseType:'json'
+            }).then(function successCallback(response){
+                 //console.log(JSON.stringify(response));
+                //Do checks to see if the response data is valid. If not valid then build the error notification
+                var responseDataIsValid = false; //initialize boolean to false
+                if(response.hasOwnProperty('data') && response.data !== null){
+                    //check if the data property is present in the response and it is not null    
+                    if(!response.data.hasOwnProperty('error')){     
+                        //response does not have error property therefore it is valid       
+                        responseDataIsValid = true;
+                    }
+                }
+                //After the checks to see if the response is valid then store our review data into our stationDetails object
+                if(responseDataIsValid){        
+                    console.log("replies " + JSON.stringify(response.data));
+                    //the response data will be an array of replies (with the edited reply) for a particular review (with ID of reviewID).
+
+                    var repliesArray = response.data;
+                    var currentReviewsArray = self.stationDetails.reviews;
+                    //call the setReviewReplies method (from the reviewFactory) in order to store the new replies array that comes back in the response
+                    //into the review that it belongs to.
+                    reviewFactory.reviewService.setReviewReplies(reviewID, currentReviewsArray, repliesArray);
+
+                    //We return the new reviews array however currently we don't need to do this as the scope will update when the stationDetails object updates anyway
+                    return self.stationDetails.reviews;
+                }else{
+                    //The data is not valid (or there has been an error)
+                    sharedFactory.buildErrorNotification(response);
+                    return null;
+                }
+            },function errorCallback(response){
+                sharedFactory.buildErrorNotification(response);
+                return null;
+            });
+    };
 
     stationService.deleteReply = function(replyID, reviewID){
         /**
@@ -237,9 +391,8 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
                     var currentReviewsArray = self.stationDetails.reviews;
                     //call the setReviewReplies method (from the reviewFactory) in order to store the new replies array that comes back in the response
                     //into the review that it belongs to.
-                    var newReviewsArray = reviewFactory.reviewService.setReviewReplies(reviewID, currentReviewsArray, repliesArray);
-                    //store the altered reviews array (minus the reply that was deleted) into the stationDetails object
-                    self.stationDetails.reviews = newReviewsArray;
+                    reviewFactory.reviewService.setReviewReplies(reviewID, currentReviewsArray, repliesArray);
+  
                     //We return the new reviews array however currently we don't need to do this as the scope will update when the stationDetails object updates anyway
                     return self.stationDetails.reviews;
                 }else{
