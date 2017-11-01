@@ -452,15 +452,16 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
          */
        //  var allStationsMapData = [{stationLatLng: {lat: 53.41291, lng: -8.24389}, stationID: "5"},{stationLatLng: {lat: 53.3498053, lng: -6.2603097}, stationID: "5"}];
 
+        var self = this;
          alert("map" + document.getElementById('map'));
-           alert("map data length " + allStationsMapData.length);
-         alert("map data" + JSON.stringify(allStationsMapData));
+           alert("map data length " + self.allStationsMapData.length);
+         alert("map data" + JSON.stringify(self.allStationsMapData));
         var map = new google.maps.Map(document.getElementById('map'),{
             zoom: 9,
-            center: allStationsMapData[0].stationLatLng
+            center: self.allStationsMapData[0].stationLatLng
         });
 
-        for(var i = 0; i < allStationsMapData.length; i++){
+        for(var i = 0; i < self.allStationsMapData.length; i++){
             (function(stationMapData){
                 //alert("data " + stationMapData.stationID);
                 var marker = new google.maps.Marker({
@@ -474,7 +475,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
                     scope.$apply();
                     //window.location.href = marker.url;
                 });
-            })(allStationsMapData[i]);
+            })(self.allStationsMapData[i]);
         }
     };
 
