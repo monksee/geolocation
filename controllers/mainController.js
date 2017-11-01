@@ -69,7 +69,7 @@ mapApp.controller("mainController", function($scope, $http, $q, $timeout, $locat
          * This function prepares the home view i.e prepares the google map with pinpoints of all stations. 
          * We will call this method anytime the home view has finished loading so that the div with id of map will be in the DOM.
          */
-        if(stationFactory.stationService.allStationsMapData.length === 0){
+      //  if(stationFactory.stationService.allStationsMapData.length === 0){
             alert("length " + stationFactory.stationService.allStationsMapData.length);
                 //The allStationsMapData array is not populated therefore we need to do an API call (i.e call the getAllStationsMapData() method)
                 //to retrieve the data from the database.
@@ -78,20 +78,20 @@ mapApp.controller("mainController", function($scope, $http, $q, $timeout, $locat
                         // $scope.allStationsMapData =  allStationsMapData;
                         //prepare the google map with station data
 
-                        stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location);
+                       // stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location);
                     }else{
                         //There has been an error when retrieving all the stations data
                     }
                 });
-        }else{
+     //  }else{
             alert("length " + stationFactory.stationService.allStationsMapData.length);
             //the allStationsMapData array is populated so the API call was already made to retrieve the allStationsMapData 
             //from the database so we just need to get the array data from our stationService now.
-            var allStationsMapData = stationFactory.stationService.allStationsMapData;
+          //  var allStationsMapData = stationFactory.stationService.allStationsMapData;
             //prepare the google map with station data
 
-            stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location);
-        }
+            //stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location);
+       // }
     }
 
     $scope.checkLocationPath = function(locationPath){
