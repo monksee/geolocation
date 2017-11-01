@@ -52,13 +52,13 @@ padding: 15px 0px 5px 0px;
 
 }
 #write_a_review_button_area{
-padding: 15px 0px;
-
+padding: 8px 0px 10px 0px;
+min-height: 22px;
 }
 
 #write_a_review_form_area{
 background: #d1d2d2;
-margin: 30px 0px 35px 0px;
+margin: 0px 0px 35px 0px;
 width: 93%;
 padding: 10px 3%;
 border: 1px solid #bdbebf;
@@ -67,6 +67,25 @@ border-radius:4px;  /*opera*/
 -webkit-border-radius:4px;/*chrome and safari*/
 }
 
+.message_for_user{
+	opacity: 0;
+font-weight: bold;
+color: #1d8ccd;
+-webkit-transition-property: opacity;
+-moz-transition-property: opacity;
+-o-transition-property: opacity;
+transition-property: opacity;
+
+-webkit-transition-duration: .5s;
+-moz-transition-duration: .5s;
+-o-transition-duration: .5s;
+transition-duration: .5s;
+}
+
+.full_opacity{
+opacity: 1;
+
+}
 .review_form_user_name, .review_form_rating{
 margin: 10px 0px 4px 0px;
 padding-top: 10px;
@@ -82,15 +101,15 @@ padding: 5px 4px 0px 4px;
 font-size: 24px;
 }
 #list_of_station_reviews{
-margin-top: 18px;
+margin-top: 0px;
 }
 .station_review{
 position: relative;
 width: 100% !important;
 overflow: hidden;
 font-size: .9rem !important;
-margin-top: 10px !important;
-margin-bottom: 20px !important;
+margin-top: 0px !important;
+margin-bottom: 30px !important;
 border-top: 2px solid #bdbebf;
 padding-bottom: 15px;
 }
