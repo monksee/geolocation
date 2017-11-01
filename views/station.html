@@ -41,12 +41,19 @@
 	    </div><!--/average_rating_star_area-->
     </div><!--/average_rating_area-->
 
+
 	<!--detect whether current user has already written a review for this station and if not then show the following "write a review" button-->
-	<div id="write_a_review_button_area" data-ng-show="displayWriteAReviewButton()" >
+	<div id="write_a_review_button_area">
+
+        <p class="message_for_user" data-ng-class="(displayMessageForUser === true ? 'full_opacity' : '')" data-ng-show="displayMessageForUser === true">{{messageForUser}}</p>
+
+        <div data-ng-show="displayWriteAReviewButton()">
         <!--on button click, call the writeAReview method which will set displayReviewForm to true if the user successfully logs in-->
+
         <button class="btn btn_blue" data-ng-click="writeAReview()">
             <span>Write a review</span>
         </button>
+        </div>
     </div>
 
 	<div id="write_a_review_form_area" data-ng-show="displayReviewForm && checkIfLoggedIn()">
@@ -322,7 +329,7 @@
                             <!--as there will be one reply form per review we need to create a unique ng-model for each of them so we create an array called 
                             replyFormData and pass in the index of the currentReview--> 
                             <textarea name="reply_text" data-ng-model="replyFormData[$index].text" maxlength="2000" placeholder="Write your reply here..."  rows="2" required></textarea>
-                            <p>{{replyFormData[$index].text}}</p>
+                    
                             <div class="character_count_container">
                                 <!--Display a tick (fa-check-circle) symbol and a message to say how many characters are left out of 2000-->
                                 <span data-ng-show="replyFormData[$index].text.length >= 5">
@@ -345,7 +352,7 @@
                         </div><!--/form_divider-->
 
                         <div class="form_divider">
-                            <!--we dont need a cancel button because the form will always be displayed any (for users with the right permissions)-->
+                            <!--we dont need a cancel button because the form will always be displayed anyway (for users with the right permissions)-->
                             <input class="btn btn_blue btn_float_right" type="submit" value="Reply" />
                        </div>
                     </form><!--/reply_form-->
