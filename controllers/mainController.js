@@ -77,6 +77,9 @@ mapApp.controller("mainController", function($scope, $http, $q, $timeout, $locat
                     if(allStationsMapData !== null){
                         // $scope.allStationsMapData =  allStationsMapData;
                         //prepare the google map with station data
+                              var allStationsMapData = [{"stationID":1,"stationName":"Finn's Maxol ","stationLatLng":{"lat":53.56077194,"lng":-7.76224327}},
+        {"stationID":2,"stationName":"Texaco Spar Foxrock ","stationLatLng":{"lat":53.26651001,"lng":-6.18408442}},
+        {"stationID":3,"stationName":"Texaco Spar Enniskerry","stationLatLng":{"lat":53.20385361,"lng":-6.17581844}}];
                         stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location);
                     }else{
                         //There has been an error when retrieving all the stations data
@@ -88,6 +91,9 @@ mapApp.controller("mainController", function($scope, $http, $q, $timeout, $locat
             //from the database so we just need to get the array data from our stationService now.
             var allStationsMapData = stationFactory.stationService.allStationsMapData;
             //prepare the google map with station data
+                  var allStationsMapData = [{"stationID":1,"stationName":"Finn's Maxol ","stationLatLng":{"lat":53.56077194,"lng":-7.76224327}},
+        {"stationID":2,"stationName":"Texaco Spar Foxrock ","stationLatLng":{"lat":53.26651001,"lng":-6.18408442}},
+        {"stationID":3,"stationName":"Texaco Spar Enniskerry","stationLatLng":{"lat":53.20385361,"lng":-6.17581844}}];
             stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location);
         }
     }
