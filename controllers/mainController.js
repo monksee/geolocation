@@ -8,7 +8,7 @@ mapApp.controller("mainController", function($scope, $http, $q, $timeout, $locat
     /* Define our scope variables */
 	//the boolean variable "panelIsOpen" will initially be set to false as the side panel with initially be closed on page load
 	$scope.panelIsOpen = false;
-    $scope.loginViewIsShowing = true;
+
     //The default page transition effect will be that the content of the view will move from right to left
     //So set our scope variable of leftToRight to false.
     //This will be set to true any time we press the back button.
@@ -16,6 +16,11 @@ mapApp.controller("mainController", function($scope, $http, $q, $timeout, $locat
 
 	//userDetails should be stored in the mainController scope
     $scope.userDetails = userFactory.userService.userDetails;
+
+
+    //not sure we need to add this to scope yet as we are only using it with google maps.
+    $scope.allStationsMapData = stationFactory.stationService.allStationsMapData;
+
     /* Define our functions */
 
     /*
@@ -33,7 +38,6 @@ mapApp.controller("mainController", function($scope, $http, $q, $timeout, $locat
             userFactory.userService.resetUserDetails();
         }else{
             //userToken key exists in local storage so check this token on the server side to make sure its valid.
-
             var data = {
                 "userToken" : userFactory.userService.getUserToken()
              };
@@ -41,29 +45,77 @@ mapApp.controller("mainController", function($scope, $http, $q, $timeout, $locat
                 //Since the checkUserToken method (in the userFactory) is performaing a http request we need to use a promise
                 //to store the userDetails (from the response) into our $scope.userDetails variable. 
                 $scope.userDetails = userDetails;
-                 console.log("factory a" + JSON.stringify(userFactory.userService.userDetails));
-                console.log("$scope.userDetailsa" + JSON.stringify($scope.userDetails));
-
             });
         }
     })();
 
-    $scope.$on('$viewContentLoaded', function(){
-        $scope.currentLocation = $location.path();
 
-        if($scope.currentLocation.indexOf("login") == -1){
-            //This is not the login view.
-            $scope.loginViewIsShowing = false;
-            console.log('shown' + $scope.currentLocation);
-        }else{
-            $scope.loginViewIsShowing = true;
+    $scope.$on('$viewContentLoaded', function(){
+        /*
+         * This will be executed whenever a view has finished loading. 
+         * We will need to detect when the home view has finished loading as we will need to target the div with id of map
+         * in the DOM (for google maps)
+         */
+        //Check if the current path is home 
+        var isHomePath = $scope.checkLocationPath("home");
+        if(isHomePath){
+           //therefore prepare the Home view with google maps
+           $scope.prepareHomeView();
         }
-        //Here your view content is fully loaded !!
     });
 
-   $scope.detectLoginView = function(){
+    $scope.prepareHomeView = function(){
+        /*
+         * This function prepares the home view i.e prepares the google map with pinpoints of all stations. 
+         * We will call this method anytime the home view has finished loading so that the div with id of map will be in the DOM.
+         */
+        if(stationFactory.stationService.allStationsMapData.length === 0){
+            console.log("length " + stationFactory.stationService.allStationsMapData.length);
+                //The allStationsMapData array is not populated therefore we need to do an API call (i.e call the getAllStationsMapData() method)
+                //to retrieve the data from the database.
+                stationFactory.stationService.getAllStationsMapData().then(function(allStationsMapData) {
+                    if(allStationsMapData !== null){
+                        // $scope.allStationsMapData =  allStationsMapData;
+                        //prepare the google map with station data
+                        stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location);
+                    }else{
+                        //There has been an error when retrieving all the stations data
+                    }
+                });
+        }else{
+            console.log("length " + stationFactory.stationService.allStationsMapData.length);
+            //the allStationsMapData array is populated so the API call was already made to retrieve the allStationsMapData 
+            //from the database so we just need to get the array data from our stationService now.
+            var allStationsMapData = stationFactory.stationService.allStationsMapData;
+            //prepare the google map with station data
+            stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location);
+        }
+    }
 
-        return $scope.loginViewIsShowing;
+    $scope.checkLocationPath = function(locationPath){
+        /*
+         * This function takes in the name of a path i.e login or home and checks if we are currently on that path or not.
+         * Return true if we are on that path and false if not.
+         */
+        $scope.currentLocation = $location.path();
+        console.log("view " + $scope.currentLocation);
+        //Check if the current path is the locationPath we took in as a parameter. 
+        if($scope.currentLocation.indexOf(locationPath) !== -1){
+            //This is the locationPath
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+    $scope.detectLoginView = function(){
+        /*
+         * This function checks if we are on the login view.
+         * We will use this in the index.html page with ng-show in order to hide the header when we are on the login view.
+         */
+        var isLoginPath = $scope.checkLocationPath("login");
+        return isLoginPath;
     }
 
 	$scope.toggleSidePanel = function(){
@@ -150,6 +202,7 @@ mapApp.controller("mainController", function($scope, $http, $q, $timeout, $locat
                        $location.path('home');
                     }
                 }else{
+                    alert("We're sorry but you have not been logged in successfully. Please contact support!");
                     //if userDetails is null then login was not successful 
                     deferred.resolve(loginIsSuccessful);  
                 }
@@ -208,6 +261,7 @@ mapApp.controller("mainController", function($scope, $http, $q, $timeout, $locat
                        $location.path('home');
                     }
                 }else{
+                    alert("We're sorry but you have not been logged in successfully. Please contact support!");
                     //if login was not successful then do not redirect 
                     deferred.resolve(loginIsSuccessful);  
                 }

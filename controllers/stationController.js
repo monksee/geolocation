@@ -1,7 +1,7 @@
 
 
 //create the stationController for the station.html view
-mapApp.controller("stationController", function($scope, $routeParams, $location, stationFactory, userFactory, reviewFactory, validatorFactory, sharedFactory){
+mapApp.controller("stationController", function($scope, $timeout, $routeParams, $location, stationFactory, userFactory, reviewFactory, validatorFactory, sharedFactory){
 
 
     $scope.stationDetails =  {};
@@ -39,27 +39,31 @@ mapApp.controller("stationController", function($scope, $routeParams, $location,
     //so create an array to hold the form data. The indexes of this array will correspond to the indexes of the reviews 
     $scope.replyFormData = [];
 
-	if($routeParams.stationID == null || $routeParams.stationID === ""){
-		//If the stationID is not set or if it doesnt contain a value (i.e is the empty string) then redirect to the home page.
-        //This will also return true if stationID is undefined. 
-		$location.path('home'); 
-    }else{ 
-        stationFactory.stationService.getStationDetails($routeParams.stationID).then(function(stationDetails) {
-            //if an error occurs in the http request (in the getStationDetails method of the stationFactory) we pass in null as the returned value from the promise
-            //Therefore we can check now if the value of stationDetails is null and redirect to the home page if it is.
 
-            if(stationDetails !== null){
-                 //stationDetails returned from the promise is not null so we store them in scope.
-      	        $scope.stationDetails = stationDetails;
-                $scope.dataIsSet = true;
-            }else{
-                //stationDetails value will be null if an error occurred in http request
-                //redirect to home page.
-                $location.path('home'); 
-     	          
-            }
-        });
-    }
+
+    $scope.messageForUser = "";
+    $scope.displayMessageForUser = false;
+    (function() {
+	    if($routeParams.stationID == null || $routeParams.stationID === ""){
+		    //If the stationID is not set or if it doesnt contain a value (i.e is the empty string) then redirect to the home page.
+            //This will also return true if stationID is undefined. 
+		    $location.path('home'); 
+        }else{ 
+            stationFactory.stationService.getStationDetails($routeParams.stationID).then(function(stationDetails) {
+                //if an error occurs in the http request (in the getStationDetails method of the stationFactory) we pass in null as the returned value from the promise
+                //Therefore we can check now if the value of stationDetails is null and redirect to the home page if it is.
+                if(stationDetails !== null){
+                    //stationDetails returned from the promise is not null so we store them in scope.
+      	            $scope.stationDetails = stationDetails;
+                    $scope.dataIsSet = true;
+                }else{
+                    //stationDetails value will be null if an error occurred in http request
+                    //redirect to home page.
+                    $location.path('home'); 
+                }
+            });
+        }
+    })();
 
     $scope.checkForUserPrivileges = function(creatorUserID){
         /*
@@ -113,7 +117,8 @@ mapApp.controller("stationController", function($scope, $routeParams, $location,
          * a review for a particular station before.
          */
         if(!$scope.displayReviewForm && !$scope.checkUsersReviewStatus()){
-
+            //if the write a review form is not currently displaying and a user has not written a review for this station before
+            //then return true (to display the "write a review" button)
             return true;
         }else{
             return false;
@@ -132,8 +137,23 @@ mapApp.controller("stationController", function($scope, $routeParams, $location,
             $scope.loginWithFacebook().then(function(loginIsSuccessful){
                 console.log('t' + loginIsSuccessful);
                 if(loginIsSuccessful){
-                    //if login is successful then display the review form.
-                    $scope.displayReviewForm = true;
+                    //if login is successful then check if this user has written a review for this station already
+                    if(!$scope.checkUsersReviewStatus()){
+                        //user has not written a review so display the review form.
+                        $scope.displayReviewForm = true;
+                    }else{
+                        //user has already written a review for this station.
+                        //output message
+                        $scope.messageForUser = "You have already written a review for this station.";
+                        $scope.displayMessageForUser = true;
+                        $timeout(function() {
+                            $scope.displayMessageForUser = false;
+
+                        }, 3000);
+                    }
+                }else{
+                    alert("We're sorry but you have not been logged in successfully and therefore cannot write a review");
+
                 }
             });
         }else{
@@ -354,10 +374,9 @@ mapApp.controller("stationController", function($scope, $routeParams, $location,
       
            return;
         }
-        var replyText = "😉😇😅😬😕😕😁😁😉😊😑😉😇😕 " + $scope.replyFormData[reviewIndex].text; //our ng-model variable
+        var replyText = $scope.replyFormData[reviewIndex].text; //our ng-model variable
         var userToken = userFactory.userService.getUserToken(); //get userToken from local storage.
 
-        alert("$scope.replyFormData[reviewIndex].text " + $scope.replyFormData[reviewIndex].text);
         //use validator factory to validate the length of the input.
         var inputsAreValid = validatorFactory.checkInputLengthsAreValid(
             [{"input" : replyText, "minLength" : 5, "maxLength" : 2000}]);
