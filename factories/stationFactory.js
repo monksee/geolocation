@@ -451,6 +451,9 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
          * We use this in our main controller after we have detected that the home view has finished loading.
          */
        //  var allStationsMapData = [{stationLatLng: {lat: 53.41291, lng: -8.24389}, stationID: "5"},{stationLatLng: {lat: 53.3498053, lng: -6.2603097}, stationID: "5"}];
+        var allStationsMapData = [{"stationID":1,"stationName":"Finn's Maxol ","stationLatLng":{"lat":53.56077194,"lng":-7.76224327}},
+        {"stationID":2,"stationName":"Texaco Spar Foxrock ","stationLatLng":{"lat":53.26651001,"lng":-6.18408442}},
+        {"stationID":3,"stationName":"Texaco Spar Enniskerry","stationLatLng":{"lat":53.20385361,"lng":-6.17581844}}];
 
 
          alert("map" + document.getElementById('map'));
@@ -460,7 +463,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
             center: allStationsMapData[0].stationLatLng
         });
 
-        for(var i = 0; i < 5; i++){
+        for(var i = 0; i < allStationsMapData.length; i++){
             (function(stationMapData){
                 //alert("data " + stationMapData.stationID);
                 var marker = new google.maps.Marker({
