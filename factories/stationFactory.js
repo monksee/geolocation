@@ -53,8 +53,36 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
                 }
             }
             if(responseDataIsValid){           
-                self.allStationsMapData = response.data.slice(0, 3);
-                return self.allStationsMapData;
+                var allStationsMapData = response.data.slice(0, 3);
+
+        var self = this;
+         alert("map" + document.getElementById('map'));
+           alert("map data length " + allStationsMapData.length);
+         alert("map data" + JSON.stringify(allStationsMapData));
+        var map = new google.maps.Map(document.getElementById('map'),{
+            zoom: 9,
+            center: allStationsMapData[0].stationLatLng
+        });
+
+        for(var i = 0; i < allStationsMapData.length; i++){
+            (function(stationMapData){
+                //alert("data " + stationMapData.stationID);
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: stationMapData.stationLatLng,
+                    stationID: stationMapData.stationID
+                });
+                google.maps.event.addDomListener(marker, 'click', function(){
+                    location.path('station').search({stationID: marker.stationID});
+                    //need scope.apply for location.path to work.
+                    scope.$apply();
+                    //window.location.href = marker.url;
+                });
+            })(allStationsMapData[i]);
+        }
+
+
+                return response.data //self.allStationsMapData;
             }else{
                 return null;
             }
@@ -454,14 +482,14 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
 
         var self = this;
          alert("map" + document.getElementById('map'));
-           alert("map data length " + self.allStationsMapData.length);
-         alert("map data" + JSON.stringify(self.allStationsMapData));
+           alert("map data length " + allStationsMapData.length);
+         alert("map data" + JSON.stringify(allStationsMapData));
         var map = new google.maps.Map(document.getElementById('map'),{
             zoom: 9,
-            center: self.allStationsMapData[0].stationLatLng
+            center: allStationsMapData[0].stationLatLng
         });
 
-        for(var i = 0; i < self.allStationsMapData.length; i++){
+        for(var i = 0; i < allStationsMapData.length; i++){
             (function(stationMapData){
                 //alert("data " + stationMapData.stationID);
                 var marker = new google.maps.Marker({
@@ -475,7 +503,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
                     scope.$apply();
                     //window.location.href = marker.url;
                 });
-            })(self.allStationsMapData[i]);
+            })(allStationsMapData[i]);
         }
     };
 
