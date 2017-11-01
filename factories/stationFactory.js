@@ -460,7 +460,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
             center: allStationsMapData[0].stationLatLng
         });
 
-        for(var i = 0; i < allStationsMapData.length -345; i++){
+        for(var i = 0; i < 5; i++){
             (function(stationMapData){
                 //alert("data " + stationMapData.stationID);
                 var marker = new google.maps.Marker({
