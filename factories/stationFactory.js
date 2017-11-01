@@ -36,7 +36,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
         var self = this; 
         return $http({
             method: 'GET',
-           // url: 'http://localhost/API/allStationsMapData?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+            //url: 'http://localhost/API/allStationsMapData?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
             url: 'http://gamuzic.com/API/allStationsMapData?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
             headers: {
                'Content-Type': 'application/json;charset=utf-8'
@@ -53,8 +53,8 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
                 }
             }
             if(responseDataIsValid){           
-                self.allStationsMapData = prepareStationMapData(response.data);
-
+                self.allStationsMapData = self.prepareStationMapData(response.data);
+               console.log(JSON.stringify(self.allStationsMapData));
                 return self.allStationsMapData;
             }else{
                 return null;
@@ -65,7 +65,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
         });
     };
 
-    
+
     stationService.prepareStationMapData = function(allStationsMapData){
         var preparedMapData = [];
         allStationsMapData.forEach(function(stationMapData) {
@@ -467,10 +467,8 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
        //  var allStationsMapData = [{stationLatLng: {lat: 53.41291, lng: -8.24389}, stationID: "5"},{stationLatLng: {lat: 53.3498053, lng: -6.2603097}, stationID: "5"}];
 
         var self = this;
-        alert("map" + document.getElementById('map'));
-        alert("map data length " + allStationsMapData.length);
-        alert("map data" + JSON.stringify(allStationsMapData));
-       alert("map data" + JSON.stringify(allStationsMapData[0].stationLatLng.lat));
+
+       //alert("map data" + JSON.stringify(allStationsMapData[0].stationLatLng.lat));
 
         var map = new google.maps.Map(document.getElementById('map'),{
             zoom: 9,
