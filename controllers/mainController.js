@@ -70,7 +70,7 @@ mapApp.controller("mainController", function($scope, $http, $q, $timeout, $locat
          * We will call this method anytime the home view has finished loading so that the div with id of map will be in the DOM.
          */
         if(stationFactory.stationService.allStationsMapData.length === 0){
-            console.log("length " + stationFactory.stationService.allStationsMapData.length);
+            alert("length " + stationFactory.stationService.allStationsMapData.length);
                 //The allStationsMapData array is not populated therefore we need to do an API call (i.e call the getAllStationsMapData() method)
                 //to retrieve the data from the database.
                 stationFactory.stationService.getAllStationsMapData().then(function(allStationsMapData) {
@@ -83,7 +83,7 @@ mapApp.controller("mainController", function($scope, $http, $q, $timeout, $locat
                     }
                 });
         }else{
-            console.log("length " + stationFactory.stationService.allStationsMapData.length);
+            alert("length " + stationFactory.stationService.allStationsMapData.length);
             //the allStationsMapData array is populated so the API call was already made to retrieve the allStationsMapData 
             //from the database so we just need to get the array data from our stationService now.
             var allStationsMapData = stationFactory.stationService.allStationsMapData;
