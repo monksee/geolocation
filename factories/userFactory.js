@@ -84,7 +84,7 @@ mapApp.factory('userFactory', function($http, $q, sharedFactory, facebookFactory
 
         return $http({
                 method: 'POST',
-               // url: 'http://localhost/API/facebookAuth?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+                //url: 'http://localhost/API/facebookAuth?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 url: 'http://gamuzic.com/API/facebookAuth?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 data: JSON.stringify(data),
                 headers: {
@@ -114,13 +114,13 @@ mapApp.factory('userFactory', function($http, $q, sharedFactory, facebookFactory
             
                 }else{
                     //The data is not valid (or there has been an error)
-                    sharedFactory.buildErrorNotification(response);
+                    //sharedFactory.buildErrorNotification(response);
                     //The controller is expecting the userDetails returned. We pass in null instead.
                     return null;
                 }
 
             },function errorCallback(response){
-                sharedFactory.buildErrorNotification(response);
+              //  sharedFactory.buildErrorNotification(response);
                 //The controller is expecting the userDetails returned. We pass in null instead.
                 return null;
             });

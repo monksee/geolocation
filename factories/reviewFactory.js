@@ -1,5 +1,5 @@
 /*
- * This factory consists of objects and methods which will process data associated with the reviews and ratings of the stations.
+ * This factory consists of objects and methods which will process data associated with the reviews (and their replies) and ratings of the stations.
  */
 mapApp.factory('reviewFactory', function($http, sharedFactory){
     "use strict";
@@ -76,13 +76,9 @@ mapApp.factory('reviewFactory', function($http, sharedFactory){
             reviewsArray.forEach(function(review) {
                 //was doing sumOfRatings += review.reviewRating; but this was concatenating the values as a string so need to do the following 
                 //to ensure the values are added up as numbers.
-                sumOfRatings = +sumOfRatings + +review.reviewRating;
-                
+                sumOfRatings = +sumOfRatings + +review.reviewRating;        
             }); 
             var averageRating = sumOfRatings/numberOfRatings;
-           // console.log("sumOfRatings " + JSON.stringify(sumOfRatings));
-            //console.log("averageRating " + JSON.stringify(averageRating));
-           // console.log("numberOfRatings " + JSON.stringify(numberOfRatings));
             //round the averageRating down to the nearest half integer and store it into the averagaRatingData object that we will return
             averageRatingData.averageRating = Math.round(averageRating * 2)/2;
             averageRatingData.ratingInStars = this.prepareRatingInStars(averageRatingData.averageRating);

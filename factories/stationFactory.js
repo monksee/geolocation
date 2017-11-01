@@ -14,11 +14,54 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
             "stationAddressLine2" : "",
             "stationAddressLine3" : "",
             "stationPhoneNumber" : "",
-            "stationLatitude" : 0.0,
-            "stationLongitude" : 0.0,
+            "stationLatLng" : {"lat" : 0.0, "lng" : 0.0},
             "stationServices" : [],
             "averageRatingData" : {},
             "reviews" : []
+    };
+    /* Create an array which will hold all info needed to pinpoint all of our stations on a google map.
+     * Each element of this array will be an object for example the following:
+     * {"stationID" : 5, "stationName" : "", "stationLatLng" : {"lat" : 0.0, "lng" : 0.0}}
+     */
+    stationService.allStationsMapData = [];
+
+    stationService.getAllStationsMapData = function(){
+         /**
+         * This method makes a http GET request to our allStationsMapData Endpoint to retrieve details needed for all 
+         * stations to be pinpointed on a google map.
+         * The home view will display the google map however we will call this method in the mainController.
+         * This API call should only be made once the app opens (not everytime we go to the home view)
+         * We return the allStationsMapData array or if an error occurs we return null.
+         */
+        var self = this; 
+        return $http({
+            method: 'GET',
+           // url: 'http://localhost/API/allStationsMapData?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+            url: 'http://gamuzic.com/API/allStationsMapData?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+            headers: {
+               'Content-Type': 'application/json;charset=utf-8'
+            },
+            responseType:'json'
+        }).then(function successCallback(response){
+            //Do checks to see if the response data is valid. 
+            var responseDataIsValid = false; //initialize boolean to false
+            if(response.hasOwnProperty('data') && response.data !== null){
+                //check if the data property is present in the response and it is not null
+                if(!response.data.hasOwnProperty('error')){     
+                    //response does not have error property therefore it is valid       
+                    responseDataIsValid = true;
+                }
+            }
+            if(responseDataIsValid){           
+                self.allStationsMapData = response.data;
+                return self.allStationsMapData;
+            }else{
+                return null;
+            }
+        },function errorCallback(response){
+            sharedFactory.buildErrorNotification(response);
+            return null;
+        });
     };
 
     stationService.getStationDetails = function(stationID){ 
@@ -34,7 +77,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
 
         return $http({
             method: 'GET',
-           // url: 'http://localhost/API/station/' + stationID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+          //  url: 'http://localhost/API/station/' + stationID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
             url: 'http://gamuzic.com/API/station/' + stationID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
             headers: {
                'Content-Type': 'application/json;charset=utf-8'
@@ -59,22 +102,18 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
 
             //After the checks to see if the response is valid then store our station data from the API in the stationDetails object.
             if(responseDataIsValid){
-
                 self.stationDetails = response.data;
-                 console.log('self.stationDetails.stationServices ' + JSON.stringify(self.stationDetails.stationServices));
                 //calculate the average rating for this station (by looking at the rating in each review).
                 var averageRatingData = reviewFactory.reviewService.getAverageRating(response.data.reviews);
+
                 //add the average rating as a property to the stationDetails object.
                 self.stationDetails.averageRatingData = averageRatingData;
-   
-                
                 //We need to alter the reviews array that comes back in the response so we can add a ratingInStars property to each review
                 //We do this using the prepareReviews method of the reviewsFactory
                 self.stationDetails.reviews = reviewFactory.reviewService.prepareReviews(response.data.reviews);
-               console.log('prepared self.stationDetails.reviews ' + JSON.stringify(self.stationDetails.reviews));
+  
                 //return the stationDetails to the controller
                 return self.stationDetails;
-                 
             }else{
                 //There has been an error. The controller is expecting the stationDetails returned from this method. We pass in null instead and check for null in controller.
                 return null;
@@ -102,7 +141,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
         };
         return $http({
                 method: 'POST',
-               // url: 'http://localhost/API/createReview?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+               //url: 'http://localhost/API/createReview?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 url: 'http://gamuzic.com/API/createReview?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 data: JSON.stringify(data),
                 headers: {
@@ -153,7 +192,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
         };
         return $http({
                 method: 'PUT',
-              // url: 'http://localhost/API/editReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+               // url: 'http://localhost/API/editReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 url: 'http://gamuzic.com/API/editReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 data: JSON.stringify(data),
                 headers: {
@@ -206,8 +245,8 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
         };
         return $http({
                 method: 'DELETE',
-              // url: 'http://localhost/API/deleteReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
-                url: 'http://gamuzic.com/API/deleteReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+              //url: 'http://localhost/API/deleteReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+               url: 'http://gamuzic.com/API/deleteReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 data: JSON.stringify(data),
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8'
@@ -259,7 +298,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
         };
         return $http({
                 method: 'POST',
-              //  url: 'http://localhost/API/createReply?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+               // url: 'http://localhost/API/createReply?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 url: 'http://gamuzic.com/API/createReply?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 data: JSON.stringify(data),
                 headers: {
@@ -309,7 +348,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
         };
         return $http({
                 method: 'PUT',
-                //url: 'http://localhost/API/editReply/' + replyID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+               // url: 'http://localhost/API/editReply/' + replyID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 url: 'http://gamuzic.com/API/editReply/' + replyID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 data: JSON.stringify(data),
                 headers: {
@@ -364,7 +403,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
         };
         return $http({
                 method: 'DELETE',
-                //url: 'http://localhost/API/deleteReply/' + replyID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+               // url: 'http://localhost/API/deleteReply/' + replyID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 url: 'http://gamuzic.com/API/deleteReply/' + replyID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 data: JSON.stringify(data),
                 headers: {
@@ -406,7 +445,32 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
             });
     }; 
 
+    stationService.prepareStationsOnMap = function(allStationsMapData, scope, location){ 
+        /*
+         * This method takes in data for all our station data and pinpoints the station locations on a google map with id of map.
+         * We use this in our main controller after we have detected that the home view has finished loading.
+         */
+        var map = new google.maps.Map(document.getElementById('map'),{
+            zoom: 9,
+            center: allStationsMapData[0].stationLatLng
+        });
 
+        for(var i = 0; i < allStationsMapData.length; i++){
+            (function(stationMapData){
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: stationMapData.stationLatLng,
+                    stationID: stationMapData.stationID
+                });
+                google.maps.event.addDomListener(marker, 'click', function(){
+                    location.path('station').search({stationID: marker.stationID});
+                    //need scope.apply for location.path to work.
+                    scope.$apply();
+                    //window.location.href = marker.url;
+                });
+            })(allStationsMapData[i]);
+        }
+    };
 
     stationService.checkForReviews = function(){ 
         /*
