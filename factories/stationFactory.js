@@ -450,6 +450,8 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
          * This method takes in data for all our station data and pinpoints the station locations on a google map with id of map.
          * We use this in our main controller after we have detected that the home view has finished loading.
          */
+         alert("map" + document.getElementById('map'));
+         alert("map data" + JSON.stringify(allStationsMapData));
         var map = new google.maps.Map(document.getElementById('map'),{
             zoom: 9,
             center: allStationsMapData[0].stationLatLng
