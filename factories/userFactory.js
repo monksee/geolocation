@@ -84,7 +84,7 @@ mapApp.factory('userFactory', function($http, $q, sharedFactory, facebookFactory
 
         return $http({
                 method: 'POST',
-                //url: 'http://localhost/API/facebookAuth?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+               // url: 'http://localhost/API/facebookAuth?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 url: 'http://gamuzic.com/API/facebookAuth?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 data: JSON.stringify(data),
                 headers: {
@@ -164,7 +164,7 @@ mapApp.factory('userFactory', function($http, $q, sharedFactory, facebookFactory
         var self = this; 
         return $http({
                 method: 'POST',
-                //url: 'http://localhost/API/tokenAuth?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+               // url: 'http://localhost/API/tokenAuth?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 url: 'http://gamuzic.com/API/tokenAuth?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 data: JSON.stringify(data),
                 headers: {

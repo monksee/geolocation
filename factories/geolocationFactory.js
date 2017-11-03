@@ -6,6 +6,7 @@ mapApp.factory('geolocationFactory', function ($rootScope, phonegapReady) {
         //we want to wrap our implementation in our phonegapReady function in case deviceready has not fired yet.
         //If deviceready has not fired then this call will be put in a queue until it fires.
         getCurrentPosition: phonegapReady(function (onSuccess, onError, options) {
+           
             navigator.geolocation.getCurrentPosition(function () {
                 var that = this,
                 args = arguments;
@@ -26,6 +27,7 @@ mapApp.factory('geolocationFactory', function ($rootScope, phonegapReady) {
                 }
             },
             options);
+           
         })
     };
 });

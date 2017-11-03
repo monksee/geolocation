@@ -1,7 +1,7 @@
 /*
  * This factory consists of objects and methods which will process data associated with the petrol stations.
  */
-mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, userFactory, reviewFactory){
+mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedFactory, userFactory, reviewFactory){
     "use strict";
     var stationService = {};
 
@@ -25,6 +25,12 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
      */
     stationService.allStationsMapData = [];
 
+    stationService.map;
+    stationService.currentPosition = {};
+    stationService.destinationLatLng = {};
+    stationService.directionsDisplay;
+    stationService.directionsService;
+
     stationService.getAllStationsMapData = function(){
          /**
          * This method makes a http GET request to our allStationsMapData Endpoint to retrieve details needed for all 
@@ -36,7 +42,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
         var self = this; 
         return $http({
             method: 'GET',
-            //url: 'http://localhost/API/allStationsMapData?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+           // url: 'http://localhost/API/allStationsMapData?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
             url: 'http://gamuzic.com/API/allStationsMapData?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
             headers: {
                'Content-Type': 'application/json;charset=utf-8'
@@ -91,7 +97,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
 
         return $http({
             method: 'GET',
-          //  url: 'http://localhost/API/station/' + stationID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+           // url: 'http://localhost/API/station/' + stationID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
             url: 'http://gamuzic.com/API/station/' + stationID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
             headers: {
                'Content-Type': 'application/json;charset=utf-8'
@@ -206,7 +212,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
         };
         return $http({
                 method: 'PUT',
-               // url: 'http://localhost/API/editReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+                //url: 'http://localhost/API/editReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 url: 'http://gamuzic.com/API/editReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 data: JSON.stringify(data),
                 headers: {
@@ -259,7 +265,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
         };
         return $http({
                 method: 'DELETE',
-              //url: 'http://localhost/API/deleteReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+             // url: 'http://localhost/API/deleteReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                url: 'http://gamuzic.com/API/deleteReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 data: JSON.stringify(data),
                 headers: {
@@ -362,7 +368,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
         };
         return $http({
                 method: 'PUT',
-               // url: 'http://localhost/API/editReply/' + replyID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+                //url: 'http://localhost/API/editReply/' + replyID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 url: 'http://gamuzic.com/API/editReply/' + replyID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 data: JSON.stringify(data),
                 headers: {
@@ -464,34 +470,178 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, sharedFactory, us
          * This method takes in data for all our station data and pinpoints the station locations on a google map with id of map.
          * We use this in our main controller after we have detected that the home view has finished loading.
          */
-       //  var allStationsMapData = [{stationLatLng: {lat: 53.41291, lng: -8.24389}, stationID: "5"},{stationLatLng: {lat: 53.3498053, lng: -6.2603097}, stationID: "5"}];
-
         var self = this;
-
-       //alert("map data" + JSON.stringify(allStationsMapData[0].stationLatLng.lat));
-
-        var map = new google.maps.Map(document.getElementById('map'),{
+        var infoWindow = new google.maps.InfoWindow();
+        self.map = new google.maps.Map(document.getElementById('map'),{
             zoom: 9,
-            center: allStationsMapData[0].stationLatLng
+            center: allStationsMapData[0].stationLatLng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            mapTypeControl: false
         });
 
         for(var i = 0; i < allStationsMapData.length; i++){
+
             (function(stationMapData){
-                //alert("data " + stationMapData.stationID);
+                var infoWindowHTMLContent = self.generateInfoWindowContent(stationMapData.stationID, stationMapData.stationName, stationMapData.stationLatLng);
+                var compiled = $compile(infoWindowHTMLContent)(scope);
                 var marker = new google.maps.Marker({
-                    map: map,
+                    map: self.map,
                     position: stationMapData.stationLatLng,
-                    stationID: stationMapData.stationID
+                    stationID: stationMapData.stationID,
+                    icon: 'http://gamuzic.com/map_app3/images/icon.png',
+                   // icon: 'http://localhost/phonegap_tut/images/icon.png',
+                    content: compiled[0],
                 });
+             
                 google.maps.event.addDomListener(marker, 'click', function(){
-                    location.path('station').search({stationID: marker.stationID});
-                    //need scope.apply for location.path to work.
-                    scope.$apply();
-                    //window.location.href = marker.url;
+                    infoWindow.setContent(this.content);
+                    infoWindow.open(self.map, this);
+                  //location.path('station').search({stationID: marker.stationID});
+                  //need scope.apply for location.path to work.
+                  //scope.$apply();
                 });
             })(allStationsMapData[i]);
+
+        }
+        //get the users current location and mark it on the map.
+        self.prepareCurrentLocation();
+
+    };
+
+    stationService.generateInfoWindowContent = function(stationID, stationName, stationLatLng){ 
+        /*
+         * This method prepares HTML for the content of the google map info winodw (i.e the popups that come up when you click 
+         * on a marker).
+         * This method is called in prepareStationsOnMap.
+         */
+        var infoWindowHTML = '<div><h4>' + stationName + '</h4>' + 
+                             '<a class="info_window_button" href="#station?stationID=' + stationID + '">View more info</a>' + 
+                             '<input class="info_window_button" type="button" value="Get directions"' + 
+                             ' data-ng-click="getDirections(' + stationLatLng.lat + ',' + stationLatLng.lng + ')"/></div>';
+
+        return infoWindowHTML;
+    };
+
+    stationService.prepareCurrentLocation = function(){ 
+        /*
+         * This method gets a user's current position, marks it on the map and also stores the lat and lng into
+         * our object called currentPosition.
+         * We also enter this current position to the From input field in our directions form
+         */
+        var self = this;
+        if(navigator.geolocation){
+
+            var timeoutVal = 10 * 1000 * 1000;  
+            navigator.geolocation.getCurrentPosition(
+                function(position){
+                    self.currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                    console.log(JSON.stringify(self.currentPosition));
+                    var marker = new google.maps.Marker({
+                        position: self.currentPosition, 
+                        map: self.map, 
+                        title:"User location",
+                        icon: 'http://gamuzic.com/map_app3/images/you_icon.png',
+                       // icon: 'http://localhost/phonegap_tut/images/you_icon.png',
+                        optimized: false,
+                        zIndex:99999999
+                    }); 
+                },self.displayError, 
+                { enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 0 }
+            );
+
+        }else{
+            alert("Please enter your starting position in the form to get directions");
         }
     };
+
+    stationService.showPosition = function(position){
+        var self = this;
+
+        var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+        var marker = new google.maps.Marker({
+                position: currentPosition, 
+                map: self.map, 
+                title:"User location"
+        });
+    
+    };
+    stationService.displayError = function(error) {
+        var errors = { 
+            1: 'Permission denied',
+            2: 'Position unavailable',
+            3: 'Request timeout'
+        };
+        if(errors[error.code] == 'Permission denied'){
+            //alert("Error: " + errors[error.code]);
+            alert("Error: Current location inaccessible");
+            alert("Please ensure location services are enabled in the settings on your device"); 
+        }else{
+            alert("Error: " + errors[error.code]);
+            alert("Please enter your starting position in the form to get directions");
+        }
+    };
+
+    stationService.getDirections = function(startFromCurrentPosition, startLocation, viaPoint, travelMode){ 
+        var self = this;
+        if(startFromCurrentPosition){
+            var start = self.currentPosition; 
+        }else{
+            var start = startLocation;
+        }
+        //get the travelmode, startpoint and via point from the form   
+        var travelMode = travelMode;
+        var via = viaPoint;
+        if (travelMode == 'TRANSIT') {
+            via = '';  //if the travel mode is transit, don't use the via waypoint because that will not work
+        }
+
+        var end = self.destinationLatLng.lat + ',' + self.destinationLatLng.lng; //endpoint is a geolocation
+        var waypoints = []; // init an empty waypoints array
+        //if (via != '') {
+        //if waypoints (via) are set, add them to the waypoints array
+        //waypoints.push({
+        //location: via,
+        //stopover: true
+        //});
+        //}
+        var request = {
+            origin: start,
+            destination: end,
+            waypoints: waypoints, //delete this if via is not used
+            unitSystem: google.maps.UnitSystem.IMPERIAL,
+            travelMode: google.maps.DirectionsTravelMode[travelMode]
+        };
+        self.directionsDisplay = new google.maps.DirectionsRenderer();
+        self.directionsDisplay.setMap(self.map);
+        self.directionsDisplay.setPanel(document.getElementById("directions_panel"));
+        self.directionsService = new google.maps.DirectionsService();
+
+        self.directionsService.route(request, function(response, status){
+            if (status == google.maps.DirectionsStatus.OK){
+                self.directionsDisplay.setDirections(response);
+            }else{
+                // alert an error message when the route could not be calculated.
+                if (status == 'ZERO_RESULTS'){
+                    alert('No route could be found between the origin and destination.');
+                }else if (status == 'UNKNOWN_ERROR'){ 
+                    alert('A directions request could not be processed due to a server error. The request may succeed if you try again.');
+                }else if (status == 'REQUEST_DENIED'){
+                    alert('This webpage is not allowed to use the directions service.');
+                }else if (status == 'OVER_QUERY_LIMIT'){
+                    alert('The webpage has gone over the requests limit in too short a period of time.');
+                }else if (status == 'NOT_FOUND'){
+                    alert('At least one of the origin, destination, or waypoints could not be geocoded.');
+                }else if (status == 'INVALID_REQUEST'){
+                    alert('The Directions Request provided was invalid.');                  
+                }else{
+                    alert("There was an unknown error in your request. Requeststatus: \n\n"+status);
+                }
+            }
+        });
+
+    };
+
 
     stationService.checkForReviews = function(){ 
         /*
