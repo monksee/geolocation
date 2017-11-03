@@ -14,6 +14,7 @@
 
 <link rel="stylesheet" type="text/css" href="css/index.css"/>	
 <link rel="stylesheet" type="text/css" href="css/header.css"/>	
+<link rel="stylesheet" type="text/css" href="css/map.css"/>	
 <link rel="stylesheet" type="text/css" href="css/station_and_reviews.css"/>	
 <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css"/>	
 <style>
@@ -42,7 +43,7 @@ width:90%;
        	</ul><!--/header_nav-->		
 	</header>
 
-	<div id="container_wrapper" class="scrollable" data-ng-class="{'swipe_left': panelIsOpen == true}" data-ng-swipe-left="panelIsOpen = true">
+	<div id="container_wrapper" class="scrollable" data-ng-class="{'swipe_left': panelIsOpen == true}" data-ng-swipe-left="(!detectHomeView() ? panelIsOpen = true : '')">
 		<div class="container"> 
             <div id="login_info_area" data-ng-show="showUserProfileArea()">
 			    <span class="user_profile_pic">
