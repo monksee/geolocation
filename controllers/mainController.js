@@ -3,8 +3,8 @@
  * This is the mainController which will be associated with the body of the index file as we will use this controller throughout all
  * "pages" for the header menu items and side panel menu and other details.
  */
-mapApp.controller("mainController", function($scope, $http, $q, $timeout, $location, geolocationFactory, facebookFactory, sharedFactory, userFactory, validatorFactory, stationFactory){
-
+mapApp.controller("mainController", function($scope, $window, $http, $q, $timeout, $location, geolocationFactory, facebookFactory, sharedFactory, userFactory, validatorFactory, stationFactory){
+    "use strict";
     /* Define our scope variables */
 	//the boolean variable "panelIsOpen" will initially be set to false as the side panel with initially be closed on page load
 	$scope.panelIsOpen = false;
@@ -17,10 +17,11 @@ mapApp.controller("mainController", function($scope, $http, $q, $timeout, $locat
 	//userDetails should be stored in the mainController scope
     $scope.userDetails = userFactory.userService.userDetails;
 
-
+    $scope.bottomPanelIsShowing = false;
     //not sure we need to add this to scope yet as we are only using it with google maps.
     $scope.allStationsMapData = stationFactory.stationService.allStationsMapData;
-
+    $scope.directionsFormData = {};
+    $scope.startFromCurrentPosition = false;
     /* Define our functions */
 
     /*
@@ -29,8 +30,7 @@ mapApp.controller("mainController", function($scope, $http, $q, $timeout, $locat
      * If the app has been in a state of 'paused' (a phonegap event) then this will not execute on 'resume' (only when the scripts are initially loaded)
      */
     (function() {
-       // "use strict";
-       // alert('anonymous function');
+
         if(localStorage.getItem("userToken") === null){
             //If there is no userToken in local storage, then we will not want the userDetails object to have any user Details.
             //So reset the userDetails object.
@@ -48,7 +48,55 @@ mapApp.controller("mainController", function($scope, $http, $q, $timeout, $locat
             });
         }
     })();
+    $scope.showGetDirectionsForm = function(){ 
+     
+        if($scope.bottomPanelIsShowing == false){
+            $scope.bottomPanelIsShowing = true;
+        }else if($scope.bottomPanelIsShowing == true){
+            $scope.bottomPanelIsShowing = false;
+        }
+    };
 
+
+    $scope.getDirections = function(stationLat, stationLng){ 
+        //$location.hash('directions_panel');
+       // $anchorScroll();
+        $scope.bottomPanelIsShowing = true;
+         console.log("stationFactory.stationService.currentPosition " + stationFactory.stationService.currentPosition);
+        if(sharedFactory.checkIfEmptyObject(stationFactory.stationService.currentPosition)){
+            $scope.startFromCurrentPosition = false;
+        }else{
+            $scope.startFromCurrentPosition = true;
+            console.log("$scope.startFromCurrentPosition " + $scope.startFromCurrentPosition);
+        }
+        console.log($scope.bottomPanelIsShowing);
+
+        //store the "To" lat and lng in our service in order to retrieve them later when the form is submitted.
+        stationFactory.stationService.destinationLatLng = {"lat" : stationLat , "lng" : stationLng};
+        console.log(JSON.stringify(stationFactory.stationService.destinationLatLng));
+       // var directionsPanelOffset = document.getElementById('directions_panel').offsetTop;
+       // console.log(directionsPanelOffset);
+       // var container_wrapper = document.getElementById('container_wrapper');
+        //scrollTo(container_wrapper, 0, directionsPanelOffset);
+       // container_wrapper.scrollTo(0, directionsPanelOffset);  
+       
+    };
+
+    $scope.removeCurrentLocation = function(){ 
+         $scope.startFromCurrentPosition = false;
+    };
+
+    $scope.submitGetDirectionsForm = function(){ 
+        console.log($scope.directionsFormData.startLocation);
+        console.log($scope.directionsFormData.viaPoint);
+           console.log($scope.directionsFormData.travelMode);
+        var startFromCurrentPosition = $scope.startFromCurrentPosition;
+        var startLocation = $scope.directionsFormData.startLocation;
+        var viaPoint = $scope.directionsFormData.viaPoint;
+        var travelMode = $scope.directionsFormData.travelMode;
+        //pass in start, via and travel mode.
+        stationFactory.stationService.getDirections(startFromCurrentPosition, startLocation, viaPoint, travelMode);
+    };
 
     $scope.$on('$viewContentLoaded', function(){
         /*
@@ -70,7 +118,7 @@ mapApp.controller("mainController", function($scope, $http, $q, $timeout, $locat
          * We will call this method anytime the home view has finished loading so that the div with id of map will be in the DOM.
          */
         if(stationFactory.stationService.allStationsMapData.length === 0){
-            alert("length " + stationFactory.stationService.allStationsMapData.length);
+          //  alert("length " + stationFactory.stationService.allStationsMapData.length);
                 //The allStationsMapData array is not populated therefore we need to do an API call (i.e call the getAllStationsMapData() method)
                 //to retrieve the data from the database.
                 stationFactory.stationService.getAllStationsMapData().then(function(allStationsMapData) {
@@ -84,7 +132,7 @@ mapApp.controller("mainController", function($scope, $http, $q, $timeout, $locat
                     }
                 });
        }else{
-            alert("length " + stationFactory.stationService.allStationsMapData.length);
+           // alert("length " + stationFactory.stationService.allStationsMapData.length);
             //the allStationsMapData array is populated so the API call was already made to retrieve the allStationsMapData 
             //from the database so we just need to get the array data from our stationService now.
             var allStationsMapData = stationFactory.stationService.allStationsMapData;
@@ -119,7 +167,14 @@ mapApp.controller("mainController", function($scope, $http, $q, $timeout, $locat
         var isLoginPath = $scope.checkLocationPath("login");
         return isLoginPath;
     }
-
+    $scope.detectHomeView = function(){
+        /*
+         * This function checks if we are on the login view.
+         * We will use this in the index.html page with ng-show in order to hide the header when we are on the login view.
+         */
+        var isHomePath = $scope.checkLocationPath("home");
+        return isHomePath;
+    }
 	$scope.toggleSidePanel = function(){
 		/*
          * This function checks if the boolean variable "panelIsOpen" is currently true or false.
@@ -175,7 +230,7 @@ mapApp.controller("mainController", function($scope, $http, $q, $timeout, $locat
 		$scope.transitionFromLeftToRight();
 	}
 
-    $scope.loginWithFacebook = function(){
+    $scope.loginWithFacebook1 = function(){
         /*
          * This function calls the login method of the userFactory.userService and returns the user's profile data.
          * This method will be called when the "login with facebook" button is pressed and also when the 
@@ -223,7 +278,7 @@ mapApp.controller("mainController", function($scope, $http, $q, $timeout, $locat
 
 
 
-    $scope.loginWithFacebook1 = function(){
+    $scope.loginWithFacebook = function(){
         var loginIsSuccessful = false; //initialize a boolean to false
         var deferred = $q.defer();
         //the following blocks of code should be moved to the facebookFactory when using phonegap
