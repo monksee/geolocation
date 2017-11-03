@@ -188,10 +188,20 @@ font-size: 14px;
 font-size: 16px;
 }
 
+
+button, input[type="button"]{
+outline: 0; 		/*override the default button outline*/
+border: 0 !important;  		/*override the default button border*/
+-webkit-box-shadow: 	none !important;
+-moz-box-shadow: 	none !important;
+box-shadow: 		none !important;
+border: none !important; 
+
+}
 /*this is the styling of a container for the small buttons that appear within a review or reply*/
 .review_area_button{
 outline: 0; 		/*override the default button outline*/
-border: 0;  		/*override the default button border*/
+border: 0 !important;  		/*override the default button border*/
 -webkit-box-shadow: 	none !important;
 -moz-box-shadow: 	none !important;
 box-shadow: 		none !important;
@@ -202,7 +212,7 @@ display: block;
 position: absolute;
 top: 4px;
 right: 0px;
-width: 18px !important;
+width: 18px;
 height: 25px;
 color: rgba(111, 111, 111, .8); 
 text-shadow: 1px 1px 0px #fff, 0 0 0 #000;
@@ -214,6 +224,7 @@ font-family: Raleway, FontAwesome; /*need to put font awesome here for the icons
 /*this is the pencil button that appears within a review or reply*/
 .edit_button{
 right: 22px;
+width: 22px;
 }
 
 .cancel_button{
@@ -304,3 +315,4 @@ min-height: 30px;
 margin-right: 10px;
 
 }
+

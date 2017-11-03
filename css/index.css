@@ -23,6 +23,7 @@ html{
 -webkit-tap-highlight-color: rgba(0,0,0,0); /*removes the highlight blue color when clicking on elements on mobile*/
 -webkit-text-size-adjust: 100%; /*stops the font from stretching on the iphone on orientation change*/
 height: 100%;
+overflow: auto;
 }
 
 /*remove the default list styling from all uls*/
@@ -98,9 +99,10 @@ position: relative;
 /* need a padding of around 50px at the top on the container because the fixed header of 48px doesnt register a height.
  * also the padding on left and right is a total of 4% which when added to the width of 96% will equal 100%
  */
-padding: 56px 2% 0px 2%; 
-width: 96%;
-overflow: hidden;
+padding: 56px 0% 0px 0%; 
+min-height: 100%;
+width: 100%;
+overflow: visible;
 z-index: 4;
 }
 
@@ -202,7 +204,7 @@ padding-right: 10px;
 /* Styling for animating the view on entering a new view*/
 .view{
 position: relative;
-overflow: hidden;
+
 min-height: 60px; /* need a min height so that the loading sign will appear as it is position absolute*/
 }
 .view_animate_container {
@@ -254,8 +256,8 @@ left: auto !important;
 /******************************************************/
 /*styling for the scrollbar and scrolling functionality*/
 ::-webkit-scrollbar{  
-padding: 1px;
-width: 2px;  
+padding: 0px;
+width: 0px;  
 background-color: #353535;
 }  
 
@@ -346,7 +348,7 @@ z-index: 3;
 font-size: .9rem !important;
 }
 
-input[type="text"], input[type="password"], input[type="email"], input[type="tel"]{
+input[type="text"], input[type="password"], input[type="email"], input[type="tel"], .fake_input_field{
 box-shadow: none;
 -moz-box-shadow: none;
 -webkit-box-shadow: none;
@@ -398,6 +400,13 @@ box-shadow: inset 0px 0px 0px 100px #fff;
 -webkit-box-shadow: inset 0px 0px 0px 100px #fff;
 }
 
+
+input[type="button"]{
+-webkit-appearance: none !important;
+display: block;
+outline: 0; 		/*override the default button outline*/
+border: 0;  		/*override the default button border*/
+}
 
 /*styling to prevent chrome's yellow colour input field after autocomplete*/
 input:-webkit-autofill {
