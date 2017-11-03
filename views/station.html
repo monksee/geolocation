@@ -25,7 +25,7 @@
 <div id="station_reviews_area" data-ng-show="dataIsSet === true">
 	<h3>User Reviews</h3>
     <!--if there are no reviews currently for this station then show the following message-->
-	<p id="no_reviews_message" data-ng-show="!checkForReviews()">There are no reviews yet.</p>
+	<p id="no_reviews_message" data-ng-show="!checkForReviews()">There are no reviews for this petrol station yet.</p>
 
     <!--only show the average_rating_area if the reviews array is populated for this station-->
     <div id="average_rating_area" data-ng-show="checkForReviews()">
@@ -57,7 +57,7 @@
     </div>
 
 	<div id="write_a_review_form_area" data-ng-show="displayReviewForm && checkIfLoggedIn()">
-        <h4>Write your review here:</h4>
+        <h4>Write a review for this Petrol station:</h4>
         <p class="review_form_user_name">
             <span class="bold_text">Name:</span> {{userDetails.facebookName}}
         </p><!--/review_form_user_name-->
