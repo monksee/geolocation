@@ -59,6 +59,67 @@ width:90%;
 	
 		</div><!--/container-->
 	</div><!--/container_wrapper-->
+
+	<div id="bottom_panel" class="scrollable" data-ng-class="{'swipe_up': bottomPanelIsShowing == true}"  >
+    <div id="header_of_bottom_panel">  
+        <button type="button" class="show_bottom_panel_button review_area_button" data-ng-click="showGetDirectionsForm()">
+            <i class="fa" data-ng-class="(bottomPanelIsShowing === false ? 'fa-caret-up': 'fa-caret-down')"></i>
+        </button>
+    </div>
+    <div id="directions_form_area">
+
+        <h4>Get Directions</h4>
+
+	    <form data-ng-submit="submitGetDirectionsForm()" data-ng-model="directions_form" novalidate> 
+			<div id="input_area">
+				<div id="from" class="enter_start_location">
+					<label>From: </label>
+					<div class="fake_input_field" data-ng-show="startFromCurrentPosition === true">
+				     	<span id="current_location_button"><span id="current_location_text">Current Location </span>
+				     	    <span id="remove_current_location_button" data-ng-click="removeCurrentLocation()">
+				     	     <i class="fa fa-times"></i>
+				     	    </span>
+				     	</span>
+					</div>
+
+					<input data-ng-show="startFromCurrentPosition === false" data-ng-model="directionsFormData.startLocation" type="text" value="" placeholder="Enter Start Location">
+				</div>
+						
+				<div id="via">
+					<label>Via: </label>
+					<input data-ng-model="directionsFormData.viaPoint" type="text" value="" placeholder="Enter Via Point (Optional)">
+				</div>
+
+				<div id="travel_mode">
+					<label>Travel mode:</label>
+					<label>
+					    <input data-ng-model="directionsFormData.travelMode" id="driving_input" type="radio" name="travelMode" value="DRIVING" checked/>
+					    <span class="driving"><i class="fa fa-car"></i></span> Driving
+					</label>
+
+					<label>
+					    <input data-ng-model="directionsFormData.travelMode" id="bicycle_input" type="radio" name="travelMode" value="BICYCLING"/>
+						<span class="bicycle"><i class="fa fa-bicycle"></i></span> Bicycling
+					</label>
+
+					<label>
+					    <input data-ng-model="directionsFormData.travelMode" id="public_input" type="radio" name="travelMode" value="TRANSIT"/>
+						<span class="public"><i class="fa fa-bus"></i></span> Public transport
+					</label>
+					<label>
+					    <input data-ng-model="directionsFormData.travelMode" id="walking_input" type="radio" name="travelMode" value="WALKING"/>
+					    <span class="walking"><i class="fa fa-male"></i></span> Walking
+					</label>
+				</div>
+			</div><!--End input_area-->
+			<div class="form_divider">
+	            <input class="btn btn_blue btn_float_right" type="submit" value="Submit" />
+	        </div>
+  	    </form>
+    </div>
+    <div id="directions_panel"></div>
+
+    </div>
 	<div id="panel_area" class="scrollable" data-ng-swipe-right="panelIsOpen = false">		
 		<div class="panel_container">
 			<div class="panel_header"><p>Menu</p></div>
