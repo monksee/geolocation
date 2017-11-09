@@ -123,8 +123,8 @@
                     </span>  
                 </div><!--/character_count_container-->
 
-		        <!--if the form is submitted or if the review_textarea is "touched" and is not filled in then we display an error message-->
-		        <div class="error_message" data-ng-show="review_form.$submitted && (review_form.review_text_area.$touched && !(review_form.review_text_area.$untouched))">
+		        <!--if the form is submitted or if the reviewFormData.text is "undefined" then we display an error message-->
+		        <div class="error_message" data-ng-show="reviewFormData.text == null && review_form.$submitted ">
 		        
       		        <span data-ng-show="review_form.review_text_area.$error.required">Review text is required.</span>
 		        </div>

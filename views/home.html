@@ -1,3 +1,4 @@
+
 <h2>{{pageHeading}}</h2>
 <p class="intro_paragraph"></p><!--introParagraph is defined in homeController and inserted here-->
 
@@ -8,5 +9,81 @@
 
 <div id="map"></div>
 
+
+	<div id="bottom_pane">
+
+    <div id="directions_form_area">
+
+        <h4>Get Directions</h4>
+
+	    <form data-ng-submit="submitGetDirectionsForm()" data-ng-model="directions_form" name="directions_form" novalidate> 
+			<div id="input_area">
+				<div id="from" class="enter_start_location">
+					<label>From: </label>
+                    <div id="select_start_location">
+					<select data-ng-model="directionsFormData.selectedFromLocation" 
+					     ng-init="directionsFormData.selectedFromLocation = 'chooseLocation'"
+					    data-ng-change="selectFromLocation(directionsFormData.selectedFromLocation)">
+                        <option value="currentLocation" ng-selected="directionsFormData.selectedFromLocation === 'currentLocation'">Current location</option>
+                        <option value="chooseLocation" ng-selected="directionsFormData.selectedFromLocation === 'chooseLocation'">Choose start location</option>
+
+                    </select>
+                    </div>
+                    <div data-ng-show="directionsFormData.selectedFromLocation === 'chooseLocation'">
+					    <input data-ng-model="directionsFormData.startLocation" type="text" value="" placeholder="Enter Start Location">
+					    <div data-ng-show="directions_form.$submitted && directionsFormData.startLocation == null">
+				            <p class="error_message">Please enter a start location</p>
+					    </div>
+					</div>
+				</div>
+						
+				<div id="via">
+					<label>Via: </label>
+					<input data-ng-model="directionsFormData.viaPoint" type="text" value="" placeholder="Enter Via Point (Optional)">
+				</div>
+
+				<div id="travel_mode">
+					<label>Travel mode:</label>
+					<label>
+					    <input data-ng-model="directionsFormData.travelMode" id="driving_input" type="radio" name="travelMode" value="DRIVING" checked/>
+					    <span class="driving"><i class="fa fa-car"></i></span> Driving
+					</label>
+
+					<label>
+					    <input data-ng-model="directionsFormData.travelMode" id="bicycle_input" type="radio" name="travelMode" value="BICYCLING"/>
+						<span class="bicycle"><i class="fa fa-bicycle"></i></span> Bicycling
+					</label>
+
+					<label>
+					    <input data-ng-model="directionsFormData.travelMode" id="public_input" type="radio" name="travelMode" value="TRANSIT"/>
+						<span class="public"><i class="fa fa-bus"></i></span> Public transport
+					</label>
+					<label>
+					    <input data-ng-model="directionsFormData.travelMode" id="walking_input" type="radio" name="travelMode" value="WALKING"/>
+					    <span class="walking"><i class="fa fa-male"></i></span> Walking
+					</label>
+
+				</div>
+                <div id="destination">
+					<label>Destination: </label>
+                    <div id="select_destination">
+				        <select ng-model="directionsFormData.selectedDestination" 
+				        ng-options="station.stationID as station.stationShortAddress for station in allStationsMapData" 
+				        ng-change="selectDestination()" 
+				        ng-init="directionsFormData.selectedDestination = '1'"></select>
+			
+                    </div>
+         
+				</div>
+
+			</div><!--End input_area-->
+			<div class="form_divider">
+	            <input class="btn btn_blue btn_float_right" type="submit" value="Submit" />
+	        </div>
+  	    </form>
+    </div>
+    <div id="directions_panel"></div>
+
+    </div>
 
 
