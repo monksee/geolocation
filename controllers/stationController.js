@@ -177,9 +177,8 @@ mapApp.controller("stationController", function($scope, $timeout, $routeParams, 
          * This method is called when the review from is submitted
          * The review form will only be visible if a user has logged in so no need to check if user is logged in here.
          */
-        if($scope.reviewFormData == null || sharedFactory.checkIfEmptyObject($scope.reviewFormData.text)){
-           //If $scope.reviewFormData (our ng-model variable) is undefined or the text object is empty 
-           //it means there is no text in the textarea so break out of the function.
+        if($scope.reviewFormData.text == null){
+           //If $scope.reviewFormData.text is undefined it means there is no text in the textarea so break out of the function.
            //There will be an error message displayed in the form already so no need to output error here.
            return;
         }
@@ -215,7 +214,7 @@ mapApp.controller("stationController", function($scope, $timeout, $routeParams, 
     $scope.resetReviewFormValues = function(){
         /*
          * This method resets our review form values.
-         * We call this after a review has been submitted.
+         * We call this after a review has been submitted so that the form is clear if a user chooses to write a review on another station.
          */
         $scope.reviewFormData = {}; //our ng-model for the review form is called review so reset this.
         $scope.reviewFormData.rating = 0; //reset the rating
@@ -249,7 +248,8 @@ mapApp.controller("stationController", function($scope, $timeout, $routeParams, 
          */
         //A form should be displayed to the user now.
         $scope.selectedReviewForEdit = reviewIndex; 
-
+        //the editReviewFormData array is defined already so now create an object at index of reviewIndex
+        //Set the text and rating of the form to be the original text and also the original rating respectively
         $scope.editReviewFormData[reviewIndex] = {
             text : originalReviewText,
             rating : originalReviewRating
@@ -270,10 +270,9 @@ mapApp.controller("stationController", function($scope, $timeout, $routeParams, 
         /*
          * This method is called when the edited review from is submitted
          */
+        if($scope.editReviewFormData[reviewIndex].text == null){
 
-        if($scope.editReviewFormData[reviewIndex] == null || sharedFactory.checkIfEmptyObject($scope.editReviewFormData[reviewIndex].text)){
-           //If $scope.editReviewFormData (our ng-model variable) is undefined or the text object is empty 
-           //it means there is no text in the textarea so break out of the function.
+           //If $scope.editReviewFormData.text (our ng-model variable) is undefined it means there is no text in the textarea so break out of the function.
            //There will be an error message displayed in the form already so no need to output error here.
            return;
         }
@@ -331,11 +330,11 @@ mapApp.controller("stationController", function($scope, $timeout, $routeParams, 
 
     $scope.submitEditedReply = function(replyID, reviewID, reviewIndex, replyIndex){
         console.log("submitted");
-        if($scope.editReplyFormData[reviewIndex][replyIndex] == null || sharedFactory.checkIfEmptyObject($scope.editReplyFormData[reviewIndex][replyIndex].text)){
-           //If $scope.editReplyFormData[reviewIndex][replyIndex] (our ng-model variable) is undefined or the text object is empty 
-           //it means there is no text in the textarea so break out of the function.
-           //There will be an error message displayed in the form already so no need to output error here.
-           return;
+        if($scope.editReplyFormData[reviewIndex][replyIndex].text == null){
+            //If $scope.editReplyFormData[reviewIndex][replyIndex].text (our ng-model variable) is undefined 
+            //it means there is no text in the textarea so break out of the function.
+            $scope.cancelReplyEdit(reviewIndex);
+            return;
         }
         //get the text from our ng-model object 
         var editedReplyText = $scope.editReplyFormData[reviewIndex][replyIndex].text; 
@@ -370,8 +369,8 @@ mapApp.controller("stationController", function($scope, $timeout, $routeParams, 
     $scope.submitReply = function(reviewIndex, reviewID){
         /*
          */
-        if($scope.replyFormData[reviewIndex] == null || sharedFactory.checkIfEmptyObject($scope.replyFormData[reviewIndex].text)){
-      
+        if($scope.replyFormData[reviewIndex].text == null){
+       
            return;
         }
         var replyText = $scope.replyFormData[reviewIndex].text; //our ng-model variable

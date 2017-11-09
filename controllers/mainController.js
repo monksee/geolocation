@@ -21,7 +21,9 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
     //not sure we need to add this to scope yet as we are only using it with google maps.
     $scope.allStationsMapData = stationFactory.stationService.allStationsMapData;
     $scope.directionsFormData = {};
-    $scope.startFromCurrentPosition = false;
+    $scope.directionsFormData.travelMode = 'DRIVING';
+
+
     /* Define our functions */
 
     /*
@@ -48,6 +50,7 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
             });
         }
     })();
+
     $scope.showGetDirectionsForm = function(){ 
      
         if($scope.bottomPanelIsShowing == false){
@@ -58,45 +61,106 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
     };
 
 
-    $scope.getDirections = function(stationLat, stationLng){ 
-        //$location.hash('directions_panel');
-       // $anchorScroll();
+    $scope.getDirections = function(stationID){ 
+        /*
+         * This method is called when the "get directions" button is clicked from the google map info window.
+         * We take in the stationID of the destination so that we can add it to the model of our directions form.
+         * i.e the $scope.directionsFormData.selectedDestination property.
+         * When the form is submitted we will use the destinationStationID passed through the select menu to get the lat and lng points
+         */
         $scope.bottomPanelIsShowing = true;
-         console.log("stationFactory.stationService.currentPosition " + stationFactory.stationService.currentPosition);
+        $scope.directionsFormData.selectedDestination = "" + stationID; //store it as a string 
+
+        console.log(" stationID " + stationID);
+        console.log("directionsFormData.selectedDestination " + $scope.directionsFormData.selectedDestination);
+
         if(sharedFactory.checkIfEmptyObject(stationFactory.stationService.currentPosition)){
-            $scope.startFromCurrentPosition = false;
+            //not sure if i need this here. might do this when the home view loads instead.
+             $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
         }else{
-            $scope.startFromCurrentPosition = true;
-            console.log("$scope.startFromCurrentPosition " + $scope.startFromCurrentPosition);
+             $scope.directionsFormData.selectedFromLocation = 'currentLocation';
+
         }
-        console.log($scope.bottomPanelIsShowing);
-
-        //store the "To" lat and lng in our service in order to retrieve them later when the form is submitted.
-        stationFactory.stationService.destinationLatLng = {"lat" : stationLat , "lng" : stationLng};
-        console.log(JSON.stringify(stationFactory.stationService.destinationLatLng));
-       // var directionsPanelOffset = document.getElementById('directions_panel').offsetTop;
-       // console.log(directionsPanelOffset);
-       // var container_wrapper = document.getElementById('container_wrapper');
-        //scrollTo(container_wrapper, 0, directionsPanelOffset);
-       // container_wrapper.scrollTo(0, directionsPanelOffset);  
-       
+        console.log(typeof stationFactory.stationService.currentPosition);    
     };
 
-    $scope.removeCurrentLocation = function(){ 
-         $scope.startFromCurrentPosition = false;
+
+    $scope.selectDestination = function(){
+        //ng-change calls this function when select menu changes but we might not need it
+        console.log("$scope.directionsFormData.selectedDestination" + $scope.directionsFormData.selectedDestination);
     };
+
+
+    $scope.selectFromLocation = function(selectedFromLocation){ 
+        /*
+         * This method is called when a user chooses a "from location" of either "current location" or "choose start location" from the select menu 
+         * If a user chooses from "current location" we need to check if geolocation is working on their device in order to get the current position.
+         * For this we call the prepareCurrentLocation from the factory.
+         */
+        console.log("selectedFromLocation "+ selectedFromLocation);
+        console.log("$scope.directionsFormData.selectedFromLocation "+ $scope.directionsFormData.selectedFromLocation);
+        if(selectedFromLocation === 'currentLocation'){
+
+            //if the user selects current location we should get the current location again as it may have changed.
+            stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition) {
+
+                if(currentPosition !== null){
+                    //we were able to get the users current position
+                    console.log(" currentPosition  is not null" +  JSON.stringify(currentPosition));
+                }else{
+                    //if the current position is null then we need to switch the select menu back to "choose a start location"
+                    //we do this as follows:
+                    $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
+                }
+            });
+        }else{
+            console.log("else $scope.directionsFormData.selectedFromLocation "+ $scope.directionsFormData.selectedFromLocation);
+             $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
+        }
+    };
+
 
     $scope.submitGetDirectionsForm = function(){ 
-        console.log($scope.directionsFormData.startLocation);
-        console.log($scope.directionsFormData.viaPoint);
-           console.log($scope.directionsFormData.travelMode);
-        var startFromCurrentPosition = $scope.startFromCurrentPosition;
-        var startLocation = $scope.directionsFormData.startLocation;
+        if($scope.directionsFormData.selectedFromLocation == 'chooseLocation' && $scope.directionsFormData.startLocation == null){
+            //the form has been submitted but the input field for the user to type the "from location" is empty 
+            //so exit the function. There will already be an error message displayed in the form
+            return;
+        }
+        console.log("$scope.directionsFormData.selectedDestination" + $scope.directionsFormData.selectedDestination);
+
+        var startLocation;
+        var destinationStationID = $scope.directionsFormData.selectedDestination;
         var viaPoint = $scope.directionsFormData.viaPoint;
         var travelMode = $scope.directionsFormData.travelMode;
-        //pass in start, via and travel mode.
-        stationFactory.stationService.getDirections(startFromCurrentPosition, startLocation, viaPoint, travelMode);
+
+
+        if($scope.directionsFormData.selectedFromLocation == 'currentLocation'){
+            //we should retrieve the updated current position in case the user has moved position since
+            //beginning to fill in the form.
+            stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition) {
+                if(currentPosition !== null){
+                    //we were able to get the users current position
+                    startLocation = currentPosition;
+
+                    console.log(" currentPosition  is not null" +  JSON.stringify(currentPosition));
+                    //pass in start, via and travel mode.
+                    stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID);
+                }else{
+                    //if the current position is null then we cant allow the form to be submitted.
+                    //stop processing the form and output an error to the user telling them to enter a start location
+                    $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
+                    console.log("chooseLocation ");
+                    return;
+                }
+            });
+
+        }else{
+            startLocation = $scope.directionsFormData.startLocation;
+            //pass in start, via and travel mode.
+            stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID);
+        }
     };
+
 
     $scope.$on('$viewContentLoaded', function(){
         /*
@@ -123,10 +187,12 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
                 //to retrieve the data from the database.
                 stationFactory.stationService.getAllStationsMapData().then(function(allStationsMapData) {
                     if(allStationsMapData !== null){
-                        // $scope.allStationsMapData =  allStationsMapData;
+                         $scope.allStationsMapData =  allStationsMapData;
+
                         //prepare the google map with station data
 
                         stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location);
+
                     }else{
                         //There has been an error when retrieving all the stations data
                     }
@@ -140,6 +206,16 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
 
             stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location);
         }
+
+        //get the users current location and mark it on the map.
+        //We need to do this everytime the home view is loaded in order to get the most up to date current position.
+        stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition) {
+            //on success this method will have also stored the currentPosition into a variable in our factory.
+            if(currentPosition !== null){
+                $scope.directionsFormData.selectedFromLocation = 'currentLocation';
+            }
+            console.log(" currentPosition  " +  JSON.stringify(currentPosition));
+        });
     }
 
     $scope.checkLocationPath = function(locationPath){
@@ -148,7 +224,7 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
          * Return true if we are on that path and false if not.
          */
         $scope.currentLocation = $location.path();
-        console.log("view " + $scope.currentLocation);
+
         //Check if the current path is the locationPath we took in as a parameter. 
         if($scope.currentLocation.indexOf(locationPath) !== -1){
             //This is the locationPath
@@ -230,7 +306,7 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
 		$scope.transitionFromLeftToRight();
 	}
 
-    $scope.loginWithFacebook1 = function(){
+    $scope.loginWithFacebook = function(){
         /*
          * This function calls the login method of the userFactory.userService and returns the user's profile data.
          * This method will be called when the "login with facebook" button is pressed and also when the 
@@ -278,7 +354,7 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
 
 
 
-    $scope.loginWithFacebook = function(){
+    $scope.loginWithFacebook1 = function(){
         var loginIsSuccessful = false; //initialize a boolean to false
         var deferred = $q.defer();
         //the following blocks of code should be moved to the facebookFactory when using phonegap
