@@ -1,7 +1,7 @@
 /*
  * This factory consists of objects and methods which will process data associated with the petrol stations.
  */
-mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedFactory, userFactory, reviewFactory){
+mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedFactory, userFactory, reviewFactory, geolocationFactory){
     "use strict";
     var stationService = {};
 
@@ -73,15 +73,41 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
 
 
     stationService.prepareStationMapData = function(allStationsMapData){
+        /*
+         * This method takes in the stations map data that we retrieved on the server side from our database and prepares
+         * it in the way that we need it for our google map.
+         * i.e it converts the lat and lng points to float numbers as they were incorrectly interpreted as strings without this.
+         * We also create a stationShortAddress with the name and addressLine2 of the station so that we can display this
+         * in the select menu of the directions form for the destination.
+         */
         var preparedMapData = [];
         allStationsMapData.forEach(function(stationMapData) {
             preparedMapData.push({
                 "stationName" : stationMapData.stationName,
+                "stationShortAddress" : stationMapData.stationName + " " + stationMapData.stationAddressLine2,
                 "stationLatLng" : {"lat" : parseFloat(stationMapData.stationLatLng.lat), "lng" : parseFloat(stationMapData.stationLatLng.lng)},
                 "stationID" : stationMapData.stationID
             });
         }); 
         return preparedMapData;
+    };
+
+    stationService.getStationLatLngPoints = function(destinationStationID, allStationsMapData){
+        /*
+         * This method takes in the stationID of a destination and searches the allStationsMapData array for that stationID.
+         * If found, it returns the lat and lng points of that station.
+         * We will use this after the directions form is submitted as the destinationStationID will be passed in from the select menu.
+         *
+         */
+        var stationLatLng = {};
+        allStationsMapData.forEach(function(stationMapData) {
+           if(stationMapData.stationID == destinationStationID){
+               //destinationStationID has been found in the array so get lat and lng points
+               stationLatLng = stationMapData.stationLatLng;
+           }
+
+        }); 
+        return stationLatLng;
     };
 
     stationService.getStationDetails = function(stationID){ 
@@ -496,16 +522,10 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 google.maps.event.addDomListener(marker, 'click', function(){
                     infoWindow.setContent(this.content);
                     infoWindow.open(self.map, this);
-                  //location.path('station').search({stationID: marker.stationID});
-                  //need scope.apply for location.path to work.
-                  //scope.$apply();
                 });
             })(allStationsMapData[i]);
 
         }
-        //get the users current location and mark it on the map.
-        self.prepareCurrentLocation();
-
     };
 
     stationService.generateInfoWindowContent = function(stationID, stationName, stationLatLng){ 
@@ -517,18 +537,19 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         var infoWindowHTML = '<div><h4>' + stationName + '</h4>' + 
                              '<a class="info_window_button" href="#station?stationID=' + stationID + '">View more info</a>' + 
                              '<input class="info_window_button" type="button" value="Get directions"' + 
-                             ' data-ng-click="getDirections(' + stationLatLng.lat + ',' + stationLatLng.lng + ')"/></div>';
+                             ' data-ng-click="getDirections(' + stationID + ')"/></div>';
 
         return infoWindowHTML;
     };
 
-    stationService.prepareCurrentLocation = function(){ 
+    stationService.prepareCurrentLocation1 = function(){ 
         /*
          * This method gets a user's current position, marks it on the map and also stores the lat and lng into
          * our object called currentPosition.
          * We also enter this current position to the From input field in our directions form
          */
         var self = this;
+        var deferred = $q.defer();
         if(navigator.geolocation){
 
             var timeoutVal = 10 * 1000 * 1000;  
@@ -545,69 +566,104 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                         optimized: false,
                         zIndex:99999999
                     }); 
-                },self.displayError, 
-                { enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 0 }
+                    //return the current position. This will be an object with lat and lng points.
+                    deferred.resolve(self.currentPosition); 
+                },
+                function(error) {
+                    var errors = { 
+                        1: 'Permission denied',
+                        2: 'Position unavailable',
+                        3: 'Request timeout'
+                    };
+                    if(errors[error.code] == 'Permission denied'){
+                        alert("Error: Current location inaccessible. Please ensure location services are enabled in the settings on your device."); 
+                    }else{
+                        alert("Error: " + errors[error.code]);
+                        alert("Please enter your starting position in the form to get directions");
+                    }  
+                    deferred.resolve(null);    
+                },
+              { enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 0 }
             );
 
         }else{
+            deferred.resolve(null); 
             alert("Please enter your starting position in the form to get directions");
         }
+        return deferred.promise;
     };
 
-    stationService.showPosition = function(position){
+    stationService.prepareCurrentLocation = function(){ 
+        /*
+         * This method gets a user's current position, marks it on the map and also stores the lat and lng into
+         * our object called currentPosition.
+         * We also enter this current position to the From input field in our directions form
+         */
+        var self = this;
+        var deferred = $q.defer();
+       
+            var timeoutVal = 10 * 1000 * 1000;  
+            geolocation.getCurrentPosition(
+                function(position){
+                    self.currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                    console.log(JSON.stringify(self.currentPosition));
+                    var marker = new google.maps.Marker({
+                        position: self.currentPosition, 
+                        map: self.map, 
+                        title:"User location",
+                        icon: 'http://gamuzic.com/map_app3/images/you_icon.png',
+                       // icon: 'http://localhost/phonegap_tut/images/you_icon.png',
+                        optimized: false,
+                        zIndex:99999999
+                    }); 
+                    //return the current position. This will be an object with lat and lng points.
+                    deferred.resolve(self.currentPosition); 
+                },
+                function(error) {
+                    var errors = { 
+                        1: 'Permission denied',
+                        2: 'Position unavailable',
+                        3: 'Request timeout'
+                    };
+                    if(errors[error.code] == 'Permission denied'){
+                        alert("Error: Current location inaccessible. Please ensure location services are enabled in the settings on your device."); 
+                    }else{
+                        alert("Error: " + errors[error.code]);
+                        alert("Please enter your starting position in the form to get directions");
+                    }  
+                    deferred.resolve(null);    
+                },
+              { enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 0 }
+            );
+        return deferred.promise;
+    };
+
+    stationService.getDirections = function(startLocation, viaPoint, travelMode, destinationStationID){ 
         var self = this;
 
-        var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-
-        var marker = new google.maps.Marker({
-                position: currentPosition, 
-                map: self.map, 
-                title:"User location"
-        });
-    
-    };
-    stationService.displayError = function(error) {
-        var errors = { 
-            1: 'Permission denied',
-            2: 'Position unavailable',
-            3: 'Request timeout'
-        };
-        if(errors[error.code] == 'Permission denied'){
-            //alert("Error: " + errors[error.code]);
-            alert("Error: Current location inaccessible");
-            alert("Please ensure location services are enabled in the settings on your device"); 
-        }else{
-            alert("Error: " + errors[error.code]);
-            alert("Please enter your starting position in the form to get directions");
-        }
-    };
-
-    stationService.getDirections = function(startFromCurrentPosition, startLocation, viaPoint, travelMode){ 
-        var self = this;
-        if(startFromCurrentPosition){
-            var start = self.currentPosition; 
-        }else{
-            var start = startLocation;
-        }
         //get the travelmode, startpoint and via point from the form   
         var travelMode = travelMode;
         var via = viaPoint;
         if (travelMode == 'TRANSIT') {
             via = '';  //if the travel mode is transit, don't use the via waypoint because that will not work
         }
-
-        var end = self.destinationLatLng.lat + ',' + self.destinationLatLng.lng; //endpoint is a geolocation
+        console.log("self.allStationsMapData " + JSON.stringify(self.allStationsMapData));
+        //get the lat and lng points of the station with stationID of destinationStationID.
+        var destinationLatLng = self.getStationLatLngPoints(destinationStationID, self.allStationsMapData);
+        console.log("destinationLatLng " + JSON.stringify(destinationLatLng));
+        
         var waypoints = []; // init an empty waypoints array
-        //if (via != '') {
-        //if waypoints (via) are set, add them to the waypoints array
-        //waypoints.push({
-        //location: via,
-        //stopover: true
-        //});
-        //}
+        if (via != '' && via != null) {
+            console.log("via " + via);
+            //if waypoints (via) are set, add them to the waypoints array
+            waypoints.push({
+                location: via,
+                stopover: true
+            });
+        }
         var request = {
-            origin: start,
-            destination: end,
+            origin: startLocation,
+            destination: destinationLatLng,
             waypoints: waypoints, //delete this if via is not used
             unitSystem: google.maps.UnitSystem.IMPERIAL,
             travelMode: google.maps.DirectionsTravelMode[travelMode]
@@ -631,7 +687,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 }else if (status == 'OVER_QUERY_LIMIT'){
                     alert('The webpage has gone over the requests limit in too short a period of time.');
                 }else if (status == 'NOT_FOUND'){
-                    alert('At least one of the origin, destination, or waypoints could not be geocoded.');
+                    alert('At least one of the origin, destination, or via waypoints could not be geocoded. Please make sure the start location or via point are correct locations');
                 }else if (status == 'INVALID_REQUEST'){
                     alert('The Directions Request provided was invalid.');                  
                 }else{
