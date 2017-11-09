@@ -78,7 +78,7 @@ top: 0px;
 width: 100%;
 height: 100%;
 background: #fafafa; 
-overflow: auto;
+overflow: hidden;
 /* the container_wrapper div needs to have a higher z-index than the side panel area so that it sits on top of it*/
 z-index: 4; 
 /* add css transitions for when the container_wrapper is swiped to the left and right
@@ -279,7 +279,7 @@ background-color: #828282;
 /*the following css transitions will create smooth scrolling on all modern devices*/
 
 .scrollable{
-overflow: scroll; 
+overflow: auto !important;
 -webkit-transition-property: top, bottom;
 -moz-transition-property: top, bottom;
 -o-transition-property: top, bottom;
@@ -360,8 +360,10 @@ color:#414141;
 border-radius:4px;  /*opera*/
 -moz-border-radius:4px;/*firefox*/
 -webkit-border-radius:4px;/*chrome and safari*/
+
 width: 95% !important;
-height:26px;
+padding: 3px 2%;
+height:30px;
 font-family: 'Raleway', FontAwesome; /*need to put font awesome here for the icons in the input fields */
 font-size: .9rem !important;
 display: block;
@@ -432,30 +434,13 @@ clear: both;
 width: 99%;
 color: #d60c40;
 }
-
-
+.input_field_error{
+border:1px solid #d60c40 !important;
+}
 /*********************************************/
 /*styling for our checkboxes in our to do list*/
 input[type="checkbox"]{
 display:none; /*hide the original checkbox so we can apply custom styling. see reference on Style a checkbox using css*/
-}
-
-/*we target the label immediately next to the checkbox using the css + selector*/
-/*we then target the span tag within that label tag*/
-/*this span tag will contain our font-awesome check icon so we set a font size here for the icon and a font color*/ 
-input[type="checkbox"] + label span, .icon_button{
-padding-top: 3px;
-display:block;
-width:24px;
-height:24px;
-cursor:pointer;
-font-size: 28px; /*specify font size in pixels for icons*/
-color:#fc03e8;
-}
-/*the checked square icon will be displayed using the ng-class directive in todo.html when currentTask == done*/
-/*therefore in order to show to the user the task is done we will make the text green*/ 
-input[type="checkbox"] + label span .fa-check-square-o{
-color: #37e34b; 
 }
 
 .icon_button .fa-times{
@@ -472,6 +457,40 @@ font-size: 22px;
 padding: 0px !important;
 }
 
+
+input[type="checkbox"] + label span {
+    display:block;
+	float: left;
+    width:25px;
+    height:25px;
+    cursor:pointer;
+    font-size: 23px;
+    color: #515252;
+}
+
+/*we target the label immediately next to the checkbox using the css + selector*/
+/*we then target the span tag within that label tag*/
+/*this span tag will contain our font-awesome check icon so we set a font size here for the icon and a font color*/ 
+
+input[type="checkbox"]:checked + label span .fa-check-square-o{
+	font-size: 23px;
+}
+
+
+input[type="checkbox"] + label span .fa-check-square-o{
+    display:none;
+
+}
+input[type="checkbox"]:checked + label span .fa-square-o{
+    display:none;
+
+}
+/*the checked square icon will be displayed using the ng-class directive */
+
+input[type="checkbox"]:checked + label span .fa-check-square-o{
+    display:block;
+
+}
 
 /************************************************button styling**********************************************/
 .btn {

@@ -18,7 +18,7 @@ top: 0px;
 left: 0px;
 width: 100%; 
 /*add a high z-index value so that this fixed header stays on top of everything else on the page*/ 
-z-index: 20; 
+z-index: 60; 
 /*add css transitions for when the headernav is swiped to the left and right*/
 /*the swiping transition will take .3 seconds*/
 -webkit-transition: .3s; /* Android 2.1+, Chrome 1-25, iOS 3.2-6.1, Safari 3.2-6  */
