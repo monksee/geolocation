@@ -603,8 +603,9 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         var deferred = $q.defer();
        
             var timeoutVal = 10 * 1000 * 1000;  
-            geolocation.getCurrentPosition(
+            geolocationFactory.getCurrentPosition(
                 function(position){
+                    alert("position.coords.latitude " + position.coords.latitude);
                     self.currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                     console.log(JSON.stringify(self.currentPosition));
                     var marker = new google.maps.Marker({
@@ -647,9 +648,14 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         if (travelMode == 'TRANSIT') {
             via = '';  //if the travel mode is transit, don't use the via waypoint because that will not work
         }
-        console.log("self.allStationsMapData " + JSON.stringify(self.allStationsMapData));
+        alert(JSON.stringify(startLocation));
+        alert(JSON.stringify(travelMode));
+        alert(JSON.stringify(destinationStationID));
+                console.log("self.allStationsMapData " + JSON.stringify(self.allStationsMapData));
         //get the lat and lng points of the station with stationID of destinationStationID.
         var destinationLatLng = self.getStationLatLngPoints(destinationStationID, self.allStationsMapData);
+
+        alert("destinationLatLng " + JSON.stringify(destinationLatLng));
         console.log("destinationLatLng " + JSON.stringify(destinationLatLng));
         
         var waypoints = []; // init an empty waypoints array
