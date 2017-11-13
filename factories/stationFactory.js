@@ -601,14 +601,12 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
          */
         var self = this;
         var deferred = $q.defer();
-        var isSuccessful = false;
-
-           alert("prepareCurrentLocation");
-            var timeoutVal = 10 * 1000 * 1000;  
+        var isSuccessful = false; //initialize a boolean which will tell us whether the success function has been executed or not.
+          // alert("prepareCurrentLocation");
             navigator.geolocation.getCurrentPosition(
                 function(position){
                     isSuccessful = true;
-                    alert("position.coords.latitude " + position.coords.latitude);
+                    //alert("position.coords.latitude " + position.coords.latitude);
                     self.currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                     console.log(JSON.stringify(self.currentPosition));
                     var marker = new google.maps.Marker({
@@ -624,13 +622,17 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     deferred.resolve(self.currentPosition); 
                 },
                 function(error) {
-                   
-                    alert("Error:"); 
-          
                     deferred.resolve(null);    
-                }
+                },
+                { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
             );
+            //Note: After testing with phonegap it seems the error function is not being called here 
+            //for example when a user has location turned off on their device so 
+            //we need another way to return null (from the promise) if the success function is not called.
+            //we do this with a timeout.
             $timeout(function() {
+                //After two seconds check if the isSuccessful boolean is still false and if so then 
+                //we know the success callback has not been executed so we can resolve the promise passing in null
                 if(!isSuccessful){
                     alert(isSuccessful);
                     deferred.resolve(null);
