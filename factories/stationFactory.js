@@ -607,6 +607,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 function(position){
                     isSuccessful = true;
                     //alert("position.coords.latitude " + position.coords.latitude);
+                    //dont think we need to store it in a variable here.
                     self.currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                     console.log(JSON.stringify(self.currentPosition));
                     var marker = new google.maps.Marker({
@@ -624,7 +625,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 function(error) {
                     deferred.resolve(null);    
                 },
-                { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+                { enableHighAccuracy: true, timeout: 2900, maximumAge: 0 }
             );
             //Note: After testing with phonegap it seems the error function is not being called here 
             //for example when a user has location turned off on their device so 
@@ -637,7 +638,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     alert(isSuccessful);
                     deferred.resolve(null);
                 }
-            }, 2000);
+            }, 3000);
         return deferred.promise;
     };
 
@@ -653,12 +654,13 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         alert(JSON.stringify(startLocation));
         alert(JSON.stringify(travelMode));
         alert(JSON.stringify(destinationStationID));
-                console.log("self.allStationsMapData " + JSON.stringify(self.allStationsMapData));
+
+
         //get the lat and lng points of the station with stationID of destinationStationID.
         var destinationLatLng = self.getStationLatLngPoints(destinationStationID, self.allStationsMapData);
 
         alert("destinationLatLng " + JSON.stringify(destinationLatLng));
-        console.log("destinationLatLng " + JSON.stringify(destinationLatLng));
+
         
         var waypoints = []; // init an empty waypoints array
         if (via != '' && via != null) {
