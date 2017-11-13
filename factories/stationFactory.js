@@ -26,8 +26,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
     stationService.allStationsMapData = [];
 
     stationService.map;
-    stationService.currentPosition = {};
-    stationService.destinationLatLng = {};
+
     stationService.directionsDisplay;
     stationService.directionsService;
 
@@ -555,10 +554,10 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
             var timeoutVal = 10 * 1000 * 1000;  
             navigator.geolocation.getCurrentPosition(
                 function(position){
-                    self.currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                    console.log(JSON.stringify(self.currentPosition));
+                    var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
                     var marker = new google.maps.Marker({
-                        position: self.currentPosition, 
+                        position: currentPosition, 
                         map: self.map, 
                         title:"User location",
                         icon: 'http://gamuzic.com/map_app3/images/you_icon.png',
@@ -567,7 +566,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                         zIndex:99999999
                     }); 
                     //return the current position. This will be an object with lat and lng points.
-                    deferred.resolve(self.currentPosition); 
+                    deferred.resolve(currentPosition); 
                 },
                 function(error) {
                     var errors = { 
@@ -606,12 +605,12 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
             navigator.geolocation.getCurrentPosition(
                 function(position){
                     isSuccessful = true;
-                    //alert("position.coords.latitude " + position.coords.latitude);
-                    //dont think we need to store it in a variable here.
-                    self.currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                    console.log(JSON.stringify(self.currentPosition));
+
+                    var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                    console.log(JSON.stringify(currentPosition));
+
                     var marker = new google.maps.Marker({
-                        position: self.currentPosition, 
+                        position: currentPosition, 
                         map: self.map, 
                         title:"User location",
                         icon: 'http://gamuzic.com/map_app3/images/you_icon.png',
@@ -620,7 +619,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                         zIndex:99999999
                     }); 
                     //return the current position. This will be an object with lat and lng points.
-                    deferred.resolve(self.currentPosition); 
+                    deferred.resolve(currentPosition); 
                 },
                 function(error) {
                     deferred.resolve(null);    
