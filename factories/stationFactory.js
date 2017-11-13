@@ -603,7 +603,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         var deferred = $q.defer();
        
             var timeoutVal = 10 * 1000 * 1000;  
-            geolocationFactory.getCurrentPosition(
+            navigator.geolocation.getCurrentPosition(
                 function(position){
                     alert("position.coords.latitude " + position.coords.latitude);
                     self.currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
@@ -629,7 +629,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     if(errors[error.code] == 'Permission denied'){
                         alert("Error: Current location inaccessible. Please ensure location services are enabled in the settings on your device."); 
                     }else{
-                        alert("Error: " + errors[error.code] + ". Please enter your starting position in the form to get directions");
+                        alert("Error: Please enter your starting position in the form to get directions");
                     }  
                     deferred.resolve(null);    
                 }
