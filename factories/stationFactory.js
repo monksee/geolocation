@@ -578,8 +578,8 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     if(errors[error.code] == 'Permission denied'){
                         alert("Error: Current location inaccessible. Please ensure location services are enabled in the settings on your device."); 
                     }else{
-                        alert("Error: " + errors[error.code]);
-                        alert("Please enter your starting position in the form to get directions");
+   
+                        alert("Error: " + errors[error.code] + ". Please enter your starting position in the form to get directions");
                     }  
                     deferred.resolve(null);    
                 },
@@ -629,12 +629,10 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     if(errors[error.code] == 'Permission denied'){
                         alert("Error: Current location inaccessible. Please ensure location services are enabled in the settings on your device."); 
                     }else{
-                        alert("Error: " + errors[error.code]);
-                        alert("Please enter your starting position in the form to get directions");
+                        alert("Error: " + errors[error.code] + ". Please enter your starting position in the form to get directions");
                     }  
                     deferred.resolve(null);    
-                },
-              { enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 0 }
+                }
             );
         return deferred.promise;
     };
@@ -681,6 +679,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
 
         self.directionsService.route(request, function(response, status){
             if (status == google.maps.DirectionsStatus.OK){
+                document.getElementById("directions_panel").innerHTML = "";
                 self.directionsDisplay.setDirections(response);
             }else{
                 // alert an error message when the route could not be calculated.
