@@ -601,10 +601,13 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
          */
         var self = this;
         var deferred = $q.defer();
+        var isSuccessful = false;
+
            alert("prepareCurrentLocation");
             var timeoutVal = 10 * 1000 * 1000;  
             navigator.geolocation.getCurrentPosition(
                 function(position){
+                    isSuccessful = true;
                     alert("position.coords.latitude " + position.coords.latitude);
                     self.currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                     console.log(JSON.stringify(self.currentPosition));
@@ -627,6 +630,12 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     deferred.resolve(null);    
                 }
             );
+            $timeout(function() {
+                if(!isSuccessful){
+                    alert(isSuccessful);
+                    deferred.resolve(null);
+                }
+            }, 2000);
         return deferred.promise;
     };
 
