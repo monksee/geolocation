@@ -601,7 +601,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
          */
         var self = this;
         var deferred = $q.defer();
-       
+           alert("prepareCurrentLocation");
             var timeoutVal = 10 * 1000 * 1000;  
             navigator.geolocation.getCurrentPosition(
                 function(position){
@@ -621,16 +621,9 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     deferred.resolve(self.currentPosition); 
                 },
                 function(error) {
-                    var errors = { 
-                        1: 'Permission denied',
-                        2: 'Position unavailable',
-                        3: 'Request timeout'
-                    };
-                    if(errors[error.code] == 'Permission denied'){
-                        alert("Error: Current location inaccessible. Please ensure location services are enabled in the settings on your device."); 
-                    }else{
-                        alert("Error: Please enter your starting position in the form to get directions");
-                    }  
+                   
+                    alert("Error:"); 
+          
                     deferred.resolve(null);    
                 }
             );
