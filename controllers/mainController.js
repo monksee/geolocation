@@ -71,19 +71,7 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
         //empty the directions panel from the last time directions were output.
         document.getElementById("directions_panel").innerHTML = "";
         $scope.bottomPanelIsShowing = true;
-        $scope.directionsFormData.selectedDestination = "" + stationID; //store it as a string 
-
-        console.log(" stationID " + stationID);
-        console.log("directionsFormData.selectedDestination " + $scope.directionsFormData.selectedDestination);
-
-        if(sharedFactory.checkIfEmptyObject(stationFactory.stationService.currentPosition)){
-            //not sure if i need this here. might do this when the home view loads instead.
-             $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
-        }else{
-             $scope.directionsFormData.selectedFromLocation = 'currentLocation';
-
-        }
-        console.log(typeof stationFactory.stationService.currentPosition);    
+        $scope.directionsFormData.selectedDestination = "" + stationID; //store it as a string  
     };
 
 
@@ -95,7 +83,7 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
 
     $scope.selectFromLocation = function(selectedFromLocation){ 
         /*
-         * This method is called when a user chooses a "from location" of either "current location" or "choose start location" from the select menu 
+         * This method is called (with ng-change) when a user chooses a "from location" of either "current location" or "choose start location" from the select menu 
          * If a user chooses from "current location" we need to check if geolocation is working on their device in order to get the current position.
          * For this we call the prepareCurrentLocation from the factory.
          */
@@ -114,6 +102,7 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
                     //if the current position is null then we need to switch the select menu back to "choose a start location"
                     //we do this as follows:
                     $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
+                    alert("We're sorry but your current location is inaccessible. Please ensure location services are enabled in the settings on your device or choose a start location.");
                 }
             });
         }else{
@@ -201,7 +190,7 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
                     }
                 });
        }else{
-           // alert("length " + stationFactory.stationService.allStationsMapData.length);
+
             //the allStationsMapData array is populated so the API call was already made to retrieve the allStationsMapData 
             //from the database so we just need to get the array data from our stationService now.
             var allStationsMapData = stationFactory.stationService.allStationsMapData;
