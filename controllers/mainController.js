@@ -105,12 +105,12 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
 
             //if the user selects current location we should get the current location again as it may have changed.
             stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition) {
-                alert("selectFromLocation then" +  JSON.stringify(currentPosition));
+     
                 if(currentPosition !== null){
                     //we were able to get the users current position
-                    alert("selectFromLocation currentPosition  is not null" +  JSON.stringify(currentPosition));
+
                 }else{
-                    alert("selectFromLocation currentPosition  is null" +  JSON.stringify(currentPosition));
+
                     //if the current position is null then we need to switch the select menu back to "choose a start location"
                     //we do this as follows:
                     $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
@@ -213,15 +213,12 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
         //get the users current location and mark it on the map.
         //We need to do this everytime the home view is loaded in order to get the most up to date current position.
         stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition) {
-               alert("selectFromLocation then" +  JSON.stringify(currentPosition));
             //on success this method will have also stored the currentPosition into a variable in our factory.
             if(currentPosition !== null){
-                alert('current position not null: ' + JSON.stringify(currentPosition));
+               
                 $scope.directionsFormData.selectedFromLocation = 'currentLocation';
             }else{
                 $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
-                  alert('current position: ' + JSON.stringify(currentPosition));
-
             }
             console.log(" currentPosition  " +  JSON.stringify(currentPosition));
         });
