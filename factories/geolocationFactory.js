@@ -8,6 +8,7 @@ mapApp.factory('geolocationFactory', function ($rootScope, phonegapReady) {
         getCurrentPosition: phonegapReady(function (onSuccess, onError, options) {
            
             navigator.geolocation.getCurrentPosition(function () {
+                 alert('success geolocation factory');
                 var that = this,
                 args = arguments;
 
@@ -17,9 +18,10 @@ mapApp.factory('geolocationFactory', function ($rootScope, phonegapReady) {
                     });
                 }
             }, function () {
+                alert('Error geolocation factory');
                 var that = this,
                 args = arguments;
-
+                alert('Error arguments: ' + JSON.stringify(args));
                 if (onError) {
                     $rootScope.$apply(function () {
                         onError.apply(that, args);
