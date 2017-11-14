@@ -541,7 +541,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         return infoWindowHTML;
     };
 
-    stationService.prepareCurrentLocation = function(){ 
+    stationService.prepareCurrentLocation1 = function(){ 
         /*
          * This method gets a user's current position, marks it on the map
          * We also enter this current position to the From input field in our directions form
@@ -600,7 +600,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         return deferred.promise;
     };
 
-    stationService.prepareCurrentLocation1 = function(){ 
+    stationService.prepareCurrentLocation = function(){ 
         /*
          * This method calls the getCurrentPosition method from the geolocationFactory to get a user's current position
          * If successfully retrieved we mark their current position on the map (with id of "map")
