@@ -1,7 +1,7 @@
 /*
  * A factory that makes calls to PhoneGap's geolocation API.
  */
-mapApp.factory('geolocationFactory', function ($rootScope, phonegapReady) {
+mapApp.factory('geolocationFactory', function ($rootScope, phonegapReady, $timeout) {
     return {
         //we want to wrap our implementation in our phonegapReady function in case deviceready has not fired yet.
         //If deviceready has not fired then this call will be put in a queue until it fires.
