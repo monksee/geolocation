@@ -23,7 +23,7 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
     $scope.directionsFormData = {};
     $scope.directionsFormData.travelMode = 'DRIVING';
 
-
+    $scope.loadingIsDisplayed = false;
     /* Define our functions */
 
     /*
@@ -87,22 +87,26 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
          * If a user chooses from "current location" we need to check if geolocation is working on their device in order to get the current position.
          * For this we call the prepareCurrentLocation from the factory.
          */
+        $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
+        
         console.log("selectedFromLocation "+ selectedFromLocation);
         console.log("$scope.directionsFormData.selectedFromLocation "+ $scope.directionsFormData.selectedFromLocation);
         if(selectedFromLocation === 'currentLocation'){
-
+            $scope.loadingIsDisplayed = true;
             //if the user selects current location we should get the current location again as it may have changed.
             stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition) {
-     
+                //set the $scope.loadingIsDisplayed to false as promised has resolved.
+                $scope.loadingIsDisplayed = false;
                 if(currentPosition !== null){
                     //we were able to get the users current position
-
+                    $scope.directionsFormData.selectedFromLocation = 'currentLocation';
                 }else{
 
                     //if the current position is null then we need to switch the select menu back to "choose a start location"
                     //we do this as follows:
                     $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
-                    alert("We're sorry but your current location is inaccessible. Please ensure location services are enabled in the settings on your device or choose a start location.");
+                    alert("We're sorry but your current location is inaccessible. " +
+                        "Please ensure location services are enabled in the settings on your device or enter a start location in the form.");
                 }
             });
         }else{
