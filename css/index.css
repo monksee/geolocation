@@ -251,7 +251,21 @@ left: auto !important;
 right:-100%;
 left: auto !important;
 }
-
+.spinner{
+	position: absolute;
+    top: 40%;
+    left:45%;
+    z-index: 55;
+}
+.current_location_spinner{
+	position: absolute;
+    top: 8px;
+    left:180px;
+    z-index: 55;
+}
+.current_location_spinner .fa-cog{
+font-size: 17px;
+}
 
 /******************************************************/
 /*styling for the scrollbar and scrolling functionality*/
@@ -631,3 +645,49 @@ font-style:normal;
 }
 
 
+
+/********************************************/
+/*spinning animation class used on our location page with our current location icon and our contact page with our refresh icon*/
+
+.fa-spinning {
+  -webkit-animation: spinning .5s infinite linear;
+  -moz-animation: spinning .5s infinite linear;
+  -o-animation: spinning .5s infinite linear;
+  animation: spinning .5s infinite linear;
+}
+
+
+@-moz-keyframes spinning{
+  0% {
+    -moz-transform: rotate(0deg);
+  }
+  100% {
+    -moz-transform: rotate(359deg);
+  }
+}
+@-webkit-keyframes spinning{
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+  }
+}
+@-o-keyframes spinning{
+  0% {
+    -o-transform: rotate(0deg);
+  }
+  100% {
+    -o-transform: rotate(359deg);
+  }
+}
+@keyframes spinning{
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
