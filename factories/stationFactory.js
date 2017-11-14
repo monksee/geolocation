@@ -637,7 +637,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 },
                 { enableHighAccuracy: true, timeout: 1900, maximumAge: 0 }
             );
-            //Note: After testing with phonegap it seems the error function is not being called here 
+            //Note: After testing with phonegap it seems the error function is sometimes not being called here 
             //for example when a user has location turned off on their device so 
             //we need another way to return null (from the promise) if the success function is not called.
             //we do this with a timeout.
@@ -645,7 +645,6 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 //After two seconds check if the isSuccessful boolean is still false and if so then 
                 //we know the success callback has not been executed so we can resolve the promise passing in null
                 if(!isSuccessful){
-                    alert("stationFactory " + isSuccessful);
                     deferred.resolve(null);
                 }
             }, 2000);
