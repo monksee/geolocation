@@ -633,6 +633,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     deferred.resolve(currentPosition); 
                 },
                 function(error) {
+                    alert("error stationFactory");
                     deferred.resolve(null);    
                 },
                 { enableHighAccuracy: true, timeout: 1900, maximumAge: 0 }
