@@ -541,18 +541,15 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         return infoWindowHTML;
     };
 
-    stationService.prepareCurrentLocation1 = function(){ 
+    stationService.prepareCurrentLocation = function(){ 
         /*
-         * This method gets a user's current position, marks it on the map and also stores the lat and lng into
-         * our object called currentPosition.
+         * This method gets a user's current position, marks it on the map
          * We also enter this current position to the From input field in our directions form
          */
         var self = this;
         var deferred = $q.defer();
-           var isSuccessful = false;
+        var isSuccessful = false;
         if(navigator.geolocation){
-
-            var timeoutVal = 10 * 1000 * 1000;  
             navigator.geolocation.getCurrentPosition(
                 function(position){
                     isSuccessful = true;
@@ -603,11 +600,12 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         return deferred.promise;
     };
 
-    stationService.prepareCurrentLocation = function(){ 
+    stationService.prepareCurrentLocation1 = function(){ 
         /*
-         * This method gets a user's current position, marks it on the map and also stores the lat and lng into
-         * our object called currentPosition.
-         * We also enter this current position to the From input field in our directions form
+         * This method calls the getCurrentPosition method from the geolocationFactory to get a user's current position
+         * If successfully retrieved we mark their current position on the map (with id of "map")
+         * and return the current position from the method with a promise.
+         * If unsuccessful we return null.
          */
         var self = this;
         var deferred = $q.defer();
@@ -633,7 +631,8 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     deferred.resolve(currentPosition); 
                 },
                 function(error) {
-                    alert("error stationFactory");
+                    //we will output a message to the user in the controller as
+                    //a different message will be output depending on when this method is called
                     deferred.resolve(null);    
                 },
                 { enableHighAccuracy: true, timeout: 1900, maximumAge: 0 }
@@ -704,15 +703,15 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 }else if (status == 'UNKNOWN_ERROR'){ 
                     alert('A directions request could not be processed due to a server error. The request may succeed if you try again.');
                 }else if (status == 'REQUEST_DENIED'){
-                    alert('This webpage is not allowed to use the directions service.');
+                    alert('This application is not allowed to use the directions service.');
                 }else if (status == 'OVER_QUERY_LIMIT'){
-                    alert('The webpage has gone over the requests limit in too short a period of time.');
+                    alert('The application has gone over the requests limit in too short a period of time.');
                 }else if (status == 'NOT_FOUND'){
                     alert('At least one of the origin, destination, or via waypoints could not be geocoded. Please make sure the start location or via point are correct locations');
                 }else if (status == 'INVALID_REQUEST'){
                     alert('The Directions Request provided was invalid.');                  
                 }else{
-                    alert("There was an unknown error in your request. Requeststatus: \n\n"+status);
+                    alert("There was an unknown error in your request. Request status: \n\n" + status);
                 }
             }
         });
