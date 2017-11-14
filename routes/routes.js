@@ -2,14 +2,14 @@
 mapApp.config(function($routeProvider) {
 	$routeProvider
 	    .when('/login', {
-			//route for the home page
+			//route for the login page
 			templateUrl : 'views/login.html',
 			controller : 'loginController'
 		})
 		.when('/', {
 			//route for the home page
-			templateUrl : 'views/home.html',
-			controller : 'homeController'
+			templateUrl : 'views/login.html',
+			controller : 'loginController'
 		})
 		.when('/home', {
 			//route for the home page
@@ -17,7 +17,7 @@ mapApp.config(function($routeProvider) {
 			controller : 'homeController'
 		})
 		.when('/station', {
-			//route for the to do list page
+			//route for the station page
 			templateUrl : 'views/station.html',
 			controller : 'stationController'
 		});
