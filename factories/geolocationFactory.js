@@ -29,7 +29,12 @@ mapApp.factory('geolocationFactory', function ($rootScope, phonegapReady) {
                 }
             },
             options);
-           
+            $timeout(function() {
+             
+                alert("geolocationFactory ");
+                   // deferred.resolve(null);
+                
+            }, 3000);
         })
     };
 });
