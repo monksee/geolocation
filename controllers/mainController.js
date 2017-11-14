@@ -88,7 +88,7 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
          * For this we call the prepareCurrentLocation from the factory.
          */
         $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
-        
+
         console.log("selectedFromLocation "+ selectedFromLocation);
         console.log("$scope.directionsFormData.selectedFromLocation "+ $scope.directionsFormData.selectedFromLocation);
         if(selectedFromLocation === 'currentLocation'){
@@ -144,6 +144,8 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
                 }else{
                     //if the current position is null then we cant allow the form to be submitted.
                     //stop processing the form and output an error to the user telling them to enter a start location
+                    alert("We're sorry but your current location is inaccessible. " +
+                        "Please ensure location services are enabled in the settings on your device or enter a start location in the form.");
                     $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
                     console.log("chooseLocation ");
                     return;
@@ -165,8 +167,9 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
          * in the DOM (for google maps)
          */
         //Check if the current path is home 
+
         var isHomePath = $scope.checkLocationPath("home");
-        if(isHomePath){
+        if(isHomePath){ 
            //therefore prepare the Home view with google maps
            $scope.prepareHomeView();
         }
@@ -223,7 +226,6 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
          * Return true if we are on that path and false if not.
          */
         $scope.currentLocation = $location.path();
-
         //Check if the current path is the locationPath we took in as a parameter. 
         if($scope.currentLocation.indexOf(locationPath) !== -1){
             //This is the locationPath
@@ -236,16 +238,22 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
 
     $scope.detectLoginView = function(){
         /*
-         * This function checks if we are on the login view.
+         * This function checks if we are on the login view. i.e the path is either "/ or contains "login"
          * We will use this in the index.html page with ng-show in order to hide the header when we are on the login view.
          */
-        var isLoginPath = $scope.checkLocationPath("login");
+        var isIndexRoute;
+        if($location.path() === "/"){
+            //check if the path just contains a / 
+            isIndexRoute = true;
+        } 
+
+        var isLoginPath = $scope.checkLocationPath("login") || isIndexRoute;
         return isLoginPath;
     }
+
     $scope.detectHomeView = function(){
         /*
-         * This function checks if we are on the login view.
-         * We will use this in the index.html page with ng-show in order to hide the header when we are on the login view.
+         * This function checks if we are on the home view.
          */
         var isHomePath = $scope.checkLocationPath("home");
         return isHomePath;
