@@ -549,11 +549,13 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
          */
         var self = this;
         var deferred = $q.defer();
+           var isSuccessful = false;
         if(navigator.geolocation){
 
             var timeoutVal = 10 * 1000 * 1000;  
             navigator.geolocation.getCurrentPosition(
                 function(position){
+                    isSuccessful = true;
                     var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
                     var marker = new google.maps.Marker({
@@ -580,10 +582,19 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
    
                         alert("Error: " + errors[error.code] + ". Please enter your starting position in the form to get directions");
                     }  
-                    deferred.resolve(null);    
+                    //deferred.resolve(null);    
                 },
-              { enableHighAccuracy: true, timeout: timeoutVal, maximumAge: 0 }
+              { enableHighAccuracy: true, timeout: 1900, maximumAge: 0 }
             );
+            $timeout(function() {
+                //After two seconds check if the isSuccessful boolean is still false and if so then 
+                //we know the success callback has not been executed so we can resolve the promise passing in null
+                if(!isSuccessful){
+              
+                    deferred.resolve(null);
+                }
+            }, 2000);
+
 
         }else{
             deferred.resolve(null); 
@@ -602,7 +613,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         var deferred = $q.defer();
         var isSuccessful = false; //initialize a boolean which will tell us whether the success function has been executed or not.
           // alert("prepareCurrentLocation");
-            navigator.geolocation.getCurrentPosition(
+            geolocationFactory.getCurrentPosition(
                 function(position){
                     isSuccessful = true;
 
@@ -624,7 +635,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 function(error) {
                     deferred.resolve(null);    
                 },
-                { enableHighAccuracy: true, timeout: 2900, maximumAge: 0 }
+                { enableHighAccuracy: true, timeout: 1900, maximumAge: 0 }
             );
             //Note: After testing with phonegap it seems the error function is not being called here 
             //for example when a user has location turned off on their device so 
@@ -637,7 +648,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     alert("stationFactory " + isSuccessful);
                     deferred.resolve(null);
                 }
-            }, 3000);
+            }, 2000);
         return deferred.promise;
     };
 
