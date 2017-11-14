@@ -21,13 +21,15 @@
 				<div id="from" class="enter_start_location">
 					<label>From: </label>
                     <div id="select_start_location">
-					<select data-ng-model="directionsFormData.selectedFromLocation" 
-					     ng-init="directionsFormData.selectedFromLocation = 'chooseLocation'"
-					    data-ng-change="selectFromLocation(directionsFormData.selectedFromLocation)">
-                        <option value="currentLocation" ng-selected="directionsFormData.selectedFromLocation === 'currentLocation'">Current location</option>
-                        <option value="chooseLocation" ng-selected="directionsFormData.selectedFromLocation === 'chooseLocation'">Choose start location</option>
+                        <div class="spinner current_location_spinner" data-ng-show="loadingIsDisplayed"><i class="fa fa-cog fa-spinning"></i></div>
+					    <select data-ng-model="directionsFormData.selectedFromLocation" 
+					        ng-init="directionsFormData.selectedFromLocation = 'chooseLocation'"
+					        data-ng-change="selectFromLocation(directionsFormData.selectedFromLocation)">
 
-                    </select>
+                            <option value="currentLocation" ng-selected="directionsFormData.selectedFromLocation === 'currentLocation'">Current location</option>
+                            <option value="chooseLocation" ng-selected="directionsFormData.selectedFromLocation === 'chooseLocation'">Choose start location</option>
+
+                        </select>
                     </div>
                     <div data-ng-show="directionsFormData.selectedFromLocation === 'chooseLocation'">
 					    <input data-ng-model="directionsFormData.startLocation" type="text" value="" placeholder="Enter Start Location">
