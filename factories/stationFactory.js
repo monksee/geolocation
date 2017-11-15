@@ -59,7 +59,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
             }
             if(responseDataIsValid){           
                 self.allStationsMapData = self.prepareStationMapData(response.data);
-               console.log(JSON.stringify(self.allStationsMapData));
+              // console.log(JSON.stringify(self.allStationsMapData));
                 return self.allStationsMapData;
             }else{
                 return null;
@@ -503,7 +503,11 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             mapTypeControl: false
         });
-
+        //Need to do the following as the map was not displaying properly previously
+        google.maps.event.addListenerOnce(self.map, 'idle', function() {
+            google.maps.event.trigger(self.map, 'resize');
+            self.map.setCenter(allStationsMapData[0].stationLatLng);
+        });
         for(var i = 0; i < allStationsMapData.length; i++){
 
             (function(stationMapData){
@@ -523,8 +527,8 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     infoWindow.open(self.map, this);
                 });
             })(allStationsMapData[i]);
-
         }
+        
     };
 
     stationService.generateInfoWindowContent = function(stationID, stationName, stationLatLng){ 
