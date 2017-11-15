@@ -503,10 +503,16 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             mapTypeControl: false
         });
+        console.log("factory" + self.map);
         //Need to do the following as the map was not displaying properly previously
-        google.maps.event.addListenerOnce(self.map, 'idle', function() {
+        google.maps.event.addListener(self.map, 'idle', function() {
+            console.log('event idle');
             google.maps.event.trigger(self.map, 'resize');
-            self.map.setCenter(allStationsMapData[0].stationLatLng);
+           // self.map.setCenter(allStationsMapData[0].stationLatLng);
+
+        });
+        google.maps.event.addListener(self.map, 'resize', function() {
+              console.log('resized');
         });
         for(var i = 0; i < allStationsMapData.length; i++){
 
@@ -528,7 +534,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 });
             })(allStationsMapData[i]);
         }
-        
+
     };
 
     stationService.generateInfoWindowContent = function(stationID, stationName, stationLatLng){ 
