@@ -573,7 +573,11 @@ text-align: center;
 margin: 5px 8px;	
 
 }
-
+.btn_enter_app{
+width: 230px;
+margin: 30px auto 10px auto;
+font-size: 16px;
+}
 /* facebook login button*/
 .facebook-login-button{
 position: relative;
@@ -589,7 +593,7 @@ box-shadow: 		0px 0px 0px 1px rgba(50, 73, 136, 1);
 color: #fff; 
 background: #3d57a3;
 cursor: pointer;
-margin: 2px;
+margin: 2px auto;
 z-index: 3;
 max-width: 100%;
 }
@@ -627,7 +631,11 @@ height: 34px;
 -moz-box-shadow:    inset -1px 0px 0px 0px rgba(50, 73, 136, 1);
 box-shadow:         inset -1px 0px 0px 0px rgba(50, 73, 136, 1);
 }
+#login_buttons_area{
+padding: 0px 2%;
+width: 96%;
 
+}
 /**************************************************************/
 /*Font Awesome styles. See reference*/
 
