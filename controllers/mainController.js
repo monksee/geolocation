@@ -3,7 +3,7 @@
  * This is the mainController which will be associated with the body of the index file as we will use this controller throughout all
  * "pages" for the header menu items and side panel menu and other details.
  */
-mapApp.controller("mainController", function($scope, $window, $http, $q, $timeout, $location, geolocationFactory, facebookFactory, sharedFactory, userFactory, validatorFactory, stationFactory){
+mapApp.controller("mainController", function($scope, $compile, $window, $http, $q, $timeout, $location, geolocationFactory, facebookFactory, sharedFactory, userFactory, validatorFactory, stationFactory){
     "use strict";
     /* Define our scope variables */
 	//the boolean variable "panelIsOpen" will initially be set to false as the side panel with initially be closed on page load
@@ -210,11 +210,16 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
             google.maps.event.trigger(stationFactory.stationService.map, 'resize');
 
             google.maps.event.addListener(stationFactory.stationService.map, 'resize', function() {
-                console.log('resized home');
+               // alert('resized home');
+              
             });
-            stationFactory.stationService.infoWindow.setContent(stationFactory.stationService.infoWindowContent);
-            alert(stationFactory.stationService.infoWindow);
-            alert(stationFactory.stationService.infoWindowContent);
+            var infoWindowHTMLContent = stationFactory.stationService.generateInfoWindowContent(
+                stationFactory.stationService.infoWindowStationID, stationFactory.stationService.infoWindowStationName, stationFactory.stationService.infoWindowStationLatLng);
+            var compiled = $compile(infoWindowHTMLContent)($scope);
+
+            stationFactory.stationService.infoWindow.setContent(compiled[0]);
+           // stationFactory.stationService.infoWindow.close();
+
         }
     });
 
