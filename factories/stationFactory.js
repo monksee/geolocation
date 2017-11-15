@@ -26,6 +26,8 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
     stationService.allStationsMapData = [];
 
     stationService.map;
+    stationService.infoWindow;
+    stationService.infoWindowContent;
 
     stationService.directionsDisplay;
     stationService.directionsService;
@@ -496,7 +498,8 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
          * We use this in our main controller after we have detected that the home view has finished loading.
          */
         var self = this;
-        var infoWindow = new google.maps.InfoWindow();
+        self.infoWindow = new google.maps.InfoWindow();
+
         self.map = new google.maps.Map(document.getElementById('map'),{
             zoom: 9,
             center: allStationsMapData[0].stationLatLng,
@@ -529,8 +532,10 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 });
              
                 google.maps.event.addDomListener(marker, 'click', function(){
-                    infoWindow.setContent(this.content);
-                    infoWindow.open(self.map, this);
+                    self.infoWindow.setContent(this.content);
+                    self.infoWindow.open(self.map, this);
+                    self.infoWindowContent = this.content;
+                    console.log(self.infoWindowContent);
                 });
             })(allStationsMapData[i]);
         }
