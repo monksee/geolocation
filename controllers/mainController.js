@@ -212,6 +212,9 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
             google.maps.event.addListener(stationFactory.stationService.map, 'resize', function() {
                 console.log('resized home');
             });
+            stationFactory.stationService.infoWindow.setContent(stationFactory.stationService.infoWindowContent);
+            alert(stationFactory.stationService.infoWindow);
+            alert(stationFactory.stationService.infoWindowContent);
         }
     });
 
