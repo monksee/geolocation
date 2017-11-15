@@ -51,6 +51,52 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
         }
     })();
 
+
+    (function() {
+        /*
+         * This function prepares the home view i.e prepares the google map with pinpoints of all stations. 
+         * We will call this method anytime the home view has finished loading so that the div with id of map will be in the DOM.
+         */
+        if(stationFactory.stationService.allStationsMapData.length === 0){
+          //  alert("length " + stationFactory.stationService.allStationsMapData.length);
+                //The allStationsMapData array is not populated therefore we need to do an API call (i.e call the getAllStationsMapData() method)
+                //to retrieve the data from the database.
+                stationFactory.stationService.getAllStationsMapData().then(function(allStationsMapData) {
+                    if(allStationsMapData !== null){
+                         $scope.allStationsMapData =  allStationsMapData;
+
+                        //prepare the google map with station data
+
+                        stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location);
+
+                    }else{
+                        //There has been an error when retrieving all the stations data
+                    }
+                });
+       }else{
+
+            //the allStationsMapData array is populated so the API call was already made to retrieve the allStationsMapData 
+            //from the database so we just need to get the array data from our stationService now.
+            var allStationsMapData = stationFactory.stationService.allStationsMapData;
+            //prepare the google map with station data
+
+            stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location);
+        }
+
+        //get the users current location and mark it on the map.
+        //We need to do this everytime the home view is loaded in order to get the most up to date current position.
+        stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition) {
+            //on success this method will have also stored the currentPosition into a variable in our factory.
+            if(currentPosition !== null){
+               
+                $scope.directionsFormData.selectedFromLocation = 'currentLocation';
+            }else{
+                $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
+            }
+            console.log(" currentPosition  " +  JSON.stringify(currentPosition));
+        });
+
+    })();
     $scope.showGetDirectionsForm = function(){ 
      
         if($scope.bottomPanelIsShowing == false){
@@ -171,7 +217,7 @@ mapApp.controller("mainController", function($scope, $window, $http, $q, $timeou
         var isHomePath = $scope.checkLocationPath("home");
         if(isHomePath){ 
            //therefore prepare the Home view with google maps
-           $scope.prepareHomeView();
+           //$scope.prepareHomeView();
         }
     });
 
