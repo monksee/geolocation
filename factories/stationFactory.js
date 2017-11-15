@@ -29,6 +29,9 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
     stationService.infoWindow;
     stationService.infoWindowContent;
 
+    stationService.infoWindowStationID;
+    stationService.infoWindowStationName;
+    stationService.infoWindowStationLatLng;
     stationService.directionsDisplay;
     stationService.directionsService;
 
@@ -515,7 +518,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
 
         });
         google.maps.event.addListener(self.map, 'resize', function() {
-              console.log('resized');
+            console.log('resized');
         });
         for(var i = 0; i < allStationsMapData.length; i++){
 
@@ -526,6 +529,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     map: self.map,
                     position: stationMapData.stationLatLng,
                     stationID: stationMapData.stationID,
+                    stationName: stationMapData.stationName,
                     icon: 'http://gamuzic.com/map_app3/images/icon.png',
                    // icon: 'http://localhost/phonegap_tut/images/icon.png',
                     content: compiled[0],
@@ -534,8 +538,10 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 google.maps.event.addDomListener(marker, 'click', function(){
                     self.infoWindow.setContent(this.content);
                     self.infoWindow.open(self.map, this);
-                    self.infoWindowContent = this.content;
-                    console.log(self.infoWindowContent);
+                    self.infoWindowStationID = this.stationID;
+                    self.infoWindowStationName = this.stationName;
+                    self.infoWindowStationLatLng = this.position;
+
                 });
             })(allStationsMapData[i]);
         }
