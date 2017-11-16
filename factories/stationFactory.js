@@ -501,6 +501,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
          * We use this in our main controller after we have detected that the home view has finished loading.
          */
         var self = this;
+        //store the map and infowindow in global variables so we can retrieve it later if we want
         self.infoWindow = new google.maps.InfoWindow();
 
         self.map = new google.maps.Map(document.getElementById('map'),{
@@ -509,19 +510,8 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             mapTypeControl: false
         });
-        console.log("factory" + self.map);
-        //Need to do the following as the map was not displaying properly previously
-        google.maps.event.addListener(self.map, 'idle', function() {
-            console.log('event idle');
-            google.maps.event.trigger(self.map, 'resize');
-           // self.map.setCenter(allStationsMapData[0].stationLatLng);
 
-        });
-        google.maps.event.addListener(self.map, 'resize', function() {
-            console.log('resized');
-        });
         for(var i = 0; i < allStationsMapData.length; i++){
-
             (function(stationMapData){
                 var infoWindowHTMLContent = self.generateInfoWindowContent(stationMapData.stationID, stationMapData.stationName, stationMapData.stationLatLng);
                 var compiled = $compile(infoWindowHTMLContent)(scope);
@@ -538,6 +528,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 google.maps.event.addDomListener(marker, 'click', function(){
                     self.infoWindow.setContent(this.content);
                     self.infoWindow.open(self.map, this);
+                    //store our info window details in case we need to retrieve them at another stage.       
                     self.infoWindowStationID = this.stationID;
                     self.infoWindowStationName = this.stationName;
                     self.infoWindowStationLatLng = this.position;
@@ -595,12 +586,12 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                         3: 'Request timeout'
                     };
                     if(errors[error.code] == 'Permission denied'){
-                        alert("Error: Current location inaccessible. Please ensure location services are enabled in the settings on your device."); 
+                        //alert("Error: Current location inaccessible. Please ensure location services are enabled in the settings on your device."); 
                     }else{
    
-                        alert("Error: " + errors[error.code] + ". Please enter your starting position in the form to get directions");
+                        //alert("Error: " + errors[error.code] + ". Please enter your starting position in the form to get directions");
                     }  
-                    //deferred.resolve(null);    
+                    deferred.resolve(null);    
                 },
               { enableHighAccuracy: true, timeout: 1900, maximumAge: 0 }
             );
