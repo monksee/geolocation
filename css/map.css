@@ -10,6 +10,13 @@ height: 500px;
 max-width: 400px;
 width:90%;
 }
+
+.hide_map {
+height: 0px;
+opacity: 0;
+}
+
+
 #bottom_panel{
 position: absolute;
 top: 80%;
