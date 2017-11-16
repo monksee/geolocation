@@ -18,7 +18,7 @@
 				<div id="from" class="enter_start_location">
 					<label>From: </label>
                     <div id="select_start_location">
-                        <div class="spinner current_location_spinner" data-ng-show="loadingIsDisplayed"><i class="fa fa-cog fa-spinning"></i></div>
+                        <div class="spinner current_location_spinner" data-ng-show="currentLocationIsloading"><i class="fa fa-cog fa-spinning"></i></div>
 					    <select data-ng-model="directionsFormData.selectedFromLocation" 
 					        data-ng-change="selectFromLocation(directionsFormData.selectedFromLocation)">
 
