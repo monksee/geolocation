@@ -18,13 +18,23 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
     $scope.userDetails = userFactory.userService.userDetails;
 
     $scope.bottomPanelIsShowing = false;
-    //not sure we need to add this to scope yet as we are only using it with google maps.
+    //add the allStationsMapData to scope (we will use in the directions form destination select menu.)
     $scope.allStationsMapData = stationFactory.stationService.allStationsMapData;
     $scope.directionsFormData = {};
     $scope.directionsFormData.travelMode = 'DRIVING';
-
     $scope.loadingIsDisplayed = false;
-    /* Define our functions */
+
+
+    window.onload = function(){
+        /*
+         * This willl execute when the window is loaded. i.e all images, css files, scripts etc are loaded.
+         * Therefore the google maps script will be loaded now and also the div with id of "map" 
+         * so we can initialize the map
+         */
+        $scope.initializeMap();
+
+    };
+ 
 
     /*
      * Create an IIFE (so that it executes whenever our controller is loaded) to check if there is a userToken stored in local storage.
@@ -51,11 +61,9 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         }
     })();
 
-
-    (function() {
+   $scope.initializeMap = function(){ 
         /*
-         * Create an IIFE (so that it executes whenever our controller is loaded).
-         * In this IIFE we prepare the google map (i.e the div with id of "map" in index.html) with pinpoints of all stations. 
+         * In this method we prepare the google map (i.e the div with id of "map" in index.html) with pinpoints of all stations. 
          * We put the map element in the index.html page so that we only have to prepare it with stations when the app is opened.
          */
         console.log(document.getElementById('map')); 
@@ -72,19 +80,19 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         });
 
         //get the users current location and mark it on the map.
-        //We need to do this everytime the home view is loaded in order to get the most up to date current position.
         stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition) {
-            //on success this method will have also stored the currentPosition into a variable in our factory.
             if(currentPosition !== null){
-               
+                //change the "From" select menu of the directions form to currentLocation as we have detected a current location successfully
                 $scope.directionsFormData.selectedFromLocation = 'currentLocation';
             }else{
+                //change the "From" select menu of the directions form to chooseLocation as we have NOT detected a current location successfully
                 $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
             }
             console.log(" currentPosition  " +  JSON.stringify(currentPosition));
         });
+    };
 
-    })();
+
     $scope.showGetDirectionsForm = function(){ 
      
         if($scope.bottomPanelIsShowing == false){
@@ -170,6 +178,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition) {
                 if(currentPosition !== null){
                     //we were able to get the users current position
+                    //store the currentPosition in our startLocation variable to pass into our getDirections method
                     startLocation = currentPosition;
 
                     console.log(" currentPosition  is not null" +  JSON.stringify(currentPosition));
@@ -187,6 +196,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             });
 
         }else{
+            //User has selected to choose a start location in the form so get the input from the startLocation form field
             startLocation = $scope.directionsFormData.startLocation;
             //pass in start, via and travel mode.
             stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID);
@@ -200,73 +210,17 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
          * We will need to detect when the home view has finished loading as we will need to target the div with id of map
          * in the DOM (for google maps)
          */
+
         //Check if the current path is home 
 
         var isHomePath = $scope.checkLocationPath("home");
         if(isHomePath){ 
-           //therefore prepare the Home view with google maps
-           //$scope.prepareHomeView();
+            //therefore prepare the Home view with google maps
+            //$scope.prepareHomeView();
             console.log('home view loaded');
-            google.maps.event.trigger(stationFactory.stationService.map, 'resize');
-
-            google.maps.event.addListener(stationFactory.stationService.map, 'resize', function() {
-               // alert('resized home');
-              
-            });
-            var infoWindowHTMLContent = stationFactory.stationService.generateInfoWindowContent(
-                stationFactory.stationService.infoWindowStationID, stationFactory.stationService.infoWindowStationName, stationFactory.stationService.infoWindowStationLatLng);
-            var compiled = $compile(infoWindowHTMLContent)($scope);
-
-            stationFactory.stationService.infoWindow.setContent(compiled[0]);
-           // stationFactory.stationService.infoWindow.close();
-
         }
     });
 
-    $scope.prepareHomeView = function(){
-        /*
-         * This function prepares the home view i.e prepares the google map with pinpoints of all stations. 
-         * We will call this method anytime the home view has finished loading so that the div with id of map will be in the DOM.
-         */
-        if(stationFactory.stationService.allStationsMapData.length === 0){
-          //  alert("length " + stationFactory.stationService.allStationsMapData.length);
-                //The allStationsMapData array is not populated therefore we need to do an API call (i.e call the getAllStationsMapData() method)
-                //to retrieve the data from the database.
-                stationFactory.stationService.getAllStationsMapData().then(function(allStationsMapData) {
-                    if(allStationsMapData !== null){
-                         $scope.allStationsMapData =  allStationsMapData;
-
-                        //prepare the google map with station data
-
-                        stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location);
-
-                    }else{
-                        //There has been an error when retrieving all the stations data
-                    }
-                });
-       }else{
-
-            //the allStationsMapData array is populated so the API call was already made to retrieve the allStationsMapData 
-            //from the database so we just need to get the array data from our stationService now.
-            var allStationsMapData = stationFactory.stationService.allStationsMapData;
-            //prepare the google map with station data
-
-            stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location);
-        }
-
-        //get the users current location and mark it on the map.
-        //We need to do this everytime the home view is loaded in order to get the most up to date current position.
-        stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition) {
-            //on success this method will have also stored the currentPosition into a variable in our factory.
-            if(currentPosition !== null){
-               
-                $scope.directionsFormData.selectedFromLocation = 'currentLocation';
-            }else{
-                $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
-            }
-            console.log(" currentPosition  " +  JSON.stringify(currentPosition));
-        });
-    }
 
     $scope.checkLocationPath = function(locationPath){
         /*
@@ -306,6 +260,8 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         var isHomePath = $scope.checkLocationPath("home");
         return isHomePath;
     }
+
+
 	$scope.toggleSidePanel = function(){
 		/*
          * This function checks if the boolean variable "panelIsOpen" is currently true or false.
