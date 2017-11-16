@@ -44,7 +44,8 @@
 			    </span> 
 			    {{userDetails.facebookName}}
 			</div>
-			<div data-ng-show="detectHomeView()"><div id="map"></div></div>
+			<!--hide the map when we are not on the home view-->
+			<div data-ng-class="{'hide_map': detectHomeView() == false}"><div id="map"></div></div>
 			<div data-ng-view class="view" >
 
 				<!--our individual views will be displayed here-->
