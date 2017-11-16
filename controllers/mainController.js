@@ -22,7 +22,8 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
     $scope.allStationsMapData = stationFactory.stationService.allStationsMapData;
     $scope.directionsFormData = {};
     $scope.directionsFormData.travelMode = 'DRIVING';
-    $scope.loadingIsDisplayed = false;
+
+    $scope.currentLocationIsloading = false;
 
 
     window.onload = function(){
@@ -134,11 +135,11 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         console.log("selectedFromLocation "+ selectedFromLocation);
         console.log("$scope.directionsFormData.selectedFromLocation "+ $scope.directionsFormData.selectedFromLocation);
         if(selectedFromLocation === 'currentLocation'){
-            $scope.loadingIsDisplayed = true;
+            $scope.currentLocationIsloading = true;
             //if the user selects current location we should get the current location again as it may have changed.
             stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition) {
-                //set the $scope.loadingIsDisplayed to false as promised has resolved.
-                $scope.loadingIsDisplayed = false;
+                //set the $scope.currentLocationIsloading to false as promised has resolved.
+                $scope.currentLocationIsloading = false;
                 if(currentPosition !== null){
                     //we were able to get the users current position
                     $scope.directionsFormData.selectedFromLocation = 'currentLocation';
@@ -212,7 +213,9 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
          */
 
         //Check if the current path is home 
-
+        var container_wrapper = document.getElementById('container_wrapper');
+        container_wrapper.scrollTop = 0;
+        
         var isHomePath = $scope.checkLocationPath("home");
         if(isHomePath){ 
             //therefore prepare the Home view with google maps
