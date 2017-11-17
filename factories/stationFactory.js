@@ -70,6 +70,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 return null;
             }
         },function errorCallback(response){
+            alert(JSON.stringify(response));
             sharedFactory.buildErrorNotification(response);
             return null;
         });
