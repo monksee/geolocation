@@ -125,4 +125,17 @@ border: 1px solid #ccc;
 height: 34px;
 }
 
+/* Hide the little man icon on the google map because we dont want the user pressing it 
+ * as this functionality doesnt work very well on the phonegap app
+ */
+.gm-svpc{
+	display: none;
+}
 
+/* Hide the fullscreen button on the google map because if this is pressed
+ * it opens a new tab and the user will be unable to navigate back to the app when
+ * packaged with phonegap
+ */
+button[title *= "Toggle fullscreen" ]{
+	display: none;
+}
