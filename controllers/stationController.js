@@ -218,6 +218,8 @@ mapApp.controller("stationController", function($scope, $timeout, $routeParams, 
          */
         $scope.reviewFormData = {}; //our ng-model for the review form is called review so reset this.
         $scope.reviewFormData.rating = 0; //reset the rating
+        $scope.review_form.$setPristine();
+        $scope.review_form.$setUntouched();
     }; 
 
 
@@ -290,7 +292,7 @@ mapApp.controller("stationController", function($scope, $timeout, $routeParams, 
             //inputs are valid and rating is valid so we can proceed
             //edit the review and get back all of the reviews data for this station.
             stationFactory.stationService.editReview(reviewID, stationID, userToken, editedReviewText, newRating).then(function(reviewsData){
-                //reset the edit form
+                //remove the edit form from view
                 $scope.selectedReviewForEdit = -1; 
                 //the reviews array will be already updated in scope 
                 //because it comes from the stationDetails object in the factory so we dont need to do it here.
@@ -358,6 +360,8 @@ mapApp.controller("stationController", function($scope, $timeout, $routeParams, 
             //inputs are not valid 
         }
     };
+
+
 
     $scope.cancelReplyEdit = function(reviewIndex){
 
