@@ -496,12 +496,21 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
             });
     }; 
 
+
+
+
+
+
+
+
     stationService.prepareStationsOnMap = function(allStationsMapData, scope, location){ 
         /*
          * This method takes in data for all our station data and pinpoints the station locations on a google map with id of map.
          * We use this in our main controller after we have detected that the home view has finished loading.
          */
         var self = this;
+        var deferred = $q.defer();
+        var mapLoadedSuccessfully = false;
         //store the map and infowindow in global variables so we can retrieve it later if we want
         self.infoWindow = new google.maps.InfoWindow();
 
@@ -511,8 +520,13 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             mapTypeControl: false
         });
+   
+        google.maps.event.addListenerOnce(self.map, 'tilesloaded', function(){
+            mapLoadedSuccessfully = true;
+            deferred.resolve(mapLoadedSuccessfully); 
 
-        google.maps.event.addListenerOnce(self.map, 'tilesloaded', self.fixLinksInGoogleMap);
+            self.fixMapWhenLoaded(); 
+        });
 
 
         for(var i = 0; i < allStationsMapData.length; i++){
@@ -540,10 +554,18 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 });
             })(allStationsMapData[i]);
         }
+
+        $timeout(function() {
+            if(!mapLoadedSuccessfully){
+                deferred.resolve(mapLoadedSuccessfully);
+            }
+        }, 3000);
+
+        return deferred.promise;
     };
 
 
-        stationService.fixLinksInGoogleMap = function() {
+        stationService.fixMapWhenLoaded = function() {
             /*
              * We need to target all external links within the google map so that we can open them in a new window instead of the
              * default behaviour.
@@ -558,6 +580,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
             var google_map_links = document.querySelectorAll("a[href*='google.com']");
             console.log(google_map_links);
             stationService.fixExternalLinks(google_map_links);
+
 
         };
 
