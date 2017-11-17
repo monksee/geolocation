@@ -107,29 +107,40 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
          * We put the map element in the index.html page so that we only have to prepare it with stations when the app is opened.
          */
         console.log(document.getElementById('map')); 
+        if($scope.checkIfMapIsEmpty()){
+             console.log("map is empty");
+            //we need to do an API call (i.e call the getAllStationsMapData() method) to retrieve the data from the database.
+            //and also prepare the map
+            stationFactory.stationService.getAllStationsMapData().then(function(allStationsMapData) {
+                if(allStationsMapData !== null){
+                    $scope.allStationsMapData =  allStationsMapData;
+                    //prepare the google map
+                    stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location).then(function(mapLoadedSuccessfully) {
+                        alert("mapLoadedSuccessfully " +  mapLoadedSuccessfully);
 
-        //we need to do an API call (i.e call the getAllStationsMapData() method) to retrieve the data from the database.
-        stationFactory.stationService.getAllStationsMapData().then(function(allStationsMapData) {
-            if(allStationsMapData !== null){
-                $scope.allStationsMapData =  allStationsMapData;
-                //prepare the google map
-                stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location);
-            }else{
-                //There has been an error when retrieving all the stations data
-            }
-        });
+                    });
 
-        //get the users current location and mark it on the map.
-        stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition) {
-            if(currentPosition !== null){
-                //change the "From" select menu of the directions form to currentLocation as we have detected a current location successfully
-                $scope.directionsFormData.selectedFromLocation = 'currentLocation';
-            }else{
-                //change the "From" select menu of the directions form to chooseLocation as we have NOT detected a current location successfully
-                $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
-            }
-            console.log(" currentPosition  " +  JSON.stringify(currentPosition));
-        });
+
+                    //get the users current location and mark it on the map.
+                    stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition) {
+                        if(currentPosition !== null){
+                            //change the "From" select menu of the directions form to currentLocation as we have detected a current location successfully
+                            $scope.directionsFormData.selectedFromLocation = 'currentLocation';
+                        }else{
+                           //change the "From" select menu of the directions form to chooseLocation as we have NOT detected a current location successfully
+                           $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
+                        }
+                         console.log(" currentPosition  " +  JSON.stringify(currentPosition));
+                    });
+
+                }else{
+                    //There has been an error when retrieving all the stations data
+                }
+            });
+        }else{
+             console.log("map is full");
+        }
+
     };
 
 
@@ -166,6 +177,13 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         return panelIsEmpty;
     };
 
+    $scope.checkIfMapIsEmpty = function(){ 
+        /*
+         */
+
+        var mapIsEmpty = document.getElementById('map').innerHTML === "";
+        return mapIsEmpty;
+    };
 
     $scope.selectFromLocation = function(selectedFromLocation){ 
         /*
