@@ -28,12 +28,11 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
     window.onload = function(){
         /*
-         * This willl execute when the window is loaded. i.e all images, css files, scripts etc are loaded.
+         * This will execute when the window is loaded. i.e all images, css files, scripts etc are loaded.
          * Therefore the google maps script will be loaded now and also the div with id of "map" 
          * so we can initialize the map
          */
-        $scope.initializeMap();
-
+        //$scope.initializeMap();
     };
  
 
@@ -62,7 +61,42 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         }
     })();
 
-   $scope.initializeMap = function(){ 
+    $scope.$on('$viewContentLoaded', function(){
+        /*
+         * This will be executed whenever a view has finished loading. 
+         * We will need to detect when the home view has finished loading as we will need to target the div with id of map
+         * in the DOM (for google maps)
+         */
+
+        //Check if the current path is home 
+      //  var container_wrapper = document.getElementById('container_wrapper');
+       // container_wrapper.scrollTop = 0;
+        var isHomePath = $scope.checkLocationPath("home");
+        if(isHomePath){ 
+            //therefore prepare the Home view with google maps
+            //$scope.initializeMap();
+            console.log('home view loaded');
+        }
+    });
+
+    $scope.$on('$routeChangeSuccess', function($event, next, current) { 
+        /*
+         * This will be executed whenever a route has changed successfully. 
+         *
+         */
+        //console.log($event);  
+        var container_wrapper = document.getElementById('container_wrapper');
+        container_wrapper.scrollTop = 0;
+        var currentRoute = next.originalPath;
+        if(currentRoute === "/home"){
+            //therefore prepare the Home view with google maps
+            $scope.initializeMap();
+            console.log("yes home");
+        }
+       // console.log('$routeChangeSuccess');
+    });
+
+    $scope.initializeMap = function(){ 
         /*
          * In this method we prepare the google map (i.e the div with id of "map" in index.html) with pinpoints of all stations. 
          * We put the map element in the index.html page so that we only have to prepare it with stations when the app is opened.
@@ -118,9 +152,13 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
     };
 
 
-    $scope.selectDestination = function(){
-        //ng-change calls this function when select menu changes but we might not need it
-        console.log("$scope.directionsFormData.selectedDestination" + $scope.directionsFormData.selectedDestination);
+    $scope.checkIfDirectionsAreEmpty = function(){ 
+        /*
+         */
+
+       // var directionsPanel = document.getElementById("directions_panel");
+        var panelIsEmpty = document.getElementById('directions_panel').innerHTML === "";
+        return panelIsEmpty;
     };
 
 
@@ -156,6 +194,11 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             console.log("else $scope.directionsFormData.selectedFromLocation "+ $scope.directionsFormData.selectedFromLocation);
              $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
         }
+    };
+
+    $scope.selectDestination = function(){
+        //ng-change calls this function when select menu changes but we might not need it
+        console.log("$scope.directionsFormData.selectedDestination" + $scope.directionsFormData.selectedDestination);
     };
 
 
@@ -205,25 +248,6 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
     };
 
 
-    $scope.$on('$viewContentLoaded', function(){
-        /*
-         * This will be executed whenever a view has finished loading. 
-         * We will need to detect when the home view has finished loading as we will need to target the div with id of map
-         * in the DOM (for google maps)
-         */
-
-        //Check if the current path is home 
-        var container_wrapper = document.getElementById('container_wrapper');
-        container_wrapper.scrollTop = 0;
-        
-        var isHomePath = $scope.checkLocationPath("home");
-        if(isHomePath){ 
-            //therefore prepare the Home view with google maps
-            //$scope.prepareHomeView();
-            console.log('home view loaded');
-        }
-    });
-
 
     $scope.checkLocationPath = function(locationPath){
         /*
@@ -251,7 +275,6 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             //check if the path just contains a / 
             isIndexRoute = true;
         } 
-
         var isLoginPath = $scope.checkLocationPath("login") || isIndexRoute;
         return isLoginPath;
     }
@@ -280,11 +303,14 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 	}
 
 	$scope.goToExternalLink = function(event){
+
         console.log('external');
 		event.preventDefault();
 		var href = event.target.attributes['href'].value; //get the href attribute of this element
         var ref = window.open(href, '_blank', 'location=yes');
 	}
+
+
 
 	$scope.goBack = function() {
         /*
