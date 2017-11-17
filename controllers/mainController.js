@@ -59,6 +59,11 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                 $scope.userDetails = userDetails;
             });
         }
+        if(navigator.onLine){
+  alert('online');
+ } else {
+  alert('offline');
+ }
     })();
 
     $scope.$on('$viewContentLoaded', function(){
