@@ -60,9 +60,9 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             });
         }
         if(navigator.onLine){
-  alert('online');
+  //alert('online');
  } else {
-  alert('offline');
+  //alert('offline');
  }
     })();
 
