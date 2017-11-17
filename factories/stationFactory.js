@@ -511,6 +511,9 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
             mapTypeControl: false
         });
 
+        google.maps.event.addListenerOnce(self.map, 'tilesloaded', self.fixLinksInGoogleMap);
+
+
         for(var i = 0; i < allStationsMapData.length; i++){
             (function(stationMapData){
                 var infoWindowHTMLContent = self.generateInfoWindowContent(stationMapData.stationID, stationMapData.stationName, stationMapData.stationLatLng);
@@ -536,8 +539,49 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 });
             })(allStationsMapData[i]);
         }
-
     };
+
+
+        stationService.fixLinksInGoogleMap = function() {
+            /*
+             * We need to target all external links within the google map so that we can open them in a new window instead of the
+             * default behaviour.
+             * Leaving the default behaviour causes the following problem when the app is packaged with phonegap:
+             * The user clicks the external link but has no way to navigate back to the app.
+             * By changing the default external link behaviour we can have the link open in an in-app browser window so that
+             * they can navigate back to the app
+             */
+
+            //Now that the map has loaded, get all anchor links with href containing google.com 
+            //These will be the "google" logo link, the "terms and conditions" link and the "report an error" link on the map
+            var google_map_links = document.querySelectorAll("a[href*='google.com']");
+            console.log(google_map_links);
+            stationService.fixExternalLinks(google_map_links);
+
+        };
+
+
+        stationService.fixExternalLinks = function(external_links) {
+            console.log(external_links);
+            for(var i = 0; i < external_links.length; i++){
+                //create a closure to add on click event listeners to each link
+                (function(external_link){
+                    external_link.addEventListener('click', function(event){
+                        //prevent the default action on link click
+                        event.preventDefault();
+                        var href = external_link.getAttribute("href"); //get the href attribute of this element
+                        //open the link in a new window (which will then allow the user to navigate back to the app)
+                        var ref = window.open(href, '_blank', 'location=yes');
+                    }, false);
+                   console.log(external_link);
+                })(external_links[i]);
+            }
+  
+        };
+
+
+
+
 
     stationService.generateInfoWindowContent = function(stationID, stationName, stationLatLng){ 
         /*
@@ -664,28 +708,19 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
     };
 
     stationService.getDirections = function(startLocation, viaPoint, travelMode, destinationStationID){ 
+        
         var self = this;
 
-        //get the travelmode, startpoint and via point from the form   
-        var travelMode = travelMode;
         var via = viaPoint;
         if (travelMode == 'TRANSIT') {
             via = '';  //if the travel mode is transit, don't use the via waypoint because that will not work
         }
-        alert(JSON.stringify(startLocation));
-        alert(JSON.stringify(travelMode));
-        alert(JSON.stringify(destinationStationID));
-
 
         //get the lat and lng points of the station with stationID of destinationStationID.
         var destinationLatLng = self.getStationLatLngPoints(destinationStationID, self.allStationsMapData);
-
-        alert("destinationLatLng " + JSON.stringify(destinationLatLng));
-
-        
+   
         var waypoints = []; // init an empty waypoints array
         if (via != '' && via != null) {
-            console.log("via " + via);
             //if waypoints (via) are set, add them to the waypoints array
             waypoints.push({
                 location: via,
@@ -699,8 +734,16 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
             unitSystem: google.maps.UnitSystem.IMPERIAL,
             travelMode: google.maps.DirectionsTravelMode[travelMode]
         };
+
+        //reset the directionsDisplay if it is already set (e.g from previous direction results)
+        if(self.directionsDisplay != null){
+            self.directionsDisplay.setMap(null);
+            self.directionsDisplay = null;
+        }
+
         self.directionsDisplay = new google.maps.DirectionsRenderer();
         self.directionsDisplay.setMap(self.map);
+        self.directionsDisplay.setOptions( { suppressMarkers: true } );
         self.directionsDisplay.setPanel(document.getElementById("directions_panel"));
         self.directionsService = new google.maps.DirectionsService();
 
