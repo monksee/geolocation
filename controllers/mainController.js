@@ -236,9 +236,11 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
 
     $scope.submitGetDirectionsForm = function(){ 
+        alert('submit directions');
         if($scope.directionsFormData.selectedFromLocation == 'chooseLocation' && $scope.directionsFormData.startLocation == null){
             //the form has been submitted but the input field for the user to type the "from location" is empty 
             //so exit the function. There will already be an error message displayed in the form
+            alert('choose location error');
             return;
         }
         console.log("$scope.directionsFormData.selectedDestination" + $scope.directionsFormData.selectedDestination);
