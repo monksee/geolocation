@@ -522,9 +522,10 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         });
    
         google.maps.event.addListenerOnce(self.map, 'tilesloaded', function(){
+
             mapLoadedSuccessfully = true;
             deferred.resolve(mapLoadedSuccessfully); 
-
+           alert('tiles loaded ' +  mapLoadedSuccessfully);
             self.fixMapWhenLoaded(); 
         });
 
@@ -556,7 +557,9 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         }
 
         $timeout(function() {
+            alert('timeout ' +  mapLoadedSuccessfully);
             if(!mapLoadedSuccessfully){
+                alert('timeout2 ' +  mapLoadedSuccessfully);
                 deferred.resolve(mapLoadedSuccessfully);
             }
         }, 3000);
@@ -777,7 +780,11 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 self.directionsDisplay.setDirections(response);
             }else{
                 // alert an error message when the route could not be calculated.
-                if (status == 'ZERO_RESULTS'){
+                //check first if the error is because the user is offline.
+                var userIsOnline = navigator.onLine;
+                if(!userIsOnline){
+                    alert("No Internet Connection!");
+                }else if (status == 'ZERO_RESULTS'){
                     alert('No route could be found between the origin and destination.');
                 }else if (status == 'UNKNOWN_ERROR'){ 
                     alert('A directions request could not be processed due to a server error. The request may succeed if you try again.');
