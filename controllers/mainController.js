@@ -117,6 +117,8 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     //prepare the google map
                     stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location).then(function(mapLoadedSuccessfully) {
                         alert("mapLoadedSuccessfully " +  mapLoadedSuccessfully);
+                        //TmapLoadedSuccessfully will be true if the process was successful and false if not successful.
+
                         $scope.mapLoadedSuccessfully = mapLoadedSuccessfully;
                     });
 
@@ -134,8 +136,11 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     });
 
                 }else{
+                    alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
+                    //There has been an error when retrieving all the stations data so set our boolean mapLoadedSuccessfully to false
+                    //so that an error can be displayed in place of the map
                     $scope.mapLoadedSuccessfully = false;
-                    //There has been an error when retrieving all the stations data
+
                 }
             });
         }else{
