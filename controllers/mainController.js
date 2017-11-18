@@ -24,7 +24,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
     $scope.directionsFormData.travelMode = 'DRIVING';
 
     $scope.currentLocationIsloading = false;
-
+    $scope.mapLoadedSuccessfully = true;
 
     window.onload = function(){
         /*
@@ -32,7 +32,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
          * Therefore the google maps script will be loaded now and also the div with id of "map" 
          * so we can initialize the map
          */
-        //$scope.initializeMap();
+        $scope.initializeMap();
     };
  
 
@@ -117,7 +117,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     //prepare the google map
                     stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location).then(function(mapLoadedSuccessfully) {
                         alert("mapLoadedSuccessfully " +  mapLoadedSuccessfully);
-
+                        $scope.mapLoadedSuccessfully = mapLoadedSuccessfully;
                     });
 
 
@@ -134,6 +134,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     });
 
                 }else{
+                    $scope.mapLoadedSuccessfully = false;
                     //There has been an error when retrieving all the stations data
                 }
             });
