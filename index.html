@@ -45,7 +45,10 @@
 			    {{userDetails.facebookName}}
 			</div>
 			<!--hide the map when we are not on the home view-->
-			<div data-ng-class="{'hide_map': detectHomeView() == false}"><div id="map"></div></div>
+			<div data-ng-class="{'hide_map': detectHomeView() == false}">
+			    <div id="map"></div>
+			    <div id="map_error" data-ng-show="!mapLoadedSuccessfully">map error</div>
+			</div>
 			<div data-ng-view class="view" >
 
 				<!--our individual views will be displayed here-->
