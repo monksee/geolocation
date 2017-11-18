@@ -10,7 +10,10 @@ mapApp.factory('sharedFactory', function(){
          * The "error" property contains a message that is specific to whatever error occured on the server side so we want to give
          * that clue to the user.
          */
-        if(response.hasOwnProperty('data') && response.data !== null && response.data.hasOwnProperty('error')){
+        var userIsOnline = navigator.onLine;
+        if(!userIsOnline){
+            alert("No Internet Connection!");
+        }else if(response.hasOwnProperty('data') && response.data !== null && response.data.hasOwnProperty('error')){
             //The response data has the error property
             //I'm not sure about outputting these errors to the user. They may give away sensitive info.
             //e.g. SQLSTATE[HY000] [1045] Access denied for user 'sarahmon_monksee'@'localhost'
@@ -21,6 +24,8 @@ mapApp.factory('sharedFactory', function(){
             alert("We\'re sorry but an unexpected error has occured. Please contact support!");
         }
     };
+
+
     var checkIfEmptyObject = function(obj) {
         for(var key in obj) {
             if(obj.hasOwnProperty(key))
