@@ -12,7 +12,7 @@ mapApp.factory('sharedFactory', function(){
          */
         var userIsOnline = navigator.onLine;
         if(!userIsOnline){
-            alert("No Internet Connection!");
+            alert("No internet connection! \n\nPlease take the following steps: \n\n 1. Make sure mobile data or Wi-Fi is turned on. \n\n 2. Make sure aeroplane mode is off. \n\n 3. Check the signal in your area.");
         }else if(response.hasOwnProperty('data') && response.data !== null && response.data.hasOwnProperty('error')){
             //The response data has the error property
             //I'm not sure about outputting these errors to the user. They may give away sensitive info.
