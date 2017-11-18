@@ -562,7 +562,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 alert('timeout2 ' +  mapLoadedSuccessfully);
                 deferred.resolve(mapLoadedSuccessfully);
             }
-        }, 3000);
+        }, 6000);
 
         return deferred.promise;
     };
