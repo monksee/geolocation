@@ -148,6 +148,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             alert("map is full");
             alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
             //change $scope.mapLoadedSuccessfully to true so the error disappears
+            $scope.mapLoadedSuccessfully = true;
         }
 
     };
