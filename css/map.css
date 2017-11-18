@@ -4,11 +4,46 @@
 * CSS styling for the home view, i.e map and directions
 *
 ***********************************************************/
-#map {
+#map_area{
+position: relative;
+
+}
+#map, #map_error {
 margin: 0px auto;
 height: 500px;
-max-width: 400px;
+
 width:90%;
+}
+#map_error {
+position: absolute;
+top: 0px;
+left: 5%;
+height: 500px;
+width: 90%;
+
+background: #c1c5cc;
+}
+#map_error_text{
+
+position: relative;
+text-align: center;
+padding-top: 30px;
+font-size: 1.1rem;
+font-weight: bold;
+}
+
+#refresh_map_button{
+	position: relative;
+	margin: 10px auto;
+width: 32px;
+height: 32px;
+
+cursor: pointer;
+}
+#refresh_map_button .fa-refresh{
+
+font-size: 30px;
+
 }
 
 .hide_map {
