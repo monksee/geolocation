@@ -88,20 +88,28 @@ mapApp.factory('facebookFactory', function($q, phonegapReady, validatorFactory){
     	 * Also looking out for the "User cancelled dialog" error (errorCode: 4201 on android),
     	 * as we do not want to output a message to the user when this error occurs.
     	 */
-        if(error !== null && typeof error === 'object'){
+        var userIsOnline = navigator.onLine;
+
+        if(!userIsOnline){
+            alert("No internet connection! \n\nPlease take the following steps: \n\n 1. Make sure mobile data or Wi-Fi is turned on. \n\n 2. Make sure aeroplane mode is off. \n\n 3. Check the signal in your area.");
+     
+        }else if(error !== null && typeof error === 'object'){
         	//Error is an object so therefore we are on android 
             if(!(error.hasOwnProperty('errorCode') && error.errorCode === "4201")){
                 //This is not a "User cancelled dialog" (4201) error so we will output the error to the user   
                 alert("We're sorry but the following error occured when trying to process your request: " + error.errorMessage); 
             }
-        }else{
+        }else if(typeof error === 'string'){
         	//Error is not an object therefore we are on iOS and the error is a string.
         	//Check if the error string equals "User cancelled" because this is what iOS returns when user cancels out of logging in to facebook. 
         	if(error.indexOf("User cancelled") == -1){
         		//The error string does not contain "User cancelled" so we will output an error message.
                 alert("We're sorry but the following error occured when trying to process your request: " + error);
         	}
-         }
+        }else{
+
+            alert("We're sorry but an unexpected error occured when trying to process your request.");
+        }
     };
 
 
