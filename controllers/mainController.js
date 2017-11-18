@@ -136,10 +136,11 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     });
 
                 }else{
-                    alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
+ 
                     //There has been an error when retrieving all the stations data so set our boolean mapLoadedSuccessfully to false
                     //so that an error can be displayed in place of the map
                     $scope.mapLoadedSuccessfully = false;
+                     alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
 
                 }
             });
