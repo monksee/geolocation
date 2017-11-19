@@ -150,7 +150,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
             //change $scope.mapLoadedSuccessfully to true so the error disappears
             $scope.mapLoadedSuccessfully = true;
-            lert("$scope.mapLoadedSuccessfully2 " +  $scope.mapLoadedSuccessfully);
+            alert("$scope.mapLoadedSuccessfully2 " +  $scope.mapLoadedSuccessfully);
         }
 
     };
@@ -260,15 +260,17 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
 
         if($scope.directionsFormData.selectedFromLocation == 'currentLocation'){
+             alert('selected current location');
             //we should retrieve the updated current position in case the user has moved position since
             //beginning to fill in the form.
             stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition) {
+                alert('prepare current location promise finished');
                 if(currentPosition !== null){
                     //we were able to get the users current position
                     //store the currentPosition in our startLocation variable to pass into our getDirections method
                     startLocation = currentPosition;
 
-                    console.log(" currentPosition  is not null" +  JSON.stringify(currentPosition));
+                    alert(" currentPosition  is not null" +  JSON.stringify(currentPosition));
                     //pass in start, via and travel mode.
                     stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID);
                 }else{
@@ -277,12 +279,13 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     alert("We're sorry but your current location is inaccessible. " +
                         "Please ensure location services are enabled in the settings on your device or enter a start location in the form.");
                     $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
-                    console.log("chooseLocation ");
+          
                     return;
                 }
             });
 
         }else{
+            alert('selected choose location');
             //User has selected to choose a start location in the form so get the input from the startLocation form field
             startLocation = $scope.directionsFormData.startLocation;
             //pass in start, via and travel mode.
