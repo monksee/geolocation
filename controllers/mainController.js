@@ -32,7 +32,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
          * Therefore the google maps script will be loaded now and also the div with id of "map" 
          * so we can initialize the map
          */
-        $scope.initializeMap();
+       // $scope.initializeMap();
     };
  
 
@@ -117,9 +117,10 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     //prepare the google map
                     stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location).then(function(mapLoadedSuccessfully) {
                         alert("mapLoadedSuccessfully " +  mapLoadedSuccessfully);
-                        //TmapLoadedSuccessfully will be true if the process was successful and false if not successful.
+                        //mapLoadedSuccessfully will be true if the process was successful and false if not successful.
 
                         $scope.mapLoadedSuccessfully = mapLoadedSuccessfully;
+
                     });
 
 
@@ -149,10 +150,17 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
             //change $scope.mapLoadedSuccessfully to true so the error disappears
             $scope.mapLoadedSuccessfully = true;
+            lert("$scope.mapLoadedSuccessfully2 " +  $scope.mapLoadedSuccessfully);
         }
 
     };
 
+
+    $scope.refreshMap = function(){
+        alert("refresh map");
+        $scope.initializeMap();
+
+    };
 
     $scope.showGetDirectionsForm = function(){ 
      
