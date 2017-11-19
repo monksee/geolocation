@@ -49,7 +49,7 @@
 			    <div id="map" data-ng-class="{'hide_map': mapLoadedSuccessfully == false}"></div>
 			    <div id="map_error" data-ng-show="!mapLoadedSuccessfully">
 			        <p id="map_error_text">Error loading map</p>
-			        <div id="refresh_map_button" data-ng-click="initializeMap()"><i class="fa fa-refresh"></i></div>
+			        <div id="refresh_map_button" data-ng-click="refreshMap()"><i class="fa fa-refresh"></i></div>
 			    </div>
 			</div>
 			<div data-ng-view class="view" >
