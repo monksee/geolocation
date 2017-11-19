@@ -729,6 +729,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 //After two seconds check if the isSuccessful boolean is still false and if so then 
                 //we know the success callback has not been executed so we can resolve the promise passing in null
                 if(!isSuccessful){
+                    alert('stationfactory getcurrentloc timeout');
                     deferred.resolve(null);
                 }
             }, 2000);
