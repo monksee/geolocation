@@ -527,6 +527,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
             deferred.resolve(mapLoadedSuccessfully); 
            alert('tiles loaded ' +  mapLoadedSuccessfully);
             self.fixMapWhenLoaded(); 
+            //document.getElementById('map').innerHTML = "";
         });
 
 
@@ -562,7 +563,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 alert('timeout2 ' +  mapLoadedSuccessfully);
                 deferred.resolve(mapLoadedSuccessfully);
             }
-        }, 6000);
+        }, 100);
 
         return deferred.promise;
     };
