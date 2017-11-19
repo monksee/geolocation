@@ -777,6 +777,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         self.directionsService = new google.maps.DirectionsService();
 
         self.directionsService.route(request, function(response, status){
+            alert('route called');
             if (status == google.maps.DirectionsStatus.OK){
                 alert('status ok');
                 document.getElementById("directions_panel").innerHTML = "";
