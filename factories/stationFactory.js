@@ -747,7 +747,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
 
         //get the lat and lng points of the station with stationID of destinationStationID.
         var destinationLatLng = self.getStationLatLngPoints(destinationStationID, self.allStationsMapData);
-   
+   alert('get directions. lat lng ' + JSON.stringify(destinationLatLng));
         var waypoints = []; // init an empty waypoints array
         if (via != '' && via != null) {
             //if waypoints (via) are set, add them to the waypoints array
@@ -778,9 +778,11 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
 
         self.directionsService.route(request, function(response, status){
             if (status == google.maps.DirectionsStatus.OK){
+                alert('status ok');
                 document.getElementById("directions_panel").innerHTML = "";
                 self.directionsDisplay.setDirections(response);
             }else{
+                  alert('status not ok');
                 // alert an error message when the route could not be calculated.
                 //check first if the error is because the user is offline.
                 var userIsOnline = navigator.onLine;
