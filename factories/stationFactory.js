@@ -498,10 +498,52 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
 
 
 
+    stationService.prepareGoogleMapsApi = function(callback){
+
+        /* Before using the google object (i.e when preparing the google map and also when getting directions) 
+         * we must check if the google api is fully loaded (otherwise there will be an error ("google" undefined) 
+         * that can break the app from working on subsequent requests).
+         * (in case the user was not online when they opened the app or the requests where made).
+         */
+        console.log("isMapL s" + isMapsApiLoaded);
+        //make sure the user is online before proceeding with loading the google map script (if not loaded already) and also running our callback.
+        var userIsOnline = navigator.onLine;
+        if(userIsOnline){
+            if(isMapsApiLoaded){
+                callback();
+            }else{
+             
+                //make sure the user is online before proceeding with loading the google map script and also running our callback.
+                var url = "http://maps.google.com/maps/api/js?key=AIzaSyAq3rgVX-gPP-1TWmUBER0f_E_tzGO_6Ng"; 
+                stationService.loadScript(url, callback);
+                // var script = document.createElement("script"); // Make a script DOM node
+                // script.src = "http://maps.google.com/maps/api/js?key=AIzaSyAq3rgVX-gPP-1TWmUBER0f_E_tzGO_6Ng"; // Set it's src to the provided URL
+                // document.head.appendChild(script);
+            }
+        }else{
+            alert("No internet connection");
+        }
+            
+
+    };
 
 
 
+    stationService.loadScript = function(url, callback){
+        // Adding the script tag to the head
+        var head = document.getElementsByTagName('head')[0];
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = url;
 
+        // Then bind the event to the callback function.
+        // There are several events for cross browser compatibility.
+        script.onreadystatechange = callback;
+        script.onload = callback;
+
+        // Fire the loading
+        head.appendChild(script);
+    };
 
     stationService.prepareStationsOnMap = function(allStationsMapData, scope, location){ 
         /*
@@ -509,8 +551,12 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
          * We use this in our main controller after we have detected that the home view has finished loading.
          */
         var self = this;
+
+            console.log('self ' +  self);   
         var deferred = $q.defer();
+
         var mapLoadedSuccessfully = false;
+
         //store the map and infowindow in global variables so we can retrieve it later if we want
         self.infoWindow = new google.maps.InfoWindow();
 
@@ -563,9 +609,12 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 alert('timeout2 ' +  mapLoadedSuccessfully);
                 deferred.resolve(mapLoadedSuccessfully);
             }
-        }, 100);
+        }, 6000);
 
         return deferred.promise;
+
+
+
     };
 
 
@@ -625,7 +674,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         return infoWindowHTML;
     };
 
-    stationService.prepareCurrentLocation1 = function(){ 
+    stationService.prepareCurrentLocation = function(){ 
         /*
          * This method gets a user's current position, marks it on the map
          * We also enter this current position to the From input field in our directions form
@@ -684,7 +733,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         return deferred.promise;
     };
 
-    stationService.prepareCurrentLocation = function(){ 
+    stationService.prepareCurrentLocation1 = function(){ 
         /*
          * This method calls the getCurrentPosition method from the geolocationFactory to get a user's current position
          * If successfully retrieved we mark their current position on the map (with id of "map")
@@ -774,8 +823,8 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         self.directionsDisplay.setMap(self.map);
         self.directionsDisplay.setOptions( { suppressMarkers: true } );
         self.directionsDisplay.setPanel(document.getElementById("directions_panel"));
-        self.directionsService = new google.maps.DirectionsService();
 
+        self.directionsService = new google.maps.DirectionsService();
         self.directionsService.route(request, function(response, status){
             alert('route called');
             if (status == google.maps.DirectionsStatus.OK){
@@ -806,6 +855,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 }
             }
         });
+
 
     };
 
