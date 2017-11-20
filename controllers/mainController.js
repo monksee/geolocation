@@ -115,6 +115,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             //initially and therefore the google map script mightn't have loaded.
 
             stationFactory.stationService.prepareGoogleMapsApi(function(){
+            isMapsApiLoaded = true;
             //we need to do an API call (i.e call the getAllStationsMapData() method) to retrieve the data from the database.
             //and also prepare the map
             stationFactory.stationService.getAllStationsMapData().then(function(allStationsMapData) {
@@ -151,7 +152,10 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
                 }
             });
-            });
+            }).then(function(mapLoadedSuccessfully) {
+                $scope.mapLoadedSuccessfully = mapLoadedSuccessfully;
+                 alert("prepareGoogleMapsApi " +  $scope.mapLoadedSuccessfully);
+            });   
         }else{
             alert("map is full");
             alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
@@ -269,6 +273,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         //initially and therefore the google map script mightn't have loaded.
             
         stationFactory.stationService.prepareGoogleMapsApi(function(){ 
+              isMapsApiLoaded = true;
         if($scope.directionsFormData.selectedFromLocation == 'currentLocation'){
              alert('selected current location');
             //we should retrieve the updated current position in case the user has moved position since
