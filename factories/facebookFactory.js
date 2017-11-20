@@ -100,7 +100,7 @@ mapApp.factory('facebookFactory', function($q, phonegapReady, validatorFactory){
                 alert("We're sorry but the following error occured when trying to process your request: " + error.errorMessage); 
             }
         }else if(typeof error === 'string'){
-              alert('ios');
+
         	//Error is not an object therefore we are on iOS and the error is a string.
         	//Check if the error string equals "User cancelled" because this is what iOS returns when user cancels out of logging in to facebook. 
         	if(error.indexOf("User cancelled") == -1){
