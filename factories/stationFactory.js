@@ -505,14 +505,18 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
          * that can break the app from working on subsequent requests).
          * (in case the user was not online when they opened the app or the requests where made).
          */
-        console.log("isMapL s" + isMapsApiLoaded);
+
+        var deferred = $q.defer();
+
+        var mapLoadedSuccessfully = false;
+        console.log("prepareGoogleMapsApi factory" + isMapsApiLoaded);
         //make sure the user is online before proceeding with loading the google map script (if not loaded already) and also running our callback.
         var userIsOnline = navigator.onLine;
         if(userIsOnline){
             if(isMapsApiLoaded){
                 callback();
             }else{
-             
+                console.log("map is not loaded. isMapsApiLoaded: " + isMapsApiLoaded);
                 //make sure the user is online before proceeding with loading the google map script and also running our callback.
                 var url = "http://maps.google.com/maps/api/js?key=AIzaSyAq3rgVX-gPP-1TWmUBER0f_E_tzGO_6Ng"; 
                 stationService.loadScript(url, callback);
@@ -521,10 +525,13 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 // document.head.appendChild(script);
             }
         }else{
+            console.log("prepareGoogleMapsApi2 factory" + isMapsApiLoaded);
             alert("No internet connection");
+
+            deferred.resolve(mapLoadedSuccessfully); 
         }
             
-
+        return deferred.promise;
     };
 
 
@@ -551,7 +558,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
          * We use this in our main controller after we have detected that the home view has finished loading.
          */
         var self = this;
-
+       
             console.log('self ' +  self);   
         var deferred = $q.defer();
 
@@ -674,7 +681,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         return infoWindowHTML;
     };
 
-    stationService.prepareCurrentLocation = function(){ 
+    stationService.prepareCurrentLocation1 = function(){ 
         /*
          * This method gets a user's current position, marks it on the map
          * We also enter this current position to the From input field in our directions form
@@ -733,7 +740,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         return deferred.promise;
     };
 
-    stationService.prepareCurrentLocation1 = function(){ 
+    stationService.prepareCurrentLocation = function(){ 
         /*
          * This method calls the getCurrentPosition method from the geolocationFactory to get a user's current position
          * If successfully retrieved we mark their current position on the map (with id of "map")
