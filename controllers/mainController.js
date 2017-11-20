@@ -106,9 +106,15 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
          * In this method we prepare the google map (i.e the div with id of "map" in index.html) with pinpoints of all stations. 
          * We put the map element in the index.html page so that we only have to prepare it with stations when the app is opened.
          */
-        console.log(document.getElementById('map')); 
+
+
         if($scope.checkIfMapIsEmpty()){
+
             alert("map is empty");
+            //before preparing the google map we check if the API is loaded as the user may have not been online when the app was opened
+            //initially and therefore the google map script mightn't have loaded.
+
+            stationFactory.stationService.prepareGoogleMapsApi(function(){
             //we need to do an API call (i.e call the getAllStationsMapData() method) to retrieve the data from the database.
             //and also prepare the map
             stationFactory.stationService.getAllStationsMapData().then(function(allStationsMapData) {
@@ -144,6 +150,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
 
                 }
+            });
             });
         }else{
             alert("map is full");
@@ -258,7 +265,10 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         var viaPoint = $scope.directionsFormData.viaPoint;
         var travelMode = $scope.directionsFormData.travelMode;
 
-
+        //before preparing the google map we check if the API is loaded as the user may have not been online when the app was opened
+        //initially and therefore the google map script mightn't have loaded.
+            
+        stationFactory.stationService.prepareGoogleMapsApi(function(){ 
         if($scope.directionsFormData.selectedFromLocation == 'currentLocation'){
              alert('selected current location');
             //we should retrieve the updated current position in case the user has moved position since
@@ -291,6 +301,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             //pass in start, via and travel mode.
             stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID);
         }
+        });
     };
 
 
