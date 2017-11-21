@@ -56,11 +56,11 @@ window.mapsCallback = function () {
 			    <div id="map" data-ng-class="{'hide_map': mapLoadedSuccessfully == false}"></div>
 
 			    <div id="map_is_loading" data-ng-show="mapIsLoading || mapLoadedSuccessfully == false">
-			        <p class="map_area_text" data-ng-show="mapIsLoading">Loading...</p>
+			        <p class="map_area_text" data-ng-show="mapIsLoading">Loading map...</p>
 			        <p class="map_area_text" data-ng-show="mapLoadedSuccessfully == false && !mapIsLoading">Error loading map!</p>
 
 			        <div id="refresh_map_button" data-ng-show="mapIsLoading">
-			            <i class="fa fa-refresh fa-spinning"></i>
+			            <i class="fa fa-spinner fa-spinning"></i>
 			        </div>
                     <div id="refresh_map_button" data-ng-click="refreshMap()" data-ng-show="mapLoadedSuccessfully == false && !mapIsLoading">
 			            <i class="fa fa-refresh"></i>
