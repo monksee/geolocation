@@ -34,6 +34,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
     stationService.infoWindowStationLatLng;
     stationService.directionsDisplay;
     stationService.directionsService;
+    stationService.currentPositionMarkers = [];
 
     stationService.getAllStationsMapData = function(){
          /**
@@ -686,7 +687,12 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
          * This method gets a user's current position, marks it on the map
          * We also enter this current position to the From input field in our directions form
          */
+      
         var self = this;
+        for(var i = 0; i < self.currentPositionMarkers.length; i++){
+            self.currentPositionMarkers[i].setMap(null);
+        }
+
         var deferred = $q.defer();
         var isSuccessful = false;
         if(navigator.geolocation){
@@ -695,7 +701,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     isSuccessful = true;
                     var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
-                    var marker = new google.maps.Marker({
+                    var currentPositionMarker = new google.maps.Marker({
                         position: currentPosition, 
                         map: self.map, 
                         title:"User location",
@@ -704,6 +710,9 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                         optimized: false,
                         zIndex:99999999
                     }); 
+                    // Push your newly created marker into the array
+                    self.currentPositionMarkers.push(currentPositionMarker);
+
                     //return the current position. This will be an object with lat and lng points.
                     deferred.resolve(currentPosition); 
                 },
@@ -748,6 +757,9 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
          * If unsuccessful we return null.
          */
         var self = this;
+        for(var i = 0; i < self.currentPositionMarkers.length; i++){
+            self.currentPositionMarkers[i].setMap(null);
+        }
         var deferred = $q.defer();
         var isSuccessful = false; //initialize a boolean which will tell us whether the success function has been executed or not.
           // alert("prepareCurrentLocation");
@@ -758,7 +770,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                     console.log(JSON.stringify(currentPosition));
 
-                    var marker = new google.maps.Marker({
+                    var currentPositionMarker  = new google.maps.Marker({
                         position: currentPosition, 
                         map: self.map, 
                         title:"User location",
@@ -767,6 +779,8 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                         optimized: false,
                         zIndex:99999999
                     }); 
+                    // Push your newly created marker into the array
+                    self.currentPositionMarkers.push(currentPositionMarker);
                     //return the current position. This will be an object with lat and lng points.
                     deferred.resolve(currentPosition); 
                 },
