@@ -22,7 +22,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
     $scope.allStationsMapData = stationFactory.stationService.allStationsMapData;
     $scope.directionsFormData = {};
     $scope.directionsFormData.travelMode = 'DRIVING';
-
+    $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
     $scope.currentLocationIsloading = false;
     $scope.mapLoadedSuccessfully = true;
     $scope.mapIsLoading = false;
@@ -104,7 +104,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
          * In this method we prepare the google map (i.e the div with id of "map" in index.html) with pinpoints of all stations. 
          * We put the map element in the index.html page so that we only have to prepare it with stations when the app is opened.
          */
-
+        
 
         if($scope.checkIfMapIsEmpty()){
             $scope.mapIsLoading = true;
@@ -411,7 +411,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 		$scope.transitionFromLeftToRight();
 	}
 
-    $scope.loginWithFacebook = function(){
+    $scope.loginWithFacebook1 = function(){
         /*
          * This function calls the login method of the userFactory.userService and returns the user's profile data.
          * This method will be called when the "login with facebook" button is pressed and also when the 
@@ -459,7 +459,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
 
 
-    $scope.loginWithFacebook1 = function(){
+    $scope.loginWithFacebook = function(){
         var loginIsSuccessful = false; //initialize a boolean to false
         var deferred = $q.defer();
         //the following blocks of code should be moved to the facebookFactory when using phonegap
