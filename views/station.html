@@ -132,6 +132,8 @@
 
             <div class="form_divider">
 	            <input class="btn btn_blue btn_float_right" type="submit" value="Submit" />
+                <!--need to use a span tag instead of button tag for the following otherwise angular will think its a form submission-->
+                <span class="btn btn_white btn_float_right btn_cancel" data-ng-click="cancelWriteAReview()" >Cancel</span>
 	        </div>
         </form>
     </div><!--/write_a_review_form_area-->
