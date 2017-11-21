@@ -22,10 +22,9 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
     $scope.allStationsMapData = stationFactory.stationService.allStationsMapData;
     $scope.directionsFormData = {};
     $scope.directionsFormData.travelMode = 'DRIVING';
-    $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
+
     $scope.currentLocationIsloading = false;
     $scope.mapLoadedSuccessfully = true;
-    $scope.mapIsLoading = false;
 
     window.onload = function(){
         /*
@@ -60,7 +59,11 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                 $scope.userDetails = userDetails;
             });
         }
-
+        if(navigator.onLine){
+  //alert('online');
+ } else {
+  //alert('offline');
+ }
     })();
 
     $scope.$on('$viewContentLoaded', function(){
@@ -78,7 +81,6 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             //therefore prepare the Home view with google maps
             //$scope.initializeMap();
             console.log('home view loaded');
-
         }
     });
 
@@ -104,16 +106,11 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
          * In this method we prepare the google map (i.e the div with id of "map" in index.html) with pinpoints of all stations. 
          * We put the map element in the index.html page so that we only have to prepare it with stations when the app is opened.
          */
-        
+
 
         if($scope.checkIfMapIsEmpty()){
-            $scope.mapIsLoading = true;
-           // alert("map is empty");
-            //before preparing the google map we check if the API is loaded as the user may have not been online when the app was opened
-            //initially and therefore the google map script mightn't have loaded.
 
-            stationFactory.stationService.prepareGoogleMapsApi(function(){
-            isMapsApiLoaded = true;
+            alert("map is empty");
             //we need to do an API call (i.e call the getAllStationsMapData() method) to retrieve the data from the database.
             //and also prepare the map
             stationFactory.stationService.getAllStationsMapData().then(function(allStationsMapData) {
@@ -121,12 +118,11 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     $scope.allStationsMapData =  allStationsMapData;
                     //prepare the google map
                     stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location).then(function(mapLoadedSuccessfully) {
-                      //  alert("mapLoadedSuccessfully " +  mapLoadedSuccessfully);
+                        alert("mapLoadedSuccessfully " +  mapLoadedSuccessfully);
                         //mapLoadedSuccessfully will be true if the process was successful and false if not successful.
 
                         $scope.mapLoadedSuccessfully = mapLoadedSuccessfully;
-                        //the map area has finished loading so change the mapIsLoading variable to false
-                        $scope.mapIsLoading = false;
+
                     });
 
 
@@ -147,31 +143,23 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     //There has been an error when retrieving all the stations data so set our boolean mapLoadedSuccessfully to false
                     //so that an error can be displayed in place of the map
                     $scope.mapLoadedSuccessfully = false;
-                   // alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
-                    //the map area has finished loading so change the mapIsLoading variable to false
-                    $scope.mapIsLoading = false;
+                    alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
 
                 }
             });
-            }).then(function(mapLoadedSuccessfully) {
-                $scope.mapLoadedSuccessfully = mapLoadedSuccessfully;
-                // alert("prepareGoogleMapsApi " +  $scope.mapLoadedSuccessfully);
-                //the map area has finished loading so change the mapIsLoading variable to false
-                $scope.mapIsLoading = false;
-            });   
         }else{
-           // alert("map is full");
-          //  alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
+            alert("map is full");
+            alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
             //change $scope.mapLoadedSuccessfully to true so the error disappears
             $scope.mapLoadedSuccessfully = true;
-           // alert("$scope.mapLoadedSuccessfully2 " +  $scope.mapLoadedSuccessfully);
+            alert("$scope.mapLoadedSuccessfully2 " +  $scope.mapLoadedSuccessfully);
         }
 
     };
 
 
     $scope.refreshMap = function(){
-       // alert("refresh map");
+        alert("refresh map");
         $scope.initializeMap();
 
     };
@@ -272,11 +260,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         var viaPoint = $scope.directionsFormData.viaPoint;
         var travelMode = $scope.directionsFormData.travelMode;
 
-        //before preparing the google map we check if the API is loaded as the user may have not been online when the app was opened
-        //initially and therefore the google map script mightn't have loaded.
-            
-        stationFactory.stationService.prepareGoogleMapsApi(function(){ 
-              isMapsApiLoaded = true;
+
         if($scope.directionsFormData.selectedFromLocation == 'currentLocation'){
              alert('selected current location');
             //we should retrieve the updated current position in case the user has moved position since
@@ -309,7 +293,6 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             //pass in start, via and travel mode.
             stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID);
         }
-        });
     };
 
 
@@ -411,7 +394,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 		$scope.transitionFromLeftToRight();
 	}
 
-    $scope.loginWithFacebook1 = function(){
+    $scope.loginWithFacebook = function(){
         /*
          * This function calls the login method of the userFactory.userService and returns the user's profile data.
          * This method will be called when the "login with facebook" button is pressed and also when the 
@@ -459,7 +442,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
 
 
-    $scope.loginWithFacebook = function(){
+    $scope.loginWithFacebook1 = function(){
         var loginIsSuccessful = false; //initialize a boolean to false
         var deferred = $q.defer();
         //the following blocks of code should be moved to the facebookFactory when using phonegap
