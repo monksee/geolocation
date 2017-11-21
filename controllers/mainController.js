@@ -25,6 +25,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
     $scope.currentLocationIsloading = false;
     $scope.mapLoadedSuccessfully = true;
+    $scope.mapIsLoading = false;
 
     window.onload = function(){
         /*
@@ -59,11 +60,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                 $scope.userDetails = userDetails;
             });
         }
-        if(navigator.onLine){
-  //alert('online');
- } else {
-  //alert('offline');
- }
+
     })();
 
     $scope.$on('$viewContentLoaded', function(){
@@ -81,6 +78,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             //therefore prepare the Home view with google maps
             //$scope.initializeMap();
             console.log('home view loaded');
+
         }
     });
 
@@ -109,8 +107,8 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
 
         if($scope.checkIfMapIsEmpty()){
-
-            alert("map is empty");
+            $scope.mapIsLoading = true;
+           // alert("map is empty");
             //before preparing the google map we check if the API is loaded as the user may have not been online when the app was opened
             //initially and therefore the google map script mightn't have loaded.
 
@@ -123,11 +121,12 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     $scope.allStationsMapData =  allStationsMapData;
                     //prepare the google map
                     stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location).then(function(mapLoadedSuccessfully) {
-                        alert("mapLoadedSuccessfully " +  mapLoadedSuccessfully);
+                      //  alert("mapLoadedSuccessfully " +  mapLoadedSuccessfully);
                         //mapLoadedSuccessfully will be true if the process was successful and false if not successful.
 
                         $scope.mapLoadedSuccessfully = mapLoadedSuccessfully;
-
+                        //the map area has finished loading so change the mapIsLoading variable to false
+                        $scope.mapIsLoading = false;
                     });
 
 
@@ -148,27 +147,31 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     //There has been an error when retrieving all the stations data so set our boolean mapLoadedSuccessfully to false
                     //so that an error can be displayed in place of the map
                     $scope.mapLoadedSuccessfully = false;
-                    alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
+                   // alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
+                    //the map area has finished loading so change the mapIsLoading variable to false
+                    $scope.mapIsLoading = false;
 
                 }
             });
             }).then(function(mapLoadedSuccessfully) {
                 $scope.mapLoadedSuccessfully = mapLoadedSuccessfully;
-                 alert("prepareGoogleMapsApi " +  $scope.mapLoadedSuccessfully);
+                // alert("prepareGoogleMapsApi " +  $scope.mapLoadedSuccessfully);
+                //the map area has finished loading so change the mapIsLoading variable to false
+                $scope.mapIsLoading = false;
             });   
         }else{
-            alert("map is full");
-            alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
+           // alert("map is full");
+          //  alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
             //change $scope.mapLoadedSuccessfully to true so the error disappears
             $scope.mapLoadedSuccessfully = true;
-            alert("$scope.mapLoadedSuccessfully2 " +  $scope.mapLoadedSuccessfully);
+           // alert("$scope.mapLoadedSuccessfully2 " +  $scope.mapLoadedSuccessfully);
         }
 
     };
 
 
     $scope.refreshMap = function(){
-        alert("refresh map");
+       // alert("refresh map");
         $scope.initializeMap();
 
     };
