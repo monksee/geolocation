@@ -267,8 +267,8 @@ left: auto !important;
 font-size: 17px;
 }
 
-#map_is_loading .fa-refresh{
-   font-size: 25px; 
+#map_is_loading .fa-spinner{
+   font-size: 30px; 
 }
 /******************************************************/
 /*styling for the scrollbar and scrolling functionality*/
