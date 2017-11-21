@@ -8,23 +8,26 @@
 position: relative;
 
 }
-#map, #map_error {
+#map{
+position: relative;
 margin: 0px auto;
 height: 500px;
-
+z-index: 7;
 width:90%;
 }
-#map_error {
+
+#map_error, #map_is_loading{
 position: absolute;
 top: 0px;
 left: 5%;
 height: 500px;
 width: 90%;
-
+z-index: 8;
 background: #c1c5cc;
 }
-#map_error_text{
 
+
+.map_area_text{
 position: relative;
 text-align: center;
 padding-top: 30px;

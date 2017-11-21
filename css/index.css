@@ -267,6 +267,9 @@ left: auto !important;
 font-size: 17px;
 }
 
+#map_is_loading .fa-refresh{
+   font-size: 25px; 
+}
 /******************************************************/
 /*styling for the scrollbar and scrolling functionality*/
 ::-webkit-scrollbar{  
