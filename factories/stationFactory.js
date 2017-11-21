@@ -578,7 +578,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
 
             mapLoadedSuccessfully = true;
             deferred.resolve(mapLoadedSuccessfully); 
-           alert('tiles loaded ' +  mapLoadedSuccessfully);
+          // alert('tiles loaded ' +  mapLoadedSuccessfully);
             self.fixMapWhenLoaded(); 
             //document.getElementById('map').innerHTML = "";
         });
@@ -611,9 +611,9 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         }
 
         $timeout(function() {
-            alert('timeout ' +  mapLoadedSuccessfully);
+           // alert('timeout ' +  mapLoadedSuccessfully);
             if(!mapLoadedSuccessfully){
-                alert('timeout2 ' +  mapLoadedSuccessfully);
+              //  alert('timeout2 ' +  mapLoadedSuccessfully);
                 deferred.resolve(mapLoadedSuccessfully);
             }
         }, 6000);
@@ -730,7 +730,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
               
                     deferred.resolve(null);
                 }
-            }, 2000);
+            }, 6000);
 
 
         }else{
@@ -788,7 +788,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     alert('stationfactory getcurrentloc timeout');
                     deferred.resolve(null);
                 }
-            }, 2000);
+            }, 6000);
         return deferred.promise;
     };
 
@@ -833,13 +833,13 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
 
         self.directionsService = new google.maps.DirectionsService();
         self.directionsService.route(request, function(response, status){
-            alert('route called');
+            //alert('route called');
             if (status == google.maps.DirectionsStatus.OK){
-                alert('status ok');
+               // alert('status ok');
                 document.getElementById("directions_panel").innerHTML = "";
                 self.directionsDisplay.setDirections(response);
             }else{
-                  alert('status not ok');
+                //  alert('status not ok');
                 // alert an error message when the route could not be calculated.
                 //check first if the error is because the user is offline.
                 var userIsOnline = navigator.onLine;
@@ -848,13 +848,13 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 }else if (status == 'ZERO_RESULTS'){
                     alert('No route could be found between the origin and destination.');
                 }else if (status == 'UNKNOWN_ERROR'){ 
-                    alert('A directions request could not be processed due to a server error. The request may succeed if you try again.');
+                    alert('A directions request could not be processed due to a server error. Please check your internet connection.');
                 }else if (status == 'REQUEST_DENIED'){
                     alert('This application is not allowed to use the directions service.');
                 }else if (status == 'OVER_QUERY_LIMIT'){
                     alert('The application has gone over the requests limit in too short a period of time.');
                 }else if (status == 'NOT_FOUND'){
-                    alert('At least one of the origin, destination, or via waypoints could not be geocoded. Please make sure the start location or via point are correct locations');
+                    alert('At least one of the origin, destination, or via waypoints could not be geocoded. Please make sure the start location or via point are correct locations.');
                 }else if (status == 'INVALID_REQUEST'){
                     alert('The Directions Request provided was invalid.');                  
                 }else{
