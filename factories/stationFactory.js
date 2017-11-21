@@ -34,7 +34,6 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
     stationService.infoWindowStationLatLng;
     stationService.directionsDisplay;
     stationService.directionsService;
-    stationService.currentPositionMarkers = [];
 
     stationService.getAllStationsMapData = function(){
          /**
@@ -499,59 +498,40 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
 
 
 
-    stationService.prepareGoogleMapsApi = function(callback){
+    stationService.checkIfGoogleMapApiIsLoaded = function(callback){
 
-        /* Before using the google object (i.e when preparing the google map and also when getting directions) 
-         * we must check if the google api is fully loaded (otherwise there will be an error ("google" undefined) 
-         * that can break the app from working on subsequent requests).
-         * (in case the user was not online when they opened the app or the requests where made).
-         */
+        //before using the google object we must check if the google apli is fully loaded.
+        //(in case the user was not online when they opened the app or the requests where made).
+        console.log("isMapL s" + isMapsApiLoaded);
+        if(isMapsApiLoaded){
+callback();
 
-        var deferred = $q.defer();
-
-        var mapLoadedSuccessfully = false;
-        console.log("prepareGoogleMapsApi factory" + isMapsApiLoaded);
-        //make sure the user is online before proceeding with loading the google map script (if not loaded already) and also running our callback.
-        var userIsOnline = navigator.onLine;
-        if(userIsOnline){
-            if(isMapsApiLoaded){
-                callback();
-            }else{
-                console.log("map is not loaded. isMapsApiLoaded: " + isMapsApiLoaded);
-                //make sure the user is online before proceeding with loading the google map script and also running our callback.
-                var url = "http://maps.google.com/maps/api/js?key=AIzaSyAq3rgVX-gPP-1TWmUBER0f_E_tzGO_6Ng"; 
-                stationService.loadScript(url, callback);
-                // var script = document.createElement("script"); // Make a script DOM node
-                // script.src = "http://maps.google.com/maps/api/js?key=AIzaSyAq3rgVX-gPP-1TWmUBER0f_E_tzGO_6Ng"; // Set it's src to the provided URL
-                // document.head.appendChild(script);
-            }
         }else{
-            console.log("prepareGoogleMapsApi2 factory" + isMapsApiLoaded);
-            alert("No internet connection");
+            var url = "http://maps.google.com/maps/api/js?key=AIzaSyAq3rgVX-gPP-1TWmUBER0f_E_tzGO_6Ng"; 
 
-            deferred.resolve(mapLoadedSuccessfully); 
+            stationService.loadScript(url, callback);
+           // var script = document.createElement("script"); // Make a script DOM node
+           // script.src = "http://maps.google.com/maps/api/js?key=AIzaSyAq3rgVX-gPP-1TWmUBER0f_E_tzGO_6Ng"; // Set it's src to the provided URL
+           // document.head.appendChild(script);
         }
-            
-        return deferred.promise;
     };
 
 
+stationService.loadScript = function(url, callback){
+    // Adding the script tag to the head as suggested before
+    var head = document.getElementsByTagName('head')[0];
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = url;
 
-    stationService.loadScript = function(url, callback){
-        // Adding the script tag to the head
-        var head = document.getElementsByTagName('head')[0];
-        var script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = url;
+    // Then bind the event to the callback function.
+    // There are several events for cross browser compatibility.
+    script.onreadystatechange = callback;
+    script.onload = callback;
 
-        // Then bind the event to the callback function.
-        // There are several events for cross browser compatibility.
-        script.onreadystatechange = callback;
-        script.onload = callback;
-
-        // Fire the loading
-        head.appendChild(script);
-    };
+    // Fire the loading
+    head.appendChild(script);
+};
 
     stationService.prepareStationsOnMap = function(allStationsMapData, scope, location){ 
         /*
@@ -559,7 +539,8 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
          * We use this in our main controller after we have detected that the home view has finished loading.
          */
         var self = this;
-       
+
+        stationService.checkIfGoogleMapApiIsLoaded(function(){
             console.log('self ' +  self);   
         var deferred = $q.defer();
 
@@ -579,7 +560,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
 
             mapLoadedSuccessfully = true;
             deferred.resolve(mapLoadedSuccessfully); 
-          // alert('tiles loaded ' +  mapLoadedSuccessfully);
+           alert('tiles loaded ' +  mapLoadedSuccessfully);
             self.fixMapWhenLoaded(); 
             //document.getElementById('map').innerHTML = "";
         });
@@ -612,16 +593,16 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         }
 
         $timeout(function() {
-           // alert('timeout ' +  mapLoadedSuccessfully);
+            alert('timeout ' +  mapLoadedSuccessfully);
             if(!mapLoadedSuccessfully){
-              //  alert('timeout2 ' +  mapLoadedSuccessfully);
+                alert('timeout2 ' +  mapLoadedSuccessfully);
                 deferred.resolve(mapLoadedSuccessfully);
             }
         }, 6000);
 
         return deferred.promise;
 
-
+        });
 
     };
 
@@ -675,9 +656,11 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
          * This method is called in prepareStationsOnMap.
          */
         var infoWindowHTML = '<div><h4>' + stationName + '</h4>' + 
-                             '<a class="info_window_button" href="#station?stationID=' + stationID + '">View more info</a>' + 
-                             '<input class="info_window_button" type="button" value="Get directions"' + 
-                             ' data-ng-click="getDirections(' + stationID + ')"/></div>';
+                             '<div class="info_window_button_area">' + 
+                             '<a class="info_window_button btn btn_white" href="#station?stationID=' + stationID + '">View more info</a>' + 
+                             '<span class="info_window_button btn btn_white" + data-ng-click="getDirections(' + stationID + ')">Get directions</span>' + 
+                             '</div>' +
+                             '</div>';
 
         return infoWindowHTML;
     };
@@ -687,12 +670,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
          * This method gets a user's current position, marks it on the map
          * We also enter this current position to the From input field in our directions form
          */
-      
         var self = this;
-        for(var i = 0; i < self.currentPositionMarkers.length; i++){
-            self.currentPositionMarkers[i].setMap(null);
-        }
-
         var deferred = $q.defer();
         var isSuccessful = false;
         if(navigator.geolocation){
@@ -701,7 +679,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     isSuccessful = true;
                     var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
-                    var currentPositionMarker = new google.maps.Marker({
+                    var marker = new google.maps.Marker({
                         position: currentPosition, 
                         map: self.map, 
                         title:"User location",
@@ -710,9 +688,6 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                         optimized: false,
                         zIndex:99999999
                     }); 
-                    // Push your newly created marker into the array
-                    self.currentPositionMarkers.push(currentPositionMarker);
-
                     //return the current position. This will be an object with lat and lng points.
                     deferred.resolve(currentPosition); 
                 },
@@ -730,7 +705,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     }  
                     deferred.resolve(null);    
                 },
-              { enableHighAccuracy: true, timeout: 1900, maximumAge: 0 }
+              { enableHighAccuracy: true, timeout: 5900, maximumAge: 0 }
             );
             $timeout(function() {
                 //After two seconds check if the isSuccessful boolean is still false and if so then 
@@ -757,9 +732,6 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
          * If unsuccessful we return null.
          */
         var self = this;
-        for(var i = 0; i < self.currentPositionMarkers.length; i++){
-            self.currentPositionMarkers[i].setMap(null);
-        }
         var deferred = $q.defer();
         var isSuccessful = false; //initialize a boolean which will tell us whether the success function has been executed or not.
           // alert("prepareCurrentLocation");
@@ -770,7 +742,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                     console.log(JSON.stringify(currentPosition));
 
-                    var currentPositionMarker  = new google.maps.Marker({
+                    var marker = new google.maps.Marker({
                         position: currentPosition, 
                         map: self.map, 
                         title:"User location",
@@ -779,8 +751,6 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                         optimized: false,
                         zIndex:99999999
                     }); 
-                    // Push your newly created marker into the array
-                    self.currentPositionMarkers.push(currentPositionMarker);
                     //return the current position. This will be an object with lat and lng points.
                     deferred.resolve(currentPosition); 
                 },
@@ -789,7 +759,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     //a different message will be output depending on when this method is called
                     deferred.resolve(null);    
                 },
-                { enableHighAccuracy: true, timeout: 1900, maximumAge: 0 }
+                { enableHighAccuracy: true, timeout: 5900, maximumAge: 0 }
             );
             //Note: After testing with phonegap it seems the error function is sometimes not being called here 
             //for example when a user has location turned off on their device so 
@@ -833,7 +803,8 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
             unitSystem: google.maps.UnitSystem.IMPERIAL,
             travelMode: google.maps.DirectionsTravelMode[travelMode]
         };
-
+        var userIsOnline = navigator.onLine;
+        if(userIsOnline){
         //reset the directionsDisplay if it is already set (e.g from previous direction results)
         if(self.directionsDisplay != null){
             self.directionsDisplay.setMap(null);
@@ -845,15 +816,15 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         self.directionsDisplay.setOptions( { suppressMarkers: true } );
         self.directionsDisplay.setPanel(document.getElementById("directions_panel"));
 
-        self.directionsService = new google.maps.DirectionsService();
-        self.directionsService.route(request, function(response, status){
-            //alert('route called');
+            self.directionsService = new google.maps.DirectionsService();
+            self.directionsService.route(request, function(response, status){
+            alert('route called');
             if (status == google.maps.DirectionsStatus.OK){
-               // alert('status ok');
+                alert('status ok');
                 document.getElementById("directions_panel").innerHTML = "";
                 self.directionsDisplay.setDirections(response);
             }else{
-                //  alert('status not ok');
+                  alert('status not ok');
                 // alert an error message when the route could not be calculated.
                 //check first if the error is because the user is offline.
                 var userIsOnline = navigator.onLine;
@@ -862,21 +833,23 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 }else if (status == 'ZERO_RESULTS'){
                     alert('No route could be found between the origin and destination.');
                 }else if (status == 'UNKNOWN_ERROR'){ 
-                    alert('A directions request could not be processed due to a server error. Please check your internet connection.');
+                    alert('A directions request could not be processed due to a server error. The request may succeed if you try again.');
                 }else if (status == 'REQUEST_DENIED'){
                     alert('This application is not allowed to use the directions service.');
                 }else if (status == 'OVER_QUERY_LIMIT'){
                     alert('The application has gone over the requests limit in too short a period of time.');
                 }else if (status == 'NOT_FOUND'){
-                    alert('At least one of the origin, destination, or via waypoints could not be geocoded. Please make sure the start location or via point are correct locations.');
+                    alert('At least one of the origin, destination, or via waypoints could not be geocoded. Please make sure the start location or via point are correct locations');
                 }else if (status == 'INVALID_REQUEST'){
                     alert('The Directions Request provided was invalid.');                  
                 }else{
                     alert("There was an unknown error in your request. Request status: \n\n" + status);
                 }
             }
-        });
-
+            });
+        }else{
+            alert("No Internet Connection!");
+        }
 
     };
 
