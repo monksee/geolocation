@@ -425,6 +425,7 @@ input[type="button"]{
 display: block;
 outline: 0; 		/*override the default button outline*/
 border: 0;  		/*override the default button border*/
+
 }
 
 /*styling to prevent chrome's yellow colour input field after autocomplete*/
@@ -510,7 +511,7 @@ input[type="checkbox"]:checked + label span .fa-check-square-o{
 }
 
 /************************************************button styling**********************************************/
-.btn {
+.btn{
 position: relative;
 display: block;
 outline: 0; 		/*override the default button outline*/
@@ -530,6 +531,7 @@ letter-spacing: 1px;
 
 transition: all 0.2s ease;	
 z-index: 3;
+min-height: 37px;
 }
 
 .btn_blue {
@@ -539,8 +541,9 @@ background: #1d8ccd !important;
 }
 
 .btn_white{
+
 box-sizing: border-box;
-border: 2px solid #747474;
+border: 2px solid #747474 !important;
 background: #f4f2f2 !important;
 }
 

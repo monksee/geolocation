@@ -101,17 +101,18 @@ transform: translateY(-50%);
 position: relative;
 
 }
+.info_window_button_area{
+max-width: 150px;
 
+}
 .info_window_button{
--webkit-appearance: none !important;
-display: block;
-outline: 0; 		/*override the default button outline*/
-border: 0;  		/*override the default button border*/
-padding: 5px 10px !important;
-margin: 10px 0px !important;
-border: 1px solid #000;
-cursor: pointer;
+	max-width: 100%;
 
+display: block;
+margin: 10px 0px !important;
+
+cursor: pointer;
+border: 2px solid #747474 !important;
 }
 
 #directions_panel{
