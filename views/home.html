@@ -20,10 +20,11 @@
                     <div id="select_start_location">
                         <div class="spinner current_location_spinner" data-ng-show="currentLocationIsloading"><i class="fa fa-cog fa-spinning"></i></div>
 					    <select data-ng-model="directionsFormData.selectedFromLocation" 
+					        data-ng-init="directionsFormData.selectedFromLocation = 'chooseLocation'"
 					        data-ng-change="selectFromLocation(directionsFormData.selectedFromLocation)">
 
-                            <option value="currentLocation" ng-selected="directionsFormData.selectedFromLocation === 'currentLocation'">Current location</option>
-                            <option value="chooseLocation" ng-selected="directionsFormData.selectedFromLocation === 'chooseLocation'">Choose start location</option>
+                            <option value="currentLocation" data-ng-selected="directionsFormData.selectedFromLocation === 'currentLocation'">Current location</option>
+                            <option value="chooseLocation" data-ng-selected="directionsFormData.selectedFromLocation === 'chooseLocation'">Choose start location</option>
 
                         </select>
                     </div>
@@ -65,10 +66,10 @@
                 <div id="destination">
 					<label>Destination: </label>
                     <div id="select_destination">
-				        <select ng-model="directionsFormData.selectedDestination" 
-				        ng-options="station.stationID as station.stationShortAddress for station in allStationsMapData" 
-				        ng-change="selectDestination()" 
-				        ng-init="directionsFormData.selectedDestination = '1'"></select>
+				        <select data-ng-model="directionsFormData.selectedDestination" 
+				        data-ng-options="station.stationID as station.stationShortAddress for station in allStationsMapData" 
+				        data-ng-change="selectDestination()" 
+				        data-ng-init="directionsFormData.selectedDestination = '1'"></select>
 			
                     </div>
          
