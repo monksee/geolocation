@@ -26,9 +26,17 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
 
     $scope.currentLocationIsloading = false;
-    $scope.mapLoadedSuccessfully = true;
+
+    //Create a scope variable called mapIsLoading.
+    //We will use this in the index.html doc in order to display a loading symbol to the user 
+    //when the google map is being loaded.
     $scope.mapIsLoading = false;
 
+    //Create a scope variable called mapLoadedSuccessfully.
+    //We will use this in the index.html doc in order to display an error to the user 
+    //if the google map has not loaded correctly.
+    //Initialize it to true so that the error doesnt display before the map tries to load
+    $scope.mapLoadedSuccessfully = true;
 
     window.onload = function(){
         /*
@@ -37,16 +45,6 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
          * so we can initialize the map
          */
        // $scope.initializeMap();
-    };
- 
-
-    /*
-     * Create an IIFE (so that it executes whenever our controller is loaded) to check if there is a userToken stored in local storage.
-     * This will be invoked on a phonegap app if the app is opened from its icon and it has not been idle (i.e does not exist in the background)
-     * If the app has been in a state of 'paused' (a phonegap event) then this will not execute on 'resume' (only when the scripts are initially loaded)
-     */
-    (function() {
-
         if(localStorage.getItem("userToken") === null){
             //If there is no userToken in local storage, then we will not want the userDetails object to have any user Details.
             //So reset the userDetails object.
@@ -63,7 +61,35 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                 $scope.userDetails = userDetails;
             });
         }
+    };
+ 
+
+    /*
+     * Create an IIFE (so that it executes whenever our controller is loaded) to check if there is a userToken stored in local storage.
+     * This will be invoked on a phonegap app if the app is opened from its icon and it has not been idle (i.e does not exist in the background)
+     * If the app has been in a state of 'paused' (a phonegap event) then this will not execute on 'resume' (only when the scripts are initially loaded)
+     */
+    (function() {
+
+       // if(localStorage.getItem("userToken") === null){
+            //If there is no userToken in local storage, then we will not want the userDetails object to have any user Details.
+            //So reset the userDetails object.
+            //This covers such a case where the user has deleted their local storage manually but the userDetails object still exists with their data.
+       //     userFactory.userService.resetUserDetails();
+       // }else{
+            //userToken key exists in local storage so check this token on the server side to make sure its valid.
+        //    var data = {
+        //        "userToken" : userFactory.userService.getUserToken()
+        //     };
+        //    userFactory.userService.checkUserToken(data).then(function(userDetails) {
+                //Since the checkUserToken method (in the userFactory) is performaing a http request we need to use a promise
+                //to store the userDetails (from the response) into our $scope.userDetails variable. 
+        //        $scope.userDetails = userDetails;
+        //    });
+        //}
     })();
+
+
 
     $scope.$on('$viewContentLoaded', function(){
         /*
@@ -73,8 +99,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
          */
 
         //Check if the current path is home 
-      //  var container_wrapper = document.getElementById('container_wrapper');
-       // container_wrapper.scrollTop = 0;
+
         var isHomePath = $scope.checkLocationPath("home");
         if(isHomePath){ 
             //therefore prepare the Home view with google maps
@@ -88,16 +113,16 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
          * This will be executed whenever a route has changed successfully. 
          *
          */
-        //console.log($event);  
+        //scroll to the top of our container_wrapper so that the content of the new view will start from
+        //the top of the screen.  
         var container_wrapper = document.getElementById('container_wrapper');
         container_wrapper.scrollTop = 0;
         var currentRoute = next.originalPath;
         if(currentRoute === "/home"){
-            //therefore prepare the Home view with google maps
+            //We have navigated to the home view so prepare the google map
             $scope.initializeMap();
             console.log("yes home");
         }
-       // console.log('$routeChangeSuccess');
     });
 
     $scope.initializeMap = function(){ 
@@ -106,44 +131,51 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
          * We put the map element in the index.html page so that we only have to prepare it with stations when the app is opened.
          */
 
-
         if($scope.checkIfMapIsEmpty()){
+            //The "map" element is empty so therefore the google map has not been loaded previously 
+            //so we need to prepare it now with the station data.
+            //Firstly set our scope variable mapIsLoading to true so that we can display a loading symbol to the user.
+
             $scope.mapIsLoading = true;
 
             alert("map is empty");
-            //before preparing the google map we check if the API is loaded as the user may have not been online when the app was opened
-            //initially and therefore the google map script mightn't have loaded.
+            //before preparing the google map we check if the API is loaded (with prepareGoogleMapsApi)
+            //as the user may have not been online when the app was opened initially 
+            //and therefore the google map script mightn't have loaded.
+            //If we don't do this, then the google object will not be defined 
+            //and this error will break the app in subsequent processes
 
             stationFactory.stationService.prepareGoogleMapsApi(function() {
-            isMapsApiLoaded = true;
-            //we need to do an API call (i.e call the getAllStationsMapData() method) to retrieve the data from the database.
-            //and also prepare the map
-            stationFactory.stationService.getAllStationsMapData().then(function(allStationsMapData) {
-                if(allStationsMapData !== null){
-                    $scope.allStationsMapData =  allStationsMapData;
-                    //prepare the google map
-                    stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location).then(function(mapLoadedSuccessfully) {
-                        alert("mapLoadedSuccessfully " +  mapLoadedSuccessfully);
-                        //mapLoadedSuccessfully will be true if the process was successful and false if not successful.
+                //prepareGoogleMapsApi takes in a callback function which will be executed if the Google Maps API has loaded successfully
+                mapsApiIsLoaded = true;
+                //we need to do an API call (i.e call the getAllStationsMapData() method) to retrieve the data from the database.
+                //and also prepare the map
+                stationFactory.stationService.getAllStationsMapData().then(function(allStationsMapData) {
+                    if(allStationsMapData !== null){
+                        $scope.allStationsMapData =  allStationsMapData;
+                        //prepare the google map
+                        stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location).then(function(mapLoadedSuccessfully) {
+                            alert("mapLoadedSuccessfully " +  mapLoadedSuccessfully);
+                            //mapLoadedSuccessfully will be true if the process was successful and false if not successful.
 
-                        $scope.mapLoadedSuccessfully = mapLoadedSuccessfully;
-                        $scope.mapIsLoading = false;
-                    });
+                            $scope.mapLoadedSuccessfully = mapLoadedSuccessfully;
+                            $scope.mapIsLoading = false;
+                        });
 
 
-                    //get the users current location and mark it on the map.
-                    stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition) {
-                        if(currentPosition !== null){
-                            //change the "From" select menu of the directions form to currentLocation as we have detected a current location successfully
-                            $scope.directionsFormData.selectedFromLocation = 'currentLocation';
-                        }else{
-                           //change the "From" select menu of the directions form to chooseLocation as we have NOT detected a current location successfully
-                           $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
-                        }
-                         console.log(" currentPosition  " +  JSON.stringify(currentPosition));
-                    });
+                        //get the users current location and mark it on the map.
+                        stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition) {
+                            if(currentPosition !== null){
+                                //change the "From" select menu of the directions form to currentLocation as we have detected a current location successfully
+                                $scope.directionsFormData.selectedFromLocation = 'currentLocation';
+                            }else{
+                               //change the "From" select menu of the directions form to chooseLocation as we have NOT detected a current location successfully
+                               $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
+                            }
+                             console.log(" currentPosition  " +  JSON.stringify(currentPosition));
+                        });
 
-                }else{
+                    }else{
  
                     //There has been an error when retrieving all the stations data so set our boolean mapLoadedSuccessfully to false
                     //so that an error can be displayed in place of the map
@@ -151,18 +183,22 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
                     $scope.mapIsLoading = false;
 
-                }
-            });
+                    }
+                });
             }).then(function(mapLoadedSuccessfully) {
+                //The promise will be resolved if we have detected there was no internet connection 
+                //and therefore the Google Maps API (i.e the maps.google.com script could not be loaded again).
                 $scope.mapLoadedSuccessfully = mapLoadedSuccessfully;
                 $scope.mapIsLoading = false;
                 alert("prepareGoogleMapsApi " +  $scope.mapLoadedSuccessfully);
 
             });  
         }else{
+            //The "map" element is full so therefore the google map has already been prepared previously so 
+            //no need to prepare it again.
             alert("map is full");
             alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
-            //change $scope.mapLoadedSuccessfully to true so the error disappears
+            //change $scope.mapLoadedSuccessfully to true so the "Error loading map" disappears (if it was shown) in the html
             $scope.mapLoadedSuccessfully = true;
             alert("$scope.mapLoadedSuccessfully2 " +  $scope.mapLoadedSuccessfully);
         }
@@ -204,13 +240,15 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         /*
          */
 
-       // var directionsPanel = document.getElementById("directions_panel");
         var panelIsEmpty = document.getElementById('directions_panel').innerHTML === "";
         return panelIsEmpty;
     };
 
     $scope.checkIfMapIsEmpty = function(){ 
         /*
+         * This method checks if the element with id of "map" is empty.
+         * It will return true if empty and false if not.
+         * We will use this in initializeMap method to determine whether to create the google map or not.
          */
 
         var mapIsEmpty = document.getElementById('map').innerHTML === "";
@@ -273,7 +311,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         var travelMode = $scope.directionsFormData.travelMode;
 
         stationFactory.stationService.prepareGoogleMapsApi(function() {
-        isMapsApiLoaded = true;
+        mapsApiIsLoaded = true;
         if($scope.directionsFormData.selectedFromLocation == 'currentLocation'){
              alert('selected current location');
             //we should retrieve the updated current position in case the user has moved position since
