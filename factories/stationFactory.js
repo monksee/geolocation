@@ -506,13 +506,13 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
          * that can break the app from working on subsequent requests).
          * (in case the user was not online when they opened the app or the requests where made).
          */
-        console.log("isMapL s" + isMapsApiLoaded);
+        console.log("mapsApiIsLoaded " + mapsApiIsLoaded);
         var deferred = $q.defer();
         var mapLoadedSuccessfully = false;
         //make sure the user is online before proceeding with loading the google map script (if not loaded already) and also running our callback.
         var userIsOnline = navigator.onLine;
         if(userIsOnline){
-            if(isMapsApiLoaded){
+            if(mapsApiIsLoaded){
                 callback();
             }else{
                 var url = "http://maps.google.com/maps/api/js?key=AIzaSyAq3rgVX-gPP-1TWmUBER0f_E_tzGO_6Ng"; 
