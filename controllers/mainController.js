@@ -467,12 +467,12 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     deferred.resolve(loginIsSuccessful);    
                     $scope.userDetails = userDetails;
 
-                    $scope.currentLocation = $location.path();
 
-                    if($scope.currentLocation.indexOf("login") != -1){
+                    if($scope.detectLoginView()){
                        //we are on the login view so redirect to the home page. 
                        //Otherwise do not redirect because we might be calling this login function when the user wants to write a review
                        $location.path('home');
+                       console.log("redirect to home");
                     }
                 }else{
                     alert("We're sorry but you have not been logged in successfully. Please contact support!");
@@ -481,9 +481,8 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                 }
             });
         }else{
-            $scope.currentLocation = $location.path();
 
-            if($scope.currentLocation.indexOf("login") != -1){
+            if($scope.detectLoginView()){
                 //we are on the login view so redirect to the home page. 
                 //Otherwise do not redirect because we might be calling this login function when the user wants to write a review
                 $location.path('home');
@@ -526,12 +525,12 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     loginIsSuccessful = true;
                     deferred.resolve(loginIsSuccessful);      
                     $scope.userDetails = userDetails;
-                    $scope.currentLocation = $location.path();
 
-                    if($scope.currentLocation.indexOf("login") != -1){
-                       //we are on the login view so redirect to the home page. 
-                       //Otherwise do not redirect because we might be calling this login function when the user wants to write a review
-                       $location.path('home');
+                    if($scope.detectLoginView()){
+                        //we are on the login view so redirect to the home page. 
+                        //Otherwise do not redirect because we might be calling this login function when the user wants to write a review
+                        $location.path('home');
+                        console.log("redirect to home");
                     }
                 }else{
                     alert("We're sorry but you have not been logged in successfully. Please contact support!");
