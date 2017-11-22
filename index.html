@@ -5,9 +5,18 @@
 <!--specify user scalable as no, in order to mimick a native app-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <script>
-var isMapsApiLoaded = false;
+/*
+ * In order to determine (throughout our application) whether the google maps script/API has loaded properly
+ * we create a global variable called mapsApiIsLoaded which we set to true when the callback to the script loading
+ * is executed.
+ * It is important to check whether the API has loaded before doing any processing with the "google" object as otherwise
+ * we will get a "google" is undefined error which (after testing i've discovered) will break the app.
+ * (Note: A case where the script does not load would be if a user is not connected to the internet when they initially open the app)
+ */
+var mapsApiIsLoaded = false;
+
 window.mapsCallback = function () {
-  isMapsApiLoaded = true;
+    mapsApiIsLoaded = true;
 };
 </script>
 
@@ -65,14 +74,11 @@ window.mapsCallback = function () {
                     <div id="refresh_map_button" data-ng-click="refreshMap()" data-ng-show="mapLoadedSuccessfully == false && !mapIsLoading">
 			            <i class="fa fa-refresh"></i>
 			        </div>
-
 			    </div>
 
 			</div>
 			<div data-ng-view class="view" >
-
 				<!--our individual views will be displayed here-->
-
 			</div> 
 	
 		</div><!--/container-->
@@ -82,9 +88,9 @@ window.mapsCallback = function () {
 		<div class="panel_container">
 			<div class="panel_header"><p>Menu</p></div>
 			<ul>
-				
-					<!--when any link is clicked we want to slide the main container back over to main focus so we call the toggleSidePanel() function to achieve this-->
-					<!--we also call the selectMenuItem() function so that we can style the new current nav item in the header of the app-->
+			
+				<!--when any link is clicked we want to slide the main container back over to main focus so we call the toggleSidePanel() function to achieve this-->
+				<!--we also call the selectMenuItem() function so that we can style the new current nav item in the header of the app-->
 			    <li class="side_menu_item">
 					<a class="side_menu_link normal_link" href="#home" data-ng-click="toggleSidePanel();selectMenuItem($index)">
 						<i class="panel_icon fa fa-home"></i>Home<i class="fa fa-chevron-right"></i>
@@ -113,18 +119,13 @@ window.mapsCallback = function () {
 		</div><!--/panel_container-->
 	</div><!--/panel_area-->
 <script>
+document.addEventListener('pause', function () {
+//alert('pause fired');
+}, false);
+document.addEventListener('resume', function () {
+// alert('resume fired');
+}, false);
 
-//alert('scripts being called');
-      document.addEventListener('pause', function () {
-            //alert('pause fired');
-            
-        }, false);
-        document.addEventListener('resume', function () {
-           // alert('resume fired');
-            
-        }, false);
-
- 
 </script>
 
 <script src="modules/mapApp.js"></script>
@@ -139,6 +140,8 @@ window.mapsCallback = function () {
 <script src="factories/reviewFactory.js"></script>
 <script src="factories/geolocationFactory.js"></script>
 <script src="factories/stationFactory.js"></script>
+
+
 <script src="controllers/mainController.js"></script>
 <script src="controllers/loginController.js"></script>
 <script src="controllers/homeController.js"></script>
