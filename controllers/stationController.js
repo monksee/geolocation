@@ -222,14 +222,13 @@ mapApp.controller("stationController", function($scope, $timeout, $routeParams, 
         $scope.review_form.$setUntouched();
     }; 
 
-   $scope.cancelWriteAReview = function(){
+    $scope.cancelWriteAReview = function(){
         /*
          * This method is called when a user chooses to cancel writing a review (so that the review form can be then hidden again)
          */
         $scope.displayReviewForm = false;
         $scope.resetReviewFormValues();
-    }; 
-
+    };
 
     $scope.deleteReview = function(reviewID, stationID){
         /*

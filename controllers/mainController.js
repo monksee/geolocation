@@ -22,9 +22,13 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
     $scope.allStationsMapData = stationFactory.stationService.allStationsMapData;
     $scope.directionsFormData = {};
     $scope.directionsFormData.travelMode = 'DRIVING';
+    $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
+
 
     $scope.currentLocationIsloading = false;
     $scope.mapLoadedSuccessfully = true;
+    $scope.mapIsLoading = false;
+
 
     window.onload = function(){
         /*
@@ -59,11 +63,6 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                 $scope.userDetails = userDetails;
             });
         }
-        if(navigator.onLine){
-  //alert('online');
- } else {
-  //alert('offline');
- }
     })();
 
     $scope.$on('$viewContentLoaded', function(){
@@ -109,8 +108,14 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
 
         if($scope.checkIfMapIsEmpty()){
+            $scope.mapIsLoading = true;
 
             alert("map is empty");
+            //before preparing the google map we check if the API is loaded as the user may have not been online when the app was opened
+            //initially and therefore the google map script mightn't have loaded.
+
+            stationFactory.stationService.prepareGoogleMapsApi(function() {
+            isMapsApiLoaded = true;
             //we need to do an API call (i.e call the getAllStationsMapData() method) to retrieve the data from the database.
             //and also prepare the map
             stationFactory.stationService.getAllStationsMapData().then(function(allStationsMapData) {
@@ -122,7 +127,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                         //mapLoadedSuccessfully will be true if the process was successful and false if not successful.
 
                         $scope.mapLoadedSuccessfully = mapLoadedSuccessfully;
-
+                        $scope.mapIsLoading = false;
                     });
 
 
@@ -144,9 +149,16 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     //so that an error can be displayed in place of the map
                     $scope.mapLoadedSuccessfully = false;
                     alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
+                    $scope.mapIsLoading = false;
 
                 }
             });
+            }).then(function(mapLoadedSuccessfully) {
+                $scope.mapLoadedSuccessfully = mapLoadedSuccessfully;
+                $scope.mapIsLoading = false;
+                alert("prepareGoogleMapsApi " +  $scope.mapLoadedSuccessfully);
+
+            });  
         }else{
             alert("map is full");
             alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
@@ -260,7 +272,8 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         var viaPoint = $scope.directionsFormData.viaPoint;
         var travelMode = $scope.directionsFormData.travelMode;
 
-
+        stationFactory.stationService.prepareGoogleMapsApi(function() {
+        isMapsApiLoaded = true;
         if($scope.directionsFormData.selectedFromLocation == 'currentLocation'){
              alert('selected current location');
             //we should retrieve the updated current position in case the user has moved position since
@@ -293,6 +306,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             //pass in start, via and travel mode.
             stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID);
         }
+        });
     };
 
 
