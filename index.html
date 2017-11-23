@@ -20,7 +20,9 @@ window.mapsCallback = function () {
 };
 </script>
 
+ 
 <script src="http://maps.google.com/maps/api/js?key=AIzaSyAq3rgVX-gPP-1TWmUBER0f_E_tzGO_6Ng&callback=mapsCallback"></script>
+<script src="js/marker-clusterer.js"></script>
 <script src="js/angular.min.js"></script>
 <script src="js/angular-route.min.js"></script>
 <script src="js/angular-touch.min.js"></script>
@@ -86,7 +88,14 @@ window.mapsCallback = function () {
 
 	<div id="panel_area" class="scrollable" data-ng-swipe-right="panelIsOpen = false">		
 		<div class="panel_container">
-			<div class="panel_header"><p>Menu</p></div>
+			<div class="panel_header"> 
+			    <div data-ng-show="showUserProfileArea()">
+			        <span class="user_profile_pic">
+			            <img src="{{userDetails.profilePicURL}}" data-ng-class="{'profile_pic_size': checkIfLoggedIn() == true}" alt="">
+			        </span> 
+			        <span class="user_profile_name">{{userDetails.facebookName}} fjkfkfkyyyyyyyyy kffffffff</span> 
+			    </div>
+			</div>
 			<ul>
 			
 				<!--when any link is clicked we want to slide the main container back over to main focus so we call the toggleSidePanel() function to achieve this-->
