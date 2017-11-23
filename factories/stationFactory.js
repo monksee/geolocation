@@ -34,7 +34,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
     stationService.infoWindowStationLatLng;
     stationService.directionsDisplay;
     stationService.directionsService;
-
+    stationService.stationMarkers = [];
     stationService.currentPositionMarkers = [];
 
     stationService.getAllStationsMapData = function(){
@@ -571,13 +571,12 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
             //document.getElementById('map').innerHTML = "";
         });
 
-
         for(var i = 0; i < allStationsMapData.length; i++){
             (function(stationMapData){
                 var infoWindowHTMLContent = self.generateInfoWindowContent(stationMapData.stationID, stationMapData.stationName, stationMapData.stationLatLng);
                 var compiled = $compile(infoWindowHTMLContent)(scope);
                 var marker = new google.maps.Marker({
-                    map: self.map,
+                   // map: self.map,
                     position: stationMapData.stationLatLng,
                     stationID: stationMapData.stationID,
                     stationName: stationMapData.stationName,
@@ -585,7 +584,11 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                    // icon: 'http://localhost/phonegap_tut/images/icon.png',
                     content: compiled[0],
                 });
-             
+
+                // Push your newly created marker into the array
+                self.stationMarkers.push(marker);
+      
+
                 google.maps.event.addDomListener(marker, 'click', function(){
                     self.infoWindow.setContent(this.content);
                     self.infoWindow.open(self.map, this);
@@ -596,8 +599,38 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
 
                 });
             })(allStationsMapData[i]);
-        }
 
+        }
+                //set style options for marker clusters (these are the default styles)
+        var mcOptions = {styles: [{
+                        height: 53,
+                        url: "http://www.ipra.ie/wp-content/themes/ipra/img/marker-clusterer/m1.png",
+                        width: 53
+                    },
+                    {
+                        height: 56,
+                        url: "http://www.ipra.ie/wp-content/themes/ipra/img/marker-clusterer/m2.png",
+                        width: 56
+                    },
+                    {
+                        height: 66,
+                        url: "http://www.ipra.ie/wp-content/themes/ipra/img/marker-clusterer/m3.png",
+                        width: 66,
+                        textColor: '#ffffff',
+                    },
+                    {
+                        height: 78,
+                        url: "http://www.ipra.ie/wp-content/themes/ipra/img/marker-clusterer/m4.png",
+                        width: 78
+                    },
+                    {
+                        height: 90,
+                        url: "http://www.ipra.ie/wp-content/themes/ipra/img/marker-clusterer/m5.png",
+                        width: 90
+                    }]};
+        // create the markerClusterer
+        var markerCluster = new MarkerClusterer(self.map, self.stationMarkers,mcOptions);
+        console.log(markerCluster);
         $timeout(function() {
             alert('timeout ' +  mapLoadedSuccessfully);
             if(!mapLoadedSuccessfully){
