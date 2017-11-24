@@ -143,7 +143,7 @@ overflow: hidden;
 .panel_header{
 position: relative;
 width: 95%;
-padding: 14px 1% 14px 4%;
+padding: 7px 1% 7px 4%;
 font-weight: normal;
 background: #fafafa;
 -webkit-box-shadow: inset 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
@@ -152,6 +152,25 @@ box-shadow:         inset 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
 overflow: hidden;
 }
 
+.panel_header .user_profile_pic{
+display: block;
+max-height: 50px !important;
+max-width: 50px !important;
+overflow: hidden;
+float: left;
+margin-right: 5px;
+}
+.panel_header .profile_pic_size{
+
+height: 50px !important;
+width: 50px !important;
+
+}
+
+.panel_header .user_profile_name{
+    font-size: .8rem !important;
+float: left;
+}
 
 /*styling for side panel menu*/
 .side_menu_item{
@@ -353,7 +372,13 @@ text-shadow: -1px -1px 0px #000;
 .red_text{
 color: #d60c40;
 }
+/*small print text*/
+.tiny_text{
+font-size: .8rem;
+color: #878787;
 
+padding: 3px 0px;
+}
 
 /*******************************************************/
 label{

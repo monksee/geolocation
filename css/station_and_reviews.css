@@ -58,6 +58,14 @@ padding: 15px 0px 5px 0px;
 #write_a_review_button_area{
 padding: 8px 0px 10px 0px;
 min-height: 22px;
+overflow: hidden;
+}
+#write_a_review_button{
+
+}
+.write_a_review_note{
+padding-top: 10px;
+
 }
 
 #write_a_review_form_area{

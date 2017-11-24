@@ -6,8 +6,8 @@
 ***********************************************************/
 #map_area{
 position: relative;
-
 }
+
 #map{
 position: relative;
 margin: 0px auto;
@@ -36,24 +36,35 @@ font-weight: bold;
 }
 
 #refresh_map_button{
-	position: relative;
-	margin: 10px auto;
+position: relative;
+margin: 10px auto;
 width: 32px;
 height: 32px;
-
 cursor: pointer;
 }
+
 #refresh_map_button .fa-refresh{
-
 font-size: 30px;
-
 }
 
 .hide_map {
 height: 0px;
 opacity: 0;
 }
-
+.info_window_button_area{
+	padding-top: 10px;
+max-width: 150px;
+}
+.info_window_button{
+max-width: 100%;
+display: block;
+margin: 10px 0px !important;
+cursor: pointer;
+border: 2px solid #747474 !important;
+}
+.info_window .station_name{
+font-size: 1.0rem !important;
+}
 
 #bottom_panel{
 position: absolute;
@@ -97,43 +108,9 @@ height: 10px !important;
 transform: translateY(-50%);
 }
 
+
 #directions_form_area{
 position: relative;
-
-}
-.info_window_button_area{
-max-width: 150px;
-
-}
-.info_window_button{
-	max-width: 100%;
-
-display: block;
-margin: 10px 0px !important;
-
-cursor: pointer;
-border: 2px solid #747474 !important;
-}
-
-#directions_panel{
-position: relative;
-background: #fff;
-width: 96%;
-padding: 5px 1% 10px 1%;
-margin: 15px auto 10px auto;
-border: 1px solid #cccccc;	
-z-index: 3;
-overflow: hidden;
-
-}
-
-#directions_panel i {
-font-size: 22px;
-}
-
-.adp-substep{
-margin-right: 10px !important;
-padding-right: 2% !important;
 }
 
 
@@ -159,10 +136,35 @@ box-shadow: none;
 height: 34px;
 border: 1px solid #ccc;
 }
-#select_start_location option{
 
+#select_start_location option{
 height: 34px;
 }
+
+
+
+
+#directions_panel{
+position: relative;
+background: #fff;
+width: 96%;
+padding: 5px 1% 10px 1%;
+margin: 15px auto 10px auto;
+border: 1px solid #cccccc;	
+z-index: 3;
+overflow: hidden;
+
+}
+
+#directions_panel i {
+font-size: 22px;
+}
+
+.adp-substep{
+margin-right: 10px !important;
+padding-right: 2% !important;
+}
+
 
 /* Hide the little man icon on the google map because we dont want the user pressing it 
  * as this functionality doesnt work very well on the phonegap app
