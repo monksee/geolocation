@@ -556,7 +556,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         self.infoWindow = new google.maps.InfoWindow();
 
         self.map = new google.maps.Map(document.getElementById('map'),{
-            zoom: 9,
+            zoom: 7,
             center: allStationsMapData[0].stationLatLng,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             mapTypeControl: false
@@ -570,6 +570,8 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
             self.fixMapWhenLoaded(); 
             //document.getElementById('map').innerHTML = "";
         });
+        var stationIcon = new google.maps.MarkerImage("http://gamuzic.com/map_app3/images/petrol_pump_large.png", null, null, null, new google.maps.Size(46,60));
+
 
         for(var i = 0; i < allStationsMapData.length; i++){
             (function(stationMapData){
@@ -580,7 +582,8 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     position: stationMapData.stationLatLng,
                     stationID: stationMapData.stationID,
                     stationName: stationMapData.stationName,
-                    icon: 'http://gamuzic.com/map_app3/images/icon.png',
+                    icon: stationIcon,
+                    animation: google.maps.Animation.DROP,
                    // icon: 'http://localhost/phonegap_tut/images/icon.png',
                     content: compiled[0],
                 });
@@ -629,8 +632,9 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                         width: 90
                     }]};
         // create the markerClusterer
-        var markerCluster = new MarkerClusterer(self.map, self.stationMarkers,mcOptions);
+        var markerCluster = new MarkerClusterer(self.map, self.stationMarkers, mcOptions);
         console.log(markerCluster);
+        
         $timeout(function() {
             alert('timeout ' +  mapLoadedSuccessfully);
             if(!mapLoadedSuccessfully){
@@ -692,7 +696,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
          * on a marker).
          * This method is called in prepareStationsOnMap.
          */
-        var infoWindowHTML = '<div><h4>' + stationName + '</h4>' + 
+        var infoWindowHTML = '<div class="info_window"><h4 class="station_name">' + stationName + '</h4>' + 
                              '<div class="info_window_button_area">' + 
                              '<a class="info_window_button btn btn_white" href="#station?stationID=' + stationID + '">View more info</a>' + 
                              '<span class="info_window_button btn btn_white" + data-ng-click="getDirections(' + stationID + ')">Get directions</span>' + 
