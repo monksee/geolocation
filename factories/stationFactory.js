@@ -570,7 +570,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
             self.fixMapWhenLoaded(); 
             //document.getElementById('map').innerHTML = "";
         });
-        var stationIcon = new google.maps.MarkerImage("http://gamuzic.com/map_app3/images/petrol_pump_large.png", null, null, null, new google.maps.Size(46,60));
+        var stationIcon = new google.maps.MarkerImage("http://gamuzic.com/map_app3/images/gm_icon_petrol_pump.png", null, null, null, new google.maps.Size(43,60));
 
 
         for(var i = 0; i < allStationsMapData.length; i++){
@@ -706,7 +706,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         return infoWindowHTML;
     };
 
-    stationService.prepareCurrentLocation1 = function(){ 
+    stationService.prepareCurrentLocation = function(){ 
         /*
          * This method gets a user's current position, marks it on the map
          * We also enter this current position to the From input field in our directions form
@@ -722,12 +722,14 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 function(position){
                     isSuccessful = true;
                     var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                    var currentLocationIcon = new google.maps.MarkerImage("http://gamuzic.com/map_app3/images/gm_icon_user.png", null, null, null, new google.maps.Size(43,60));
+
 
                     var currentPositionMarker = new google.maps.Marker({
                         position: currentPosition, 
                         map: self.map, 
                         title:"User location",
-                        icon: 'http://gamuzic.com/map_app3/images/you_icon.png',
+                        icon: currentLocationIcon,
                        // icon: 'http://localhost/phonegap_tut/images/you_icon.png',
                         optimized: false,
                         zIndex:99999999
@@ -770,7 +772,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         return deferred.promise;
     };
 
-    stationService.prepareCurrentLocation = function(){ 
+    stationService.prepareCurrentLocation1 = function(){ 
         /*
          * This method calls the getCurrentPosition method from the geolocationFactory to get a user's current position
          * If successfully retrieved we mark their current position on the map (with id of "map")
@@ -790,13 +792,16 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     isSuccessful = true;
 
                     var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                    var currentLocationIcon = new google.maps.MarkerImage("http://gamuzic.com/map_app3/images/gm_icon_user.png", null, null, null, new google.maps.Size(43,60));
+
+
                     console.log(JSON.stringify(currentPosition));
 
                     var currentPositionMarker = new google.maps.Marker({
                         position: currentPosition, 
                         map: self.map, 
                         title:"User location",
-                        icon: 'http://gamuzic.com/map_app3/images/you_icon.png',
+                        icon: currentLocationIcon,
                        // icon: 'http://localhost/phonegap_tut/images/you_icon.png',
                         optimized: false,
                         zIndex:99999999
