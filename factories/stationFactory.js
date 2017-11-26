@@ -570,7 +570,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
             self.fixMapWhenLoaded(); 
             //document.getElementById('map').innerHTML = "";
         });
-        var stationIcon = new google.maps.MarkerImage("http://gamuzic.com/map_app3/images/gm_icon_petrol_pump.png", null, null, null, new google.maps.Size(43,60));
+        var stationIcon = new google.maps.MarkerImage("http://gamuzic.com/map_app3/images/gm_icon_petrol_pump.png", null, null, null, new google.maps.Size(48,68));
 
 
         for(var i = 0; i < allStationsMapData.length; i++){
@@ -722,7 +722,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 function(position){
                     isSuccessful = true;
                     var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                    var currentLocationIcon = new google.maps.MarkerImage("http://gamuzic.com/map_app3/images/gm_icon_user.png", null, null, null, new google.maps.Size(43,60));
+                    var currentLocationIcon = new google.maps.MarkerImage("http://gamuzic.com/map_app3/images/gm_icon_user.png", null, null, null, new google.maps.Size(48,68));
 
 
                     var currentPositionMarker = new google.maps.Marker({
@@ -792,7 +792,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     isSuccessful = true;
 
                     var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                    var currentLocationIcon = new google.maps.MarkerImage("http://gamuzic.com/map_app3/images/gm_icon_user.png", null, null, null, new google.maps.Size(43,60));
+                    var currentLocationIcon = new google.maps.MarkerImage("http://gamuzic.com/map_app3/images/gm_icon_user.png", null, null, null, new google.maps.Size(48,68));
 
 
                     console.log(JSON.stringify(currentPosition));
