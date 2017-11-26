@@ -1,19 +1,21 @@
 
-<h2>{{pageHeading}}</h2>
-<p class="intro_paragraph"></p><!--introParagraph is defined in homeController and inserted here-->
 
-<ul>
+	<div id="header_of_bottom_panel">
+		    <span class="show_bottom_panel_button" data-ng-click="showGetDirectionsForm()">
+                <i class="fa" data-ng-class="(bottomPanelIsShowing === false ? 'fa-caret-up': 'fa-caret-down')"></i>
+            </span>
+        </div>
 
-</ul>
 
+	<div id="body_of_bottom_panel" class="scrollable" >
 
-	<div id="bottom_panel">
-    <!--Only show the directions form area if the map was loaded successfully. -->
-    <div id="directions_form_area" data-ng-show="mapLoadedSuccessfully">
+        <div id="inside_body_of_bottom_panel">
 
-        <h4>Get Directions</h4>
+            <!--Only show the directions form area if the map was loaded successfully. -->
+            <div id="directions_form_area" data-ng-show="mapLoadedSuccessfully">
+            <h4>Please fill in the form to get directions</h4>
 
-	    <form data-ng-submit="submitGetDirectionsForm()" data-ng-model="directions_form" name="directions_form" novalidate> 
+	        <form data-ng-submit="submitGetDirectionsForm()" data-ng-model="directions_form" name="directions_form" novalidate> 
 			<div id="input_area">
 				<div id="from" class="enter_start_location">
 					<label>From: </label>
@@ -76,14 +78,20 @@
 				</div>
 
 			</div><!--End input_area-->
-			<div class="form_divider">
-	            <input class="btn btn_blue btn_float_right" type="submit" value="Submit" />
-	        </div>
-  	    </form>
-    </div>
-    <!--show the following if the directions are not empty. -->
-    <div id="directions_panel" data-ng-show="!checkIfDirectionsAreEmpty()"></div>
+			        <div class="form_divider">
+	                    <input class="btn btn_blue btn_float_right" type="submit" value="Submit" />
+	                </div>
+  	            </form>
 
+            </div>
+
+       
+
+
+        <!--show the following if the directions are not empty. -->
+        <div id="directions_panel"></div>
+        </div>
     </div>
+
 
 
