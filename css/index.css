@@ -99,8 +99,8 @@ position: relative;
 /* need a padding of around 50px at the top on the container because the fixed header of 48px doesnt register a height.
  * also the padding on left and right is a total of 4% which when added to the width of 96% will equal 100%
  */
-padding: 56px 0% 0px 0%; 
-min-height: 100%;
+padding: 62px 0% 0px 0%; 
+
 width: 100%;
 overflow: visible;
 z-index: 4;
@@ -143,33 +143,36 @@ overflow: hidden;
 .panel_header{
 position: relative;
 width: 95%;
-padding: 7px 1% 7px 4%;
+padding: 4px 1% 0px 4%;
 font-weight: normal;
 background: #fafafa;
 -webkit-box-shadow: inset 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
 -moz-box-shadow:    inset 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
 box-shadow:         inset 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
 overflow: hidden;
+min-height: 52px;
 }
 
 .panel_header .user_profile_pic{
 display: block;
-max-height: 50px !important;
-max-width: 50px !important;
+
+max-width: 20%;
+
 overflow: hidden;
 float: left;
 margin-right: 5px;
 }
 .panel_header .profile_pic_size{
-
-height: 50px !important;
+max-width: 100%;
 width: 50px !important;
-
+height: auto;
 }
 
 .panel_header .user_profile_name{
-    font-size: .8rem !important;
+font-size: .8rem !important;
 float: left;
+max-width: 75%;
+word-wrap: break-word;
 }
 
 /*styling for side panel menu*/
@@ -219,57 +222,14 @@ padding-right: 10px;
 }
 
 
+
 /******************************************************/
 /* Styling for animating the view on entering a new view*/
 .view{
-position: relative;
 
 min-height: 60px; /* need a min height so that the loading sign will appear as it is position absolute*/
 }
-.view_animate_container {
-position:relative;
-height: 100% !important;
-min-height: 600px;
-overflow:hidden;
-}
 
-.view_animate.ng-enter, .view_animate.ng-leave {
-transition:all .4s;
-display:block;
-width:100%;
-position:absolute;
-top:0;
-left:0;
-right:0;
-bottom:0;
-}
-
-.view_animate.ng-enter{
-left:100% !important;
-}
-.view_animate.ng-enter.ng-enter-active {
-left:0 !important;
-}
-.view_animate.ng-leave.ng-leave-active {
-left:-100% !important;
-}
-
-/* when the back button is pressed we add a class left_to_right to make the page
- * transition in from the left. It looks more intuitive.
- * We also add this class when a menu item in the side panel is clicked.
- */
-.view_animate.ng-enter.left_to_right{
-right:100%;
-left: auto !important;
-}
-.view_animate.ng-enter.left_to_right.ng-enter-active {
-right:0;
-left: auto !important;
-}
-.view_animate.ng-leave.left_to_right.ng-leave-active {
-right:-100%;
-left: auto !important;
-}
 .spinner{
 	position: absolute;
     top: 40%;
