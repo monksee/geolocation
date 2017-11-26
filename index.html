@@ -26,6 +26,7 @@ window.mapsCallback = function () {
 <script src="js/angular.min.js"></script>
 <script src="js/angular-route.min.js"></script>
 <script src="js/angular-touch.min.js"></script>
+
 <script src="js/angular-animate.min.js"></script>
 <script src="js/angular-sanitize.js"></script>
 <script src="phonegap.js"></script>
@@ -54,8 +55,8 @@ window.mapsCallback = function () {
        	</ul><!--/header_nav-->		
 	</header>
 
-	<div id="container_wrapper" class="scrollable" data-ng-class="{'swipe_left': panelIsOpen == true}" data-ng-swipe-left="(!detectHomeView() ? panelIsOpen = true : '')">
-		<div class="container"> 
+	<div id="container_wrapper" data-ng-class="{'scrollable': !detectHomeView(), 'swipe_left': panelIsOpen == true}" data-ng-swipe-left="(!detectHomeView() ? panelIsOpen = true : '')">
+	        <div class="container">
             <div id="login_info_area" data-ng-show="showUserProfileArea()">
 			    <span class="user_profile_pic">
 			        <img src="{{userDetails.profilePicURL}}" data-ng-class="{'profile_pic_size': checkIfLoggedIn() == true}" alt="">
@@ -79,11 +80,13 @@ window.mapsCallback = function () {
 			    </div>
 
 			</div>
-			<div data-ng-view class="view" >
+            </div> 
+			<div data-ng-view class="view" data-ng-class="{'bottom_panel': detectHomeView(), 'swipe_up': bottomPanelIsShowing == true && detectHomeView()}">
 				<!--our individual views will be displayed here-->
 			</div> 
 	
-		</div><!--/container-->
+	
+
 	</div><!--/container_wrapper-->
 
 	<div id="panel_area" class="scrollable" data-ng-swipe-right="panelIsOpen = false">		
