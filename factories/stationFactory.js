@@ -566,7 +566,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
 
             mapLoadedSuccessfully = true;
             deferred.resolve(mapLoadedSuccessfully); 
-            alert('tiles loaded ' +  mapLoadedSuccessfully);
+            //alert('tiles loaded ' +  mapLoadedSuccessfully);
             self.fixMapWhenLoaded(); 
             //document.getElementById('map').innerHTML = "";
         });
@@ -636,9 +636,9 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         console.log(markerCluster);
         
         $timeout(function() {
-            alert('timeout ' +  mapLoadedSuccessfully);
+            //alert('timeout ' +  mapLoadedSuccessfully);
             if(!mapLoadedSuccessfully){
-                alert('timeout2 ' +  mapLoadedSuccessfully);
+               // alert('timeout2 ' +  mapLoadedSuccessfully);
                 deferred.resolve(mapLoadedSuccessfully);
             }
         }, 6000);
@@ -826,7 +826,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 //After two seconds check if the isSuccessful boolean is still false and if so then 
                 //we know the success callback has not been executed so we can resolve the promise passing in null
                 if(!isSuccessful){
-                    alert('stationfactory getcurrentloc timeout');
+                    //alert('stationfactory getcurrentloc timeout');
                     deferred.resolve(null);
                 }
             }, 6000);
@@ -844,7 +844,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
 
         //get the lat and lng points of the station with stationID of destinationStationID.
         var destinationLatLng = self.getStationLatLngPoints(destinationStationID, self.allStationsMapData);
-   alert('get directions. lat lng ' + JSON.stringify(destinationLatLng));
+ //  alert('get directions. lat lng ' + JSON.stringify(destinationLatLng));
         var waypoints = []; // init an empty waypoints array
         if (via != '' && via != null) {
             //if waypoints (via) are set, add them to the waypoints array
@@ -876,13 +876,13 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
 
             self.directionsService = new google.maps.DirectionsService();
             self.directionsService.route(request, function(response, status){
-            alert('route called');
+           // alert('route called');
             if(status == google.maps.DirectionsStatus.OK){
-                alert('status ok');
+               // alert('status ok');
                 document.getElementById("directions_panel").innerHTML = "";
                 self.directionsDisplay.setDirections(response);
             }else{
-                  alert('status not ok');
+                 // alert('status not ok');
 
                 // alert an error message when the route could not be calculated.
                 if(status == 'ZERO_RESULTS'){
