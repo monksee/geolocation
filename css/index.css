@@ -102,8 +102,7 @@ position: relative;
 padding: 62px 0% 0px 0%; 
 
 width: 100%;
-overflow: visible;
-z-index: 4;
+
 }
 
 
@@ -226,7 +225,7 @@ padding-right: 10px;
 /******************************************************/
 /* Styling for animating the view on entering a new view*/
 .view{
-
+position: relative;
 min-height: 60px; /* need a min height so that the loading sign will appear as it is position absolute*/
 }
 
