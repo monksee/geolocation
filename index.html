@@ -58,9 +58,7 @@ window.mapsCallback = function () {
 	<div id="container_wrapper" data-ng-class="{'scrollable': !detectHomeView(), 'swipe_left': panelIsOpen == true}" data-ng-swipe-left="(!detectHomeView() ? panelIsOpen = true : '')">
 	        <div class="container">
             <div id="login_info_area" data-ng-show="showUserProfileArea()">
-			    <span class="user_profile_pic">
-			        <img src="{{userDetails.profilePicURL}}" data-ng-class="{'profile_pic_size': checkIfLoggedIn() == true}" alt="">
-			    </span> 
+			   
 			    {{userDetails.facebookName}}
 			</div>
 			<!--hide the map when we are not on the home view-->
@@ -93,6 +91,9 @@ window.mapsCallback = function () {
 		<div class="panel_container">
 			<div class="panel_header"> 
 			    <div data-ng-show="showUserProfileArea()">
+			        <span class="user_profile_pic">
+			            <img src="{{userDetails.profilePicURL}}" data-ng-class="{'profile_pic_size': checkIfLoggedIn() == true}" alt="">
+			        </span> 
 			        <span class="user_profile_name">{{userDetails.facebookName}}</span> 
 			    </div>
 			</div>
