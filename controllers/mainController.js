@@ -138,7 +138,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
             $scope.mapIsLoading = true;
 
-            alert("map is empty");
+          //  alert("map is empty");
             //before preparing the google map we check if the API is loaded (with prepareGoogleMapsApi)
             //as the user may have not been online when the app was opened initially 
             //and therefore the google map script mightn't have loaded.
@@ -155,7 +155,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                         $scope.allStationsMapData =  allStationsMapData;
                         //prepare the google map
                         stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location).then(function(mapLoadedSuccessfully) {
-                            alert("mapLoadedSuccessfully " +  mapLoadedSuccessfully);
+                          //  alert("mapLoadedSuccessfully " +  mapLoadedSuccessfully);
                             //mapLoadedSuccessfully will be true if the process was successful and false if not successful.
 
                             $scope.mapLoadedSuccessfully = mapLoadedSuccessfully;
@@ -180,7 +180,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     //There has been an error when retrieving all the stations data so set our boolean mapLoadedSuccessfully to false
                     //so that an error can be displayed in place of the map
                     $scope.mapLoadedSuccessfully = false;
-                    alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
+                   // alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
                     $scope.mapIsLoading = false;
 
                     }
@@ -190,24 +190,24 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                 //and therefore the Google Maps API (i.e the maps.google.com script could not be loaded again).
                 $scope.mapLoadedSuccessfully = mapLoadedSuccessfully;
                 $scope.mapIsLoading = false;
-                alert("prepareGoogleMapsApi " +  $scope.mapLoadedSuccessfully);
+              //  alert("prepareGoogleMapsApi " +  $scope.mapLoadedSuccessfully);
 
             });  
         }else{
             //The "map" element is full so therefore the google map has already been prepared previously so 
             //no need to prepare it again.
-            alert("map is full");
-            alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
+          //  alert("map is full");
+           // alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
             //change $scope.mapLoadedSuccessfully to true so the "Error loading map" disappears (if it was shown) in the html
             $scope.mapLoadedSuccessfully = true;
-            alert("$scope.mapLoadedSuccessfully2 " +  $scope.mapLoadedSuccessfully);
+           // alert("$scope.mapLoadedSuccessfully2 " +  $scope.mapLoadedSuccessfully);
         }
 
     };
 
 
     $scope.refreshMap = function(){
-        alert("refresh map");
+      //  alert("refresh map");
         $scope.initializeMap();
 
     };
@@ -242,6 +242,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
         var panelIsEmpty = document.getElementById('directions_panel').innerHTML === "";
         return panelIsEmpty;
+        console.log("panelIsEmpty " + panelIsEmpty);
     };
 
     $scope.checkIfMapIsEmpty = function(){ 
@@ -296,7 +297,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
 
     $scope.submitGetDirectionsForm = function(){ 
-        alert('submit directions');
+       // alert('submit directions');
         if($scope.directionsFormData.selectedFromLocation == 'chooseLocation' && $scope.directionsFormData.startLocation == null){
             //the form has been submitted but the input field for the user to type the "from location" is empty 
             //so exit the function. There will already be an error message displayed in the form
@@ -313,17 +314,17 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         stationFactory.stationService.prepareGoogleMapsApi(function() {
         mapsApiIsLoaded = true;
         if($scope.directionsFormData.selectedFromLocation == 'currentLocation'){
-             alert('selected current location');
+            // alert('selected current location');
             //we should retrieve the updated current position in case the user has moved position since
             //beginning to fill in the form.
             stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition) {
-                alert('prepare current location promise finished');
+              //  alert('prepare current location promise finished');
                 if(currentPosition !== null){
                     //we were able to get the users current position
                     //store the currentPosition in our startLocation variable to pass into our getDirections method
                     startLocation = currentPosition;
 
-                    alert(" currentPosition  is not null" +  JSON.stringify(currentPosition));
+                 //   alert(" currentPosition  is not null" +  JSON.stringify(currentPosition));
                     //pass in start, via and travel mode.
                     stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID);
                 }else{
@@ -338,7 +339,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             });
 
         }else{
-            alert('selected choose location');
+           // alert('selected choose location');
             //User has selected to choose a start location in the form so get the input from the startLocation form field
             startLocation = $scope.directionsFormData.startLocation;
             //pass in start, via and travel mode.
