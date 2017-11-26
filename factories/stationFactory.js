@@ -583,7 +583,6 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     stationID: stationMapData.stationID,
                     stationName: stationMapData.stationName,
                     icon: stationIcon,
-                    animation: google.maps.Animation.DROP,
                    // icon: 'http://localhost/phonegap_tut/images/icon.png',
                     content: compiled[0],
                 });
