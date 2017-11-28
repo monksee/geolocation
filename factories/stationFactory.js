@@ -1,7 +1,7 @@
 /*
  * This factory consists of objects and methods which will process data associated with the petrol stations.
  */
-mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedFactory, userFactory, reviewFactory, geolocationFactory){
+mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedFactory, userFactory, reviewFactory, geolocationFactory, appFactory){
     "use strict";
     var stationService = {};
 
@@ -23,6 +23,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
      * Each element of this array will be an object for example the following:
      * {"stationID" : 5, "stationName" : "", "stationLatLng" : {"lat" : 0.0, "lng" : 0.0}}
      */
+    //var appRootURL = 'http://localhost'; // 'http://gamuzic.com';
     stationService.allStationsMapData = [];
 
     stationService.map;
@@ -49,7 +50,8 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         return $http({
             method: 'GET',
            // url: 'http://localhost/API/allStationsMapData?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
-            url: 'http://gamuzic.com/API/allStationsMapData?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+           // url: 'http://gamuzic.com/API/allStationsMapData?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+            url: appFactory.appService.appDetails.appRootURL + '/API/allStationsMapData?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
             headers: {
                'Content-Type': 'application/json;charset=utf-8'
             },
@@ -131,7 +133,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         return $http({
             method: 'GET',
            // url: 'http://localhost/API/station/' + stationID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
-            url: 'http://gamuzic.com/API/station/' + stationID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+            url: appFactory.appService.appDetails.appRootURL + '/API/station/' + stationID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
             headers: {
                'Content-Type': 'application/json;charset=utf-8'
             },
@@ -195,7 +197,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         return $http({
                 method: 'POST',
                //url: 'http://localhost/API/createReview?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
-                url: 'http://gamuzic.com/API/createReview?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+                url: appFactory.appService.appDetails.appRootURL + '/API/createReview?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 data: JSON.stringify(data),
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8'
@@ -246,7 +248,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         return $http({
                 method: 'PUT',
                 //url: 'http://localhost/API/editReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
-                url: 'http://gamuzic.com/API/editReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+                url: appFactory.appService.appDetails.appRootURL + '/API/editReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 data: JSON.stringify(data),
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8'
@@ -299,7 +301,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         return $http({
                 method: 'DELETE',
              // url: 'http://localhost/API/deleteReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
-               url: 'http://gamuzic.com/API/deleteReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+                url: appFactory.appService.appDetails.appRootURL + '/API/deleteReview/' + reviewID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 data: JSON.stringify(data),
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8'
@@ -352,7 +354,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         return $http({
                 method: 'POST',
                // url: 'http://localhost/API/createReply?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
-                url: 'http://gamuzic.com/API/createReply?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+                url: appFactory.appService.appDetails.appRootURL + '/API/createReply?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 data: JSON.stringify(data),
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8'
@@ -402,7 +404,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         return $http({
                 method: 'PUT',
                 //url: 'http://localhost/API/editReply/' + replyID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
-                url: 'http://gamuzic.com/API/editReply/' + replyID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+                url: appFactory.appService.appDetails.appRootURL + '/API/editReply/' + replyID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 data: JSON.stringify(data),
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8'
@@ -457,7 +459,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         return $http({
                 method: 'DELETE',
                // url: 'http://localhost/API/deleteReply/' + replyID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
-                url: 'http://gamuzic.com/API/deleteReply/' + replyID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+                url: appFactory.appService.appDetails.appRootURL + '/API/deleteReply/' + replyID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
                 data: JSON.stringify(data),
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8'
@@ -570,7 +572,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
             self.fixMapWhenLoaded(); 
             //document.getElementById('map').innerHTML = "";
         });
-        var stationIcon = new google.maps.MarkerImage("http://gamuzic.com/map_app3/images/gm_icon_petrol_pump.png", null, null, null, new google.maps.Size(48,68));
+        var stationIcon = new google.maps.MarkerImage(appFactory.appService.appDetails.appRootURL + "/map_server_files/images/gm_icon_petrol_pump.png", null, null, null, new google.maps.Size(48,68));
 
 
         for(var i = 0; i < allStationsMapData.length; i++){
@@ -605,30 +607,12 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         }
                 //set style options for marker clusters (these are the default styles)
         var mcOptions = {styles: [{
-                        height: 53,
-                        url: "http://www.ipra.ie/wp-content/themes/ipra/img/marker-clusterer/m1.png",
-                        width: 53
-                    },
-                    {
-                        height: 56,
-                        url: "http://www.ipra.ie/wp-content/themes/ipra/img/marker-clusterer/m2.png",
-                        width: 56
-                    },
-                    {
-                        height: 66,
-                        url: "http://www.ipra.ie/wp-content/themes/ipra/img/marker-clusterer/m3.png",
-                        width: 66,
+                        height: 75,
+                        url: appFactory.appService.appDetails.appRootURL + "/map_server_files/images/gm_icon_marker_cluster.png",
+                        width: 75,
                         textColor: '#ffffff',
-                    },
-                    {
-                        height: 78,
-                        url: "http://www.ipra.ie/wp-content/themes/ipra/img/marker-clusterer/m4.png",
-                        width: 78
-                    },
-                    {
-                        height: 90,
-                        url: "http://www.ipra.ie/wp-content/themes/ipra/img/marker-clusterer/m5.png",
-                        width: 90
+                        //fontFamily:"Raleway",
+                        textSize:14
                     }]};
         // create the markerClusterer
         var markerCluster = new MarkerClusterer(self.map, self.stationMarkers, mcOptions);
@@ -721,7 +705,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 function(position){
                     isSuccessful = true;
                     var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                    var currentLocationIcon = new google.maps.MarkerImage("http://gamuzic.com/map_app3/images/gm_icon_user.png", null, null, null, new google.maps.Size(48,68));
+                    var currentLocationIcon = new google.maps.MarkerImage(appFactory.appService.appDetails.appRootURL + "/map_server_files/images/gm_icon_user.png", null, null, null, new google.maps.Size(48,68));
 
 
                     var currentPositionMarker = new google.maps.Marker({
@@ -791,7 +775,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     isSuccessful = true;
 
                     var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                    var currentLocationIcon = new google.maps.MarkerImage("http://gamuzic.com/map_app3/images/gm_icon_user.png", null, null, null, new google.maps.Size(48,68));
+                    var currentLocationIcon = new google.maps.MarkerImage(appFactory.appService.appDetails.appRootURL + "/map_server_files/images/gm_icon_user.png", null, null, null, new google.maps.Size(48,68));
 
 
                     console.log(JSON.stringify(currentPosition));
