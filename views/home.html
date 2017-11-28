@@ -4,12 +4,19 @@
 		    <span class="show_bottom_panel_button" data-ng-click="showGetDirectionsForm()">
                 <i class="fa" data-ng-class="(bottomPanelIsShowing === false ? 'fa-caret-up': 'fa-caret-down')"></i>
             </span>
-        </div>
+    </div>
+    <div id="nav_menu_of_bottom_panel">
+            <ul>
+                <li data-ng-class="{'selected': bottomPanelRightIsShowing == false}" data-ng-click="selectBottomPanelItem('left')">Filter form</li>
+                <li data-ng-class="{'selected': bottomPanelRightIsShowing == true}" data-ng-click="selectBottomPanelItem('right')">Directions</li>
+            </ul>
+    </div>
 
+	<div class="body_of_bottom_panel scrollable" 
+	    data-ng-class="{'show_right_container': bottomPanelRightIsShowing == true}" 
+	    data-ng-swipe-left="bottomPanelRightIsShowing = true">
 
-	<div id="body_of_bottom_panel" class="scrollable" >
-
-        <div id="inside_body_of_bottom_panel">
+        <div class="inside_body_of_bottom_panel">
 
             <!--Only show the directions form area if the map was loaded successfully. -->
             <div id="directions_form_area" data-ng-show="mapLoadedSuccessfully">
@@ -84,14 +91,22 @@
   	            </form>
 
             </div>
-
-       
-
-
-        <!--show the following if the directions are not empty. -->
-        <div id="directions_panel"></div>
         </div>
     </div>
+
+    <div class="body_of_bottom_panel right_container scrollable" 
+    data-ng-class="{'show_right_container': bottomPanelRightIsShowing == true}" 
+    data-ng-swipe-right="bottomPanelRightIsShowing = false">
+
+        <div class="inside_body_of_bottom_panel">
+
+
+             <div id="directions_panel" ></div>
+        </div>
+
+    </div>
+
+
 
 
 
