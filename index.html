@@ -34,6 +34,7 @@ window.mapsCallback = function () {
 <link rel="stylesheet" type="text/css" href="css/index.css"/>	
 <link rel="stylesheet" type="text/css" href="css/header.css"/>	
 <link rel="stylesheet" type="text/css" href="css/map.css"/>	
+<link rel="stylesheet" type="text/css" href="css/bottom_panel.css"/>	
 <link rel="stylesheet" type="text/css" href="css/station_and_reviews.css"/>	
 <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css"/>	
 
@@ -58,8 +59,7 @@ window.mapsCallback = function () {
 	<div id="container_wrapper" data-ng-class="{'scrollable': !detectHomeView(), 'swipe_left': panelIsOpen == true}" data-ng-swipe-left="(!detectHomeView() ? panelIsOpen = true : '')">
 	        <div class="container">
             <div id="login_info_area" data-ng-show="showUserProfileArea()">
-			   
-			    {{userDetails.facebookName}}
+			   <span class="user_profile_name">Hi {{userDetails.facebookName}}</span> 
 			</div>
 			<!--hide the map when we are not on the home view-->
 			<div id="map_area" data-ng-class="{'hide_map': detectHomeView() == false}">
@@ -70,7 +70,7 @@ window.mapsCallback = function () {
 			        <p class="map_area_text" data-ng-show="mapLoadedSuccessfully == false && !mapIsLoading">Error loading map!</p>
 
 			        <div id="refresh_map_button" data-ng-show="mapIsLoading">
-			            <i class="fa fa-spinner fa-spinning"></i>
+			            <i class="fa fa-circle-o-notch fa-spinning"></i>
 			        </div>
                     <div id="refresh_map_button" data-ng-click="refreshMap()" data-ng-show="mapLoadedSuccessfully == false && !mapIsLoading">
 			            <i class="fa fa-refresh"></i>
@@ -140,6 +140,7 @@ document.addEventListener('resume', function () {
 
 <script src="modules/mapApp.js"></script>
 <script src="routes/routes.js"></script>
+<script src="factories/appFactory.js"></script>
 <script src="factories/phonegapReadyFactory.js"></script>
 <script src="factories/validatorFactory.js"></script>
 
