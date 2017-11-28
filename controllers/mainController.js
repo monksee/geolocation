@@ -18,6 +18,8 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
     $scope.userDetails = userFactory.userService.userDetails;
 
     $scope.bottomPanelIsShowing = false;
+    $scope.bottomPanelRightIsShowing = false;
+
     //add the allStationsMapData to scope (we will use in the directions form destination select menu.)
     $scope.allStationsMapData = stationFactory.stationService.allStationsMapData;
     $scope.directionsFormData = {};
@@ -221,6 +223,14 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         }
     };
 
+    $scope.selectBottomPanelItem = function(sideOfItem){
+        if(sideOfItem === "right"){
+          $scope.bottomPanelRightIsShowing = true;
+        }else{
+             $scope.bottomPanelRightIsShowing = false;
+        }
+
+    };
 
     $scope.getDirections = function(stationID){ 
         /*
@@ -327,6 +337,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                  //   alert(" currentPosition  is not null" +  JSON.stringify(currentPosition));
                     //pass in start, via and travel mode.
                     stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID);
+                    $scope.bottomPanelRightIsShowing = true;
                 }else{
                     //if the current position is null then we cant allow the form to be submitted.
                     //stop processing the form and output an error to the user telling them to enter a start location
@@ -339,11 +350,12 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             });
 
         }else{
-           // alert('selected choose location');
+            alert('selected choose location');
             //User has selected to choose a start location in the form so get the input from the startLocation form field
             startLocation = $scope.directionsFormData.startLocation;
             //pass in start, via and travel mode.
             stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID);
+            $scope.bottomPanelRightIsShowing = true;
         }
         });
     };
