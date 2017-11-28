@@ -1,0 +1,204 @@
+/**********************************************************
+* Author: Sarah Monks
+* 
+* CSS styling for the bottom panel
+*
+***********************************************************/
+
+#bottom_panel, .bottom_panel{
+position: absolute !important;
+
+bottom: -70%;
+left: 0px;
+z-index: 50;
+width: 96%;
+padding: 0% 2%;
+height: 80%;
+overflow: hidden;
+background: #fff;
+-webkit-transition: .6s; /* Android 2.1+, Chrome 1-25, iOS 3.2-6.1, Safari 3.2-6  */
+-moz-transition: .6s;
+-o-transition: .6s;
+transition: .6s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
+
+
+}
+#header_of_bottom_panel, #nav_menu_of_bottom_panel{
+position: absolute;
+
+height: 30px;
+width: 96%;
+top: 0px;
+left: 0px;
+padding: 0px 2%;
+z-index: 35;
+background: #e3e3e3;
+
+}
+
+#nav_menu_of_bottom_panel{
+padding: 0px !important;
+width: 100%;
+border: 0;
+top: 30px;
+height: 32px;
+}
+
+#nav_menu_of_bottom_panel ul{
+
+width: 100%;
+
+overflow: hidden; /*add this to clear below the floats*/
+height: 100%;
+}
+
+#nav_menu_of_bottom_panel li{
+	margin: 0px 5%;
+	cursor: pointer;
+	padding: 5px 0% 0px 0%;
+text-align: center;
+height: 25px;
+width: 40%;
+float: left;
+}
+#nav_menu_of_bottom_panel li.selected{
+-webkit-box-shadow: inset 0px -3px 0px 0px rgba(21, 21, 21, 0.75);
+-moz-box-shadow:    inset 0px -3px 0px 0px rgba(21, 21, 21, 0.75);
+box-shadow:         inset 0px -3px 0px 0px rgba(21, 21, 21, 0.75);
+
+}
+#nav_menu_of_bottom_panel li.first_child{
+border-bottom: 2px solid red;
+}
+
+
+.body_of_bottom_panel{
+background: #e9ebeb;
+position: absolute;
+top: 64px;
+left: 0px;
+width: 100%;
+height: 100%;
+overflow: auto;
+-webkit-transition: .6s; /* Android 2.1+, Chrome 1-25, iOS 3.2-6.1, Safari 3.2-6  */
+-moz-transition: .6s;
+-o-transition: .6s;
+transition: .6s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
+}
+
+.body_of_bottom_panel.right_container{
+
+left: 100%;
+
+
+}
+.show_right_container{
+-webkit-transform: translateX(-100%); 
+-moz-transform: translateX(-100%); 
+-o-transform: translateX(-100%); 
+transform: translateX(-100%); 
+}
+.inside_body_of_bottom_panel{
+position: relative;
+padding: 10px 0px 30px 0px;
+width: 100%;
+}
+
+.show_bottom_panel_button{
+
+display: block;
+position: absolute;
+top: 4px;
+right: 1%;
+width: 30px;
+height: 30px;
+cursor: pointer;
+
+text-align: center;
+}
+.show_bottom_panel_button i {
+font-size: 22px;
+}
+.swipe_up{
+-webkit-transform: translateY(-87.5%); 
+-moz-transform: translateY(-87.5%); 
+-o-transform: translateY(-87.5%); 
+transform: translateY(-87.5%); 
+}
+
+
+#directions_form_area{
+position: relative;
+
+}
+
+.hide_directions_panel {
+height: 0px;
+opacity: 0;
+}
+#select_start_location, #select_destination{
+width:100%;  
+margin: 0px 0px 7px 0px;  
+position: relative;  
+overflow: hidden;
+}
+
+#select_start_location select, #select_destination select{
+width:98%;
+max-width: 100%;
+font-family: 'Raleway', sans-serif !important;
+font-size: .9rem;
+letter-spacing: .6px;
+padding: 4px 1%;
+border: 0;
+outline: 0;
+box-shadow: none;
+-moz-box-shadow: none;
+-webkit-box-shadow: none;
+height: 34px;
+border: 1px solid #ccc;
+}
+
+#select_start_location option{
+height: 34px;
+}
+
+
+
+
+#directions_panel{
+position: relative;
+background: #fff;
+width: 96%;
+padding: 5px 1% 10px 1%;
+margin: 15px auto 10px auto;
+
+z-index: 3;
+overflow: hidden;
+
+}
+
+#directions_panel i {
+font-size: 22px;
+}
+
+.adp-substep{
+margin-right: 10px !important;
+padding-right: 2% !important;
+}
+
+
+/* Hide the little man icon on the google map because we dont want the user pressing it 
+ * as this functionality doesnt work very well on the phonegap app
+ */
+.gm-svpc{
+	display: none;
+}
+
+/* Hide the fullscreen button on the google map because if this is pressed
+ * it opens a new tab and the user will be unable to navigate back to the app when
+ * packaged with phonegap
+ */
+button[title *= "Toggle fullscreen" ]{
+	display: none;
+}

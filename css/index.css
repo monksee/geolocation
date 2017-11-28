@@ -223,7 +223,7 @@ padding-right: 10px;
 
 
 /******************************************************/
-/* Styling for animating the view on entering a new view*/
+
 .view{
 position: relative;
 min-height: 60px; /* need a min height so that the loading sign will appear as it is position absolute*/
@@ -244,10 +244,15 @@ min-height: 60px; /* need a min height so that the loading sign will appear as i
 .current_location_spinner .fa-cog{
 font-size: 17px;
 }
-
-#map_is_loading .fa-spinner{
-   font-size: 30px; 
+#login_info_area{
+padding: 0px 0px 5px 0px;
 }
+#login_info_area .user_profile_name{
+    display: block;
+text-align: right;
+padding-right: 8px;
+}
+
 /******************************************************/
 /*styling for the scrollbar and scrolling functionality*/
 ::-webkit-scrollbar{  
