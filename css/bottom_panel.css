@@ -11,8 +11,7 @@ position: absolute !important;
 bottom: -70%;
 left: 0px;
 z-index: 50;
-width: 96%;
-padding: 0% 2%;
+width:100%;
 height: 80%;
 overflow: hidden;
 background: #fff;
@@ -20,10 +19,10 @@ background: #fff;
 -moz-transition: .6s;
 -o-transition: .6s;
 transition: .6s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
+
 -webkit-box-shadow: 0px -2px 6px 0px rgba(61, 59, 59, 0.5);
 -moz-box-shadow:    0px -2px 6px 0px rgba(61, 59, 59, 0.5);
 box-shadow:         0px -2px 6px 0px rgba(61, 59, 59, 0.5);
-
 }
 #header_of_bottom_panel, #nav_menu_of_bottom_panel{
 position: absolute;
@@ -79,45 +78,107 @@ bottom: 0px;
 height: 1px;
 background: #1d8ccd;
 float: none;
--webkit-transition: .3s; /* Android 2.1+, Chrome 1-25, iOS 3.2-6.1, Safari 3.2-6  */
--moz-transition: .3s;
--o-transition: .3s;
-transition: .3s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
+-webkit-transition: 33s; /* Android 2.1+, Chrome 1-25, iOS 3.2-6.1, Safari 3.2-6  */
+-moz-transition: 33s;
+-o-transition: 33s;
+transition: 33s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
 }
 .indicator_line.move_to_right{
--webkit-transform: translateX(125%); 
--moz-transform: translateX(125%); 
--o-transform: translateX(125%); 
-transform: translateX(125%); 
+
 }
 
 .body_of_bottom_panel{
-background: #fff;
+
 position: absolute;
 top: 0px;
 left: 0px;
 width: 100%;
 
 height: 100%;
-overflow: auto;
+max-height: 100%;
+overflow: hidden;
 -webkit-transition: .4s; /* Android 2.1+, Chrome 1-25, iOS 3.2-6.1, Safari 3.2-6  */
 -moz-transition: .4s;
 -o-transition: .4s;
 transition: .4s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
 }
 
-.body_of_bottom_panel.right_container{
+
+.carousel_container{
+
+position: absolute;
+top: 0px;
+left: 0px;
+width: 100%;
+
+height: 90%;
+overflow: auto;
+-webkit-transition: .4s; /* Android 2.1+, Chrome 1-25, iOS 3.2-6.1, Safari 3.2-6  */
+-moz-transition: .4s;
+-o-transition: .4s;
+transition: .4s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
+
+}
+
+.carousel_container.right_container{
 
 left: 100%;
 
 
 }
-.move_container_to_left{
+
+.move_container_to_lft{
 -webkit-transform: translateX(-100%); 
 -moz-transform: translateX(-100%); 
 -o-transform: translateX(-100%); 
 transform: translateX(-100%); 
 }
+
+.move_container_to_left{
+  -webkit-animation: move_container_to_left .5s 1 linear;
+  -moz-animation: move_container_to_left .5s 1 linear;
+  -o-animation: move_container_to_left .5s 1 linear;
+  animation: move_container_to_left .5s 1 linear;
+}
+
+
+@-moz-keyframes move_container_to_left{
+  0% {
+    left: 0%;
+  }
+  100% {
+    left: -100%;
+  }
+}
+
+@-webkit-keyframes move_container_to_left{
+  0% {
+    left: 0%;
+  }
+  100% {
+    left: -100%;
+  }
+}
+@-o-keyframes move_container_to_left{
+   0% {
+    left: 0%;
+  }
+  100% {
+    left: -100%;
+  }
+}
+@keyframes move_container_to_left{
+  0% {
+    left: 0%;
+  }
+  100% {
+    left: -100%;
+  }
+}
+
+
+
+
 .inside_body_of_bottom_panel{
 position: relative;
 padding: 70px 0px 30px 0px;
