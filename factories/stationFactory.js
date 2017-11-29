@@ -119,6 +119,23 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         return stationLatLng;
     };
 
+    stationService.getStationName = function(destinationStationID, allStationsMapData){
+        /*
+         * This method takes in the stationID of a destination and searches the allStationsMapData array for that stationName.
+         * If found, it returns the name of that station.
+         *
+         */
+        var stationName = '';
+        allStationsMapData.forEach(function(stationMapData) {
+           if(stationMapData.stationID == destinationStationID){
+               //destinationStationID has been found in the array so get the station name
+               stationName = stationMapData.stationName;
+           }
+
+        }); 
+        return stationName;
+    };
+
     stationService.getStationDetails = function(stationID){ 
         /**
          * This method makes a http GET request to our station Endpoint to retrieve details of a station based on a stationID
@@ -819,7 +836,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
     stationService.getDirections = function(startLocation, viaPoint, travelMode, destinationStationID){ 
         
         var self = this;
-
+        var deferred = $q.defer();
         var via = viaPoint;
         if (travelMode == 'TRANSIT') {
             via = '';  //if the travel mode is transit, don't use the via waypoint because that will not work
@@ -827,7 +844,11 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
 
         //get the lat and lng points of the station with stationID of destinationStationID.
         var destinationLatLng = self.getStationLatLngPoints(destinationStationID, self.allStationsMapData);
- //  alert('get directions. lat lng ' + JSON.stringify(destinationLatLng));
+        var stationName = self.getStationName(destinationStationID, self.allStationsMapData);
+        var directionsDetails = {};
+        directionsDetails.travelMode = travelMode;
+        directionsDetails.stationName = stationName;
+        
         var waypoints = []; // init an empty waypoints array
         if (via != '' && via != null) {
             //if waypoints (via) are set, add them to the waypoints array
@@ -846,49 +867,51 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
          //check first if the error is because the user is offline.
         var userIsOnline = navigator.onLine;
         if(userIsOnline){
-        //reset the directionsDisplay if it is already set (e.g from previous direction results)
-        if(self.directionsDisplay != null){
-            self.directionsDisplay.setMap(null);
-            self.directionsDisplay = null;
-        }
+            //reset the directionsDisplay if it is already set (e.g from previous direction results)
+            if(self.directionsDisplay != null){
+                self.directionsDisplay.setMap(null);
+                self.directionsDisplay = null;
+            }
 
-        self.directionsDisplay = new google.maps.DirectionsRenderer();
-        self.directionsDisplay.setMap(self.map);
-        self.directionsDisplay.setOptions( { suppressMarkers: true } );
-        self.directionsDisplay.setPanel(document.getElementById("directions_panel"));
+            self.directionsDisplay = new google.maps.DirectionsRenderer();
+            self.directionsDisplay.setMap(self.map);
+            self.directionsDisplay.setOptions( { suppressMarkers: true } );
+            self.directionsDisplay.setPanel(document.getElementById("directions_panel"));
 
             self.directionsService = new google.maps.DirectionsService();
             self.directionsService.route(request, function(response, status){
-           // alert('route called');
-            if(status == google.maps.DirectionsStatus.OK){
-               // alert('status ok');
-                document.getElementById("directions_panel").innerHTML = "";
-                self.directionsDisplay.setDirections(response);
-            }else{
-                 // alert('status not ok');
-
-                // alert an error message when the route could not be calculated.
-                if(status == 'ZERO_RESULTS'){
-                    alert('No route could be found between the origin and destination.');
-                }else if(status == 'UNKNOWN_ERROR'){ 
-                    alert('A directions request could not be processed due to a server error. Please check your internet connection.');
-                }else if(status == 'REQUEST_DENIED'){
-                    alert('This application is not allowed to use the directions service.');
-                }else if(status == 'OVER_QUERY_LIMIT'){
-                    alert('The application has gone over the requests limit in too short a period of time.');
-                }else if(status == 'NOT_FOUND'){
-                    alert('At least one of the origin, destination, or via waypoints could not be geocoded. Please make sure the start location or via point are correct locations');
-                }else if(status == 'INVALID_REQUEST'){
-                    alert('The Directions Request provided was invalid.');                  
+                // alert('route called');
+                if(status == google.maps.DirectionsStatus.OK){
+                    // alert('status ok');
+                    document.getElementById("directions_panel").innerHTML = "";
+                    self.directionsDisplay.setDirections(response);
+                    deferred.resolve(directionsDetails);
                 }else{
-                    alert("There was an unknown error in your request. Request status: \n\n" + status);
+                    deferred.resolve(null);
+                    // alert('status not ok');
+                    // alert an error message when the route could not be calculated.
+                    if(status == 'ZERO_RESULTS'){
+                        alert('No route could be found between the origin and destination.');
+                    }else if(status == 'UNKNOWN_ERROR'){ 
+                        alert('A directions request could not be processed due to a server error. Please check your internet connection.');
+                    }else if(status == 'REQUEST_DENIED'){
+                        alert('This application is not allowed to use the directions service.');
+                    }else if(status == 'OVER_QUERY_LIMIT'){
+                        alert('The application has gone over the requests limit in too short a period of time.');
+                    }else if(status == 'NOT_FOUND'){
+                        alert('At least one of the origin, destination, or via waypoints could not be geocoded. Please make sure the start location or via point are correct locations');
+                    }else if(status == 'INVALID_REQUEST'){
+                        alert('The Directions Request provided was invalid.');                  
+                    }else{
+                        alert("There was an unknown error in your request. Request status: \n\n" + status);
+                    }
                 }
-            }
             });
         }else{
+             deferred.resolve(null);
             alert("No Internet Connection!");
         }
-
+        return deferred.promise;
     };
 
 
