@@ -1,20 +1,22 @@
 
 
 	<div id="header_of_bottom_panel">
-		    <span class="show_bottom_panel_button" data-ng-click="showGetDirectionsForm()">
+		    <span class="toggle_bottom_panel_button" data-ng-click="showGetDirectionsForm()">
                 <i class="fa" data-ng-class="(bottomPanelIsShowing === false ? 'fa-caret-up': 'fa-caret-down')"></i>
             </span>
     </div>
     <div id="nav_menu_of_bottom_panel">
             <ul>
-                <li data-ng-class="{'selected': bottomPanelRightIsShowing == false}" data-ng-click="selectBottomPanelItem('left')">Filter form</li>
-                <li data-ng-class="{'selected': bottomPanelRightIsShowing == true}" data-ng-click="selectBottomPanelItem('right')">Directions</li>
+                <li data-ng-class="{'selected': bottomPanelData.selectedMenuItem == '0'}" data-ng-click="selectBottomPanelItem('0')">Filter form</li>
+                <li data-ng-class="{'selected': bottomPanelData.selectedMenuItem == '1'}" data-ng-click="selectBottomPanelItem('1')">Directions</li>
+                <li class="indicator_line" data-ng-class="{'move_to_right': bottomPanelData.selectedMenuItem == '1'}"></li>
             </ul>
+
     </div>
 
 	<div class="body_of_bottom_panel scrollable" 
-	    data-ng-class="{'show_right_container': bottomPanelRightIsShowing == true}" 
-	    data-ng-swipe-left="bottomPanelRightIsShowing = true">
+	    data-ng-class="{'move_container_to_left': bottomPanelData.selectedMenuItem == '1'}" 
+	    data-ng-swipe-left="swipeBottomPanel('1')">
 
         <div class="inside_body_of_bottom_panel">
 
@@ -24,7 +26,7 @@
 
 	        <form data-ng-submit="submitGetDirectionsForm()" data-ng-model="directions_form" name="directions_form" novalidate> 
 			<div id="input_area">
-				<div id="from" class="enter_start_location">
+				<div id="select_start_location_area" class="enter_start_location">
 					<label>From: </label>
                     <div id="select_start_location">
                         <div class="spinner current_location_spinner" data-ng-show="currentLocationIsloading"><i class="fa fa-cog fa-spinning"></i></div>
@@ -52,27 +54,27 @@
 
 				<div id="travel_mode">
 					<label>Travel mode:</label>
-					<label>
+					<label class="radio_button_input">
 					    <input data-ng-model="directionsFormData.travelMode" id="driving_input" type="radio" name="travelMode" value="DRIVING" checked/>
 					    <span class="driving"><i class="fa fa-car"></i></span> Driving
 					</label>
 
-					<label>
+					<label class="radio_button_input">
 					    <input data-ng-model="directionsFormData.travelMode" id="bicycle_input" type="radio" name="travelMode" value="BICYCLING"/>
 						<span class="bicycle"><i class="fa fa-bicycle"></i></span> Bicycling
 					</label>
 
-					<label>
+					<label class="radio_button_input">
 					    <input data-ng-model="directionsFormData.travelMode" id="public_input" type="radio" name="travelMode" value="TRANSIT"/>
 						<span class="public"><i class="fa fa-bus"></i></span> Public transport
 					</label>
-					<label>
+					<label class="radio_button_input">
 					    <input data-ng-model="directionsFormData.travelMode" id="walking_input" type="radio" name="travelMode" value="WALKING"/>
 					    <span class="walking"><i class="fa fa-male"></i></span> Walking
 					</label>
 
 				</div>
-                <div id="destination">
+                <div id="select_destination_area">
 					<label>Destination: </label>
                     <div id="select_destination">
 				        <select data-ng-model="directionsFormData.selectedDestination" 
@@ -95,13 +97,13 @@
     </div>
 
     <div class="body_of_bottom_panel right_container scrollable" 
-    data-ng-class="{'show_right_container': bottomPanelRightIsShowing == true}" 
-    data-ng-swipe-right="bottomPanelRightIsShowing = false">
+    data-ng-class="{'move_container_to_left': bottomPanelData.selectedMenuItem == '1'}" 
+    data-ng-swipe-right="swipeBottomPanel('0')">
 
         <div class="inside_body_of_bottom_panel">
 
-
-             <div id="directions_panel" ></div>
+            <div data-ng-show="!checkIfDirectionsWereGenerated()">Please fill in the directions form first.</div>
+            <div id="directions_panel" ></div>
         </div>
 
     </div>
