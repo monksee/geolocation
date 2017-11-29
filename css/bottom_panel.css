@@ -79,10 +79,10 @@ bottom: 0px;
 height: 3px;
 background: #1d8ccd;
 float: none;
--webkit-transition: .4s; /* Android 2.1+, Chrome 1-25, iOS 3.2-6.1, Safari 3.2-6  */
--moz-transition: .4s;
--o-transition: .4s;
-transition: .4s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
+-webkit-transition: .25s; /* Android 2.1+, Chrome 1-25, iOS 3.2-6.1, Safari 3.2-6  */
+-moz-transition: .25s;
+-o-transition: .25s;
+transition: .25s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
 }
 .indicator_line.move_to_right{
 left: 50% !important;
@@ -94,14 +94,8 @@ position: absolute;
 top: 0px;
 left: 0px;
 width: 100%;
-
 height: 100%;
-max-height: 100%;
 overflow: hidden;
--webkit-transition: .4s; /* Android 2.1+, Chrome 1-25, iOS 3.2-6.1, Safari 3.2-6  */
--moz-transition: .4s;
--o-transition: .4s;
-transition: .4s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
 }
 
 
@@ -114,10 +108,10 @@ width: 100%;
 
 height: 100%;
 overflow: auto;
--webkit-transition: .4s; /* Android 2.1+, Chrome 1-25, iOS 3.2-6.1, Safari 3.2-6  */
--moz-transition: .4s;
--o-transition: .4s;
-transition: .4s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
+-webkit-transition: .25s; /* Android 2.1+, Chrome 1-25, iOS 3.2-6.1, Safari 3.2-6  */
+-moz-transition: .25s;
+-o-transition: .25s;
+transition: .25s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
 
 }
 
