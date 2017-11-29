@@ -22,8 +22,9 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
     $scope.bottomPanelData = {};
     $scope.bottomPanelData.selectedMenuItem = '0';
 
-    $scope.bottomPanelData.directionsWereGenerated = false;
-
+    $scope.directionsData = {};
+    $scope.directionsData.directionsWereGenerated = false;
+    $scope.directionsData.directionsDetails = {};
 
     //add the allStationsMapData to scope (we will use in the directions form destination select menu.)
     $scope.allStationsMapData = stationFactory.stationService.allStationsMapData;
@@ -257,7 +258,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
     $scope.checkIfDirectionsWereGenerated = function(){ 
         /*
          */
-        return $scope.bottomPanelData.directionsWereGenerated;
+        return $scope.directionsData.directionsWereGenerated;
     };
 
     $scope.checkIfMapIsEmpty = function(){ 
@@ -342,10 +343,14 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
                  //   alert(" currentPosition  is not null" +  JSON.stringify(currentPosition));
                     //pass in start, via and travel mode.
-                    stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID);
+                    stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID).then(function(directionsDetails) {
                     $scope.bottomPanelData.selectedMenuItem = '1';
-                    $scope.bottomPanelData.directionsWereGenerated = true;
+                    $scope.directionsData.directionsWereGenerated = true;
+                    $scope.directionsData.directionsDetails = directionsDetails;
+                    
+                            console.log("directionsDetails" + JSON.stringify(directionsDetails));
 
+                   });
                 }else{
                     //if the current position is null then we cant allow the form to be submitted.
                     //stop processing the form and output an error to the user telling them to enter a start location
@@ -362,9 +367,14 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             //User has selected to choose a start location in the form so get the input from the startLocation form field
             startLocation = $scope.directionsFormData.startLocation;
             //pass in start, via and travel mode.
-            stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID);
+            stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID).then(function(directionsDetails) {
             $scope.bottomPanelData.selectedMenuItem = '1';
-            $scope.bottomPanelData.directionsWereGenerated = true;
+            $scope.directionsData.directionsWereGenerated = true;
+                console.log("directionsDetails" + JSON.stringify(directionsDetails));
+                //if directionsDetails is not null
+                $scope.directionsData.directionsDetails = directionsDetails;
+                  
+            });
         }
         });
     };
