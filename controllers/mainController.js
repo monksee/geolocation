@@ -19,6 +19,11 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
     $scope.bottomPanelIsShowing = false;
     $scope.bottomPanelRightIsShowing = false;
+    $scope.bottomPanelData = {};
+    $scope.bottomPanelData.selectedMenuItem = '0';
+
+    $scope.bottomPanelData.directionsWereGenerated = false;
+
 
     //add the allStationsMapData to scope (we will use in the directions form destination select menu.)
     $scope.allStationsMapData = stationFactory.stationService.allStationsMapData;
@@ -223,15 +228,18 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         }
     };
 
-    $scope.selectBottomPanelItem = function(sideOfItem){
-        if(sideOfItem === "right"){
-          $scope.bottomPanelRightIsShowing = true;
-        }else{
-             $scope.bottomPanelRightIsShowing = false;
-        }
+    $scope.selectBottomPanelItem = function(menuItem){
+
+            $scope.bottomPanelData.selectedMenuItem = menuItem;
+           
 
     };
+    $scope.swipeBottomPanel = function(nextContainerIndex){
 
+            $scope.bottomPanelData.selectedMenuItem = nextContainerIndex;
+           console.log(nextContainerIndex);
+
+    };
     $scope.getDirections = function(stationID){ 
         /*
          * This method is called when the "get directions" button is clicked from the google map info window.
@@ -246,13 +254,10 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
     };
 
 
-    $scope.checkIfDirectionsAreEmpty = function(){ 
+    $scope.checkIfDirectionsWereGenerated = function(){ 
         /*
          */
-
-        var panelIsEmpty = document.getElementById('directions_panel').innerHTML === "";
-        return panelIsEmpty;
-        console.log("panelIsEmpty " + panelIsEmpty);
+        return $scope.bottomPanelData.directionsWereGenerated;
     };
 
     $scope.checkIfMapIsEmpty = function(){ 
@@ -264,6 +269,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
         var mapIsEmpty = document.getElementById('map').innerHTML === "";
         return mapIsEmpty;
+        console.log("mapIsEmpty " + mapIsEmpty);
     };
 
     $scope.selectFromLocation = function(selectedFromLocation){ 
@@ -337,7 +343,9 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                  //   alert(" currentPosition  is not null" +  JSON.stringify(currentPosition));
                     //pass in start, via and travel mode.
                     stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID);
-                    $scope.bottomPanelRightIsShowing = true;
+                    $scope.bottomPanelData.selectedMenuItem = '1';
+                    $scope.bottomPanelData.directionsWereGenerated = true;
+
                 }else{
                     //if the current position is null then we cant allow the form to be submitted.
                     //stop processing the form and output an error to the user telling them to enter a start location
@@ -350,12 +358,13 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             });
 
         }else{
-            alert('selected choose location');
+           // alert('selected choose location');
             //User has selected to choose a start location in the form so get the input from the startLocation form field
             startLocation = $scope.directionsFormData.startLocation;
             //pass in start, via and travel mode.
             stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID);
-            $scope.bottomPanelRightIsShowing = true;
+            $scope.bottomPanelData.selectedMenuItem = '1';
+            $scope.bottomPanelData.directionsWereGenerated = true;
         }
         });
     };
