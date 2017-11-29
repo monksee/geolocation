@@ -105,6 +105,7 @@
         <div class="inside_body_of_bottom_panel">
 
             <div data-ng-show="!checkIfDirectionsWereGenerated()">Please fill in the directions form first.</div>
+            <div data-ng-show="checkIfDirectionsWereGenerated()">{{directionsData.directionsDetails.travelMode}} to {{directionsData.directionsDetails.stationName}}</div>
             <div id="directions_panel"></div>
         </div>
 
