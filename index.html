@@ -70,9 +70,6 @@ window.mapsCallback = function () {
 			        <p class="map_area_text" data-ng-show="mapIsLoading">Loading map...</p>
 			        <p class="map_area_text" data-ng-show="mapLoadedSuccessfully == false && !mapIsLoading">Error loading map!</p>
 
-			        <div id="refresh_map_button" data-ng-show="mapIsLoading">
-			            <i class="fa fa-circle-o-notch fa-spinning"></i>
-			        </div>
                     <div id="refresh_map_button" data-ng-click="refreshMap()" data-ng-show="mapLoadedSuccessfully == false && !mapIsLoading">
 			            <i class="fa fa-refresh"></i>
 			        </div>
