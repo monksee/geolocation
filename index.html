@@ -63,9 +63,10 @@ window.mapsCallback = function () {
 			</div>
 			<!--hide the map when we are not on the home view-->
 			<div id="map_area" data-ng-class="{'hide_map': detectHomeView() == false}">
+			    <p class="loading" data-ng-show="mapIsLoading">Loading...</p>
 			    <div id="map" data-ng-class="{'hide_map': mapLoadedSuccessfully == false}"></div>
 
-			    <div id="map_is_loading" data-ng-show="mapIsLoading || mapLoadedSuccessfully == false">
+			    <div id="map_is_loading" data-ng-show="mapLoadedSuccessfully == false">
 			        <p class="map_area_text" data-ng-show="mapIsLoading">Loading map...</p>
 			        <p class="map_area_text" data-ng-show="mapLoadedSuccessfully == false && !mapIsLoading">Error loading map!</p>
 
