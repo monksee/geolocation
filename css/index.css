@@ -414,7 +414,7 @@ input[type="button"], input[type="submit"]{
 -webkit-appearance: none !important;
 display: block;
 outline: 0 !important; 		/*override the default button outline*/
-border: 0 !important;  		/*override the default button border*/
+border: 0;  		/*override the default button border*/
 
 }
 
@@ -526,7 +526,7 @@ min-height: 37px;
 
 .btn_blue {
 color: #f1f3f3;
-border: 2px solid #1d8ccd;
+border: 2px solid #1d8ccd !important;
 background: #1d8ccd !important;
 }
 
