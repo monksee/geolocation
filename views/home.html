@@ -1,11 +1,11 @@
 
 
-	<div id="header_of_bottom_panel" data-ng-show="mapLoadedSuccessfully">
+	<div id="header_of_bottom_panel" data-ng-show="mapLoadedSuccessfully && !mapIsLoading">
 		    <span class="toggle_bottom_panel_button" data-ng-click="showGetDirectionsForm()">
                 <i class="fa" data-ng-class="(bottomPanelIsShowing === false ? 'fa-caret-up': 'fa-caret-down')"></i>
             </span>
     </div>
-    <div id="nav_menu_of_bottom_panel" data-ng-show="mapLoadedSuccessfully">
+    <div id="nav_menu_of_bottom_panel" data-ng-show="mapLoadedSuccessfully && !mapIsLoading">
             <ul>
                 <li data-ng-class="{'selected': bottomPanelData.selectedMenuItem == '0'}" data-ng-click="selectBottomPanelItem('0')">Filter form</li>
                 <li data-ng-class="{'selected': bottomPanelData.selectedMenuItem == '1'}" data-ng-click="selectBottomPanelItem('1')">Directions</li>
@@ -15,7 +15,7 @@
     </div>
 
 
-    <div class="body_of_bottom_panel" data-ng-show="mapLoadedSuccessfully">
+    <div class="body_of_bottom_panel" data-ng-show="mapLoadedSuccessfully && !mapIsLoading">
 	<div class="carousel_container scrollable" 
 	    data-ng-class="{'move_container_to_left': bottomPanelData.selectedMenuItem == '1'}" 
 	    data-ng-swipe-left="swipeBottomPanel('1')">
