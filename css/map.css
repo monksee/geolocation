@@ -23,8 +23,14 @@ top: 0px;
 left: 2%;
 height: 450px;
 width: 96%;
-z-index: 8;
 background: #c1c5cc;
+}
+
+#map_error{
+z-index: 8;	
+}
+#map_is_loading{
+z-index: 6;
 }
 
 #map_is_loading .fa-spinner, #map_is_loading .fa-circle-o-notch{
