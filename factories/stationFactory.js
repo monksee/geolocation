@@ -525,7 +525,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
          * that can break the app from working on subsequent requests).
          * (in case the user was not online when they opened the app or the requests where made).
          */
-        console.log("mapsApiIsLoaded " + mapsApiIsLoaded);
+
         var deferred = $q.defer();
         var mapLoadedSuccessfully = false;
         //make sure the user is online before proceeding with loading the google map script (if not loaded already) and also running our callback.
@@ -538,6 +538,8 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 stationService.loadScript(url, callback);
             }
         }else{
+            //only resolve the promise if the map API did not load successfully.
+
             deferred.resolve(mapLoadedSuccessfully); 
             alert("No Internet Connection!");
         }
@@ -585,7 +587,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
 
             mapLoadedSuccessfully = true;
             deferred.resolve(mapLoadedSuccessfully); 
-            //alert('tiles loaded ' +  mapLoadedSuccessfully);
+            alert('tiles loaded ' +  mapLoadedSuccessfully);
             self.fixMapWhenLoaded(); 
             //document.getElementById('map').innerHTML = "";
         });
@@ -636,9 +638,9 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         console.log(markerCluster);
         
         $timeout(function() {
-            //alert('timeout ' +  mapLoadedSuccessfully);
+            alert('timeout ' +  mapLoadedSuccessfully);
             if(!mapLoadedSuccessfully){
-               // alert('timeout2 ' +  mapLoadedSuccessfully);
+                alert('timeout2 ' +  mapLoadedSuccessfully);
                 deferred.resolve(mapLoadedSuccessfully);
             }
         }, 6000);
@@ -844,7 +846,9 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
 
         //get the lat and lng points of the station with stationID of destinationStationID.
         var destinationLatLng = self.getStationLatLngPoints(destinationStationID, self.allStationsMapData);
+        //get the station name of the station with stationID of destinationStationID.
         var stationName = self.getStationName(destinationStationID, self.allStationsMapData);
+
         var directionsDetails = {};
         directionsDetails.travelMode = travelMode;
         directionsDetails.stationName = stationName;
@@ -864,7 +868,8 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
             unitSystem: google.maps.UnitSystem.IMPERIAL,
             travelMode: google.maps.DirectionsTravelMode[travelMode]
         };
-         //check first if the error is because the user is offline.
+
+        //check first that the user is online.
         var userIsOnline = navigator.onLine;
         if(userIsOnline){
             //reset the directionsDisplay if it is already set (e.g from previous direction results)
@@ -908,7 +913,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 }
             });
         }else{
-             deferred.resolve(null);
+            deferred.resolve(null);
             alert("No Internet Connection!");
         }
         return deferred.promise;
