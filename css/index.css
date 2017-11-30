@@ -410,11 +410,11 @@ box-shadow: inset 0px 0px 0px 100px #fff;
 }
 
 
-input[type="button"]{
+input[type="button"], input[type="submit"]{
 -webkit-appearance: none !important;
 display: block;
-outline: 0; 		/*override the default button outline*/
-border: 0;  		/*override the default button border*/
+outline: 0 !important; 		/*override the default button outline*/
+border: 0 !important;  		/*override the default button border*/
 
 }
 
@@ -507,9 +507,9 @@ display: block;
 outline: 0; 		/*override the default button outline*/
 border: 0;  		/*override the default button border*/
 /*user border-radius to produce slightly rounded corners*/
-border-radius: 5px; 	
--webkit-border-radius: 5px;
--moz-border-radius: 5px;
+border-radius: 5px !important; 	
+-webkit-border-radius: 5px !important;  
+-moz-border-radius: 5px !important;     
 
 text-align: center;
 cursor: pointer;
