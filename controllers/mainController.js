@@ -204,11 +204,8 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         }else{
             //The "map" element is full so therefore the google map has already been prepared previously so 
             //no need to prepare it again.
-          //  alert("map is full");
-           // alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
             //change $scope.mapLoadedSuccessfully to true so the "Error loading map" disappears (if it was shown) in the html
             $scope.mapLoadedSuccessfully = true;
-           // alert("$scope.mapLoadedSuccessfully2 " +  $scope.mapLoadedSuccessfully);
         }
 
     };
@@ -314,68 +311,69 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
 
     $scope.submitGetDirectionsForm = function(){ 
-       // alert('submit directions');
+        /*
+         * This method is called when a user submits the directions_form
+         */
         if($scope.directionsFormData.selectedFromLocation == 'chooseLocation' && $scope.directionsFormData.startLocation == null){
             //the form has been submitted but the input field for the user to type the "from location" is empty 
             //so exit the function. There will already be an error message displayed in the form
-            alert('choose location error');
+            //alert('choose location error');
             return;
         }
-        console.log("$scope.directionsFormData.selectedDestination" + $scope.directionsFormData.selectedDestination);
 
         var startLocation;
         var destinationStationID = $scope.directionsFormData.selectedDestination;
         var viaPoint = $scope.directionsFormData.viaPoint;
         var travelMode = $scope.directionsFormData.travelMode;
 
+        //before preparing the directions we check if the google map API is loaded (with prepareGoogleMapsApi)
+        //as the user may have not been online when the app was opened initially 
+        //and therefore the google map script mightn't have loaded.
+        //If we don't do this, then the google object will not be defined 
+        //and this error will break the app in subsequent processes     
         stationFactory.stationService.prepareGoogleMapsApi(function() {
-        mapsApiIsLoaded = true;
-        if($scope.directionsFormData.selectedFromLocation == 'currentLocation'){
-            // alert('selected current location');
-            //we should retrieve the updated current position in case the user has moved position since
-            //beginning to fill in the form.
-            stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition) {
-              //  alert('prepare current location promise finished');
-                if(currentPosition !== null){
+            //This callback will run if the maps API is loaded successfully
+            //We need to set our global variable mapsApiIsLoaded to true so that we avoid loading the script twice (for example on further requests).
+            mapsApiIsLoaded = true;
+
+            if($scope.directionsFormData.selectedFromLocation == 'currentLocation'){
+                //we retrieve the updated current position in case the user has moved position since
+                //beginning to fill in the form.
+                stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition) {
+                    if(currentPosition == null){
+                        //if the current position is null then we cant allow the form to be submitted.
+                        //stop processing the form and output an error to the user telling them to enter a start location
+                        alert("We're sorry but your current location is inaccessible. " +
+                        "Please ensure location services are enabled in the settings on your device or enter a start location in the form.");
+                        //change the select menu to "choose location"
+                        $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
+                        return;
+                    }
                     //we were able to get the users current position
                     //store the currentPosition in our startLocation variable to pass into our getDirections method
                     startLocation = currentPosition;
 
-                 //   alert(" currentPosition  is not null" +  JSON.stringify(currentPosition));
                     //pass in start, via and travel mode.
                     stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID).then(function(directionsDetails) {
+                        $scope.bottomPanelData.selectedMenuItem = '1';
+                        $scope.directionsData.directionsWereGenerated = true;
+                        $scope.directionsData.directionsDetails = directionsDetails;
+                        console.log("directionsDetails" + JSON.stringify(directionsDetails));
+                    });              
+                });
+
+            }else{
+                //User has selected to choose a start location in the form so get the input from the startLocation form field
+                startLocation = $scope.directionsFormData.startLocation;
+                //pass in start, via and travel mode.
+                stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID).then(function(directionsDetails) {
                     $scope.bottomPanelData.selectedMenuItem = '1';
                     $scope.directionsData.directionsWereGenerated = true;
+                    console.log("directionsDetails" + JSON.stringify(directionsDetails));
+                    //if directionsDetails is not null
                     $scope.directionsData.directionsDetails = directionsDetails;
-                    
-                            console.log("directionsDetails" + JSON.stringify(directionsDetails));
-
-                   });
-                }else{
-                    //if the current position is null then we cant allow the form to be submitted.
-                    //stop processing the form and output an error to the user telling them to enter a start location
-                    alert("We're sorry but your current location is inaccessible. " +
-                        "Please ensure location services are enabled in the settings on your device or enter a start location in the form.");
-                    $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
-          
-                    return;
-                }
-            });
-
-        }else{
-           // alert('selected choose location');
-            //User has selected to choose a start location in the form so get the input from the startLocation form field
-            startLocation = $scope.directionsFormData.startLocation;
-            //pass in start, via and travel mode.
-            stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID).then(function(directionsDetails) {
-            $scope.bottomPanelData.selectedMenuItem = '1';
-            $scope.directionsData.directionsWereGenerated = true;
-                console.log("directionsDetails" + JSON.stringify(directionsDetails));
-                //if directionsDetails is not null
-                $scope.directionsData.directionsDetails = directionsDetails;
-                  
-            });
-        }
+                });
+            }
         });
     };
 
