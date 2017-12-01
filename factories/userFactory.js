@@ -137,9 +137,9 @@ mapApp.factory('userFactory', function($http, $q, sharedFactory, facebookFactory
         var self = this;   
         var deferred = $q.defer();
         facebookFactory.processFacebookLogin().then(function(data) {
-            alert("self userDetails " + JSON.stringify(self.userDetails));
+          //  alert("self userDetails " + JSON.stringify(self.userDetails));
             if(data !== null){
-                alert("self userDetails2 " + JSON.stringify(self.userDetails));
+              
                 //If the data returned from the processFacebookLogin function is not null then continue processing the data.
                 self.checkLoginDetails(data).then(function(userDetails) {
                     //resolve the userDetails 

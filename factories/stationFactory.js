@@ -587,7 +587,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
 
             mapLoadedSuccessfully = true;
             deferred.resolve(mapLoadedSuccessfully); 
-            alert('tiles loaded ' +  mapLoadedSuccessfully);
+          //  alert('tiles loaded ' +  mapLoadedSuccessfully);
             self.fixMapWhenLoaded(); 
             //document.getElementById('map').innerHTML = "";
         });
@@ -638,9 +638,9 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         console.log(markerCluster);
         
         $timeout(function() {
-            alert('timeout ' +  mapLoadedSuccessfully);
+           // alert('timeout ' +  mapLoadedSuccessfully);
             if(!mapLoadedSuccessfully){
-                alert('timeout2 ' +  mapLoadedSuccessfully);
+               // alert('timeout2 ' +  mapLoadedSuccessfully);
                 deferred.resolve(mapLoadedSuccessfully);
             }
         }, 6000);
