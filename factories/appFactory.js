@@ -8,7 +8,7 @@ mapApp.factory('appFactory', function(){
 
     };
     appService.appDetails = {
-            "appRootURL" : "http://localhost"//'http://gamuzic.com'//"http://localhost" // 
+            "appRootURL" : 'http://gamuzic.com'//"http://localhost" // 
     };
 
   	//return public API so that we can access it in all controllers
