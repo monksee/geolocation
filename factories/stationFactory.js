@@ -850,7 +850,11 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         var stationName = self.getStationName(destinationStationID, self.allStationsMapData);
 
         var directionsDetails = {};
-        directionsDetails.travelMode = travelMode;
+        if(travelMode === "TRANSIT"){
+            directionsDetails.travelMode = "Public transport";
+        }else{
+            directionsDetails.travelMode = travelMode;
+        }
         directionsDetails.stationName = stationName;
         
         var waypoints = []; // init an empty waypoints array
@@ -892,24 +896,24 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     self.directionsDisplay.setDirections(response);
                     deferred.resolve(directionsDetails);
                 }else{
-                    deferred.resolve(null);
                     // alert('status not ok');
                     // alert an error message when the route could not be calculated.
                     if(status == 'ZERO_RESULTS'){
-                        alert('No route could be found between the origin and destination.');
+                        alert('No route could be found between the origin and destination. \n\nPlease make sure the origin, destination, and via waypoints are correct locations.');
                     }else if(status == 'UNKNOWN_ERROR'){ 
-                        alert('A directions request could not be processed due to a server error. Please check your internet connection.');
+                        alert('A directions request could not be processed due to a server error. \n\nPlease check your internet connection.');
                     }else if(status == 'REQUEST_DENIED'){
-                        alert('This application is not allowed to use the directions service.');
+                        alert('This application is not allowed to use the directions service. \n\nPlease contact support!');
                     }else if(status == 'OVER_QUERY_LIMIT'){
-                        alert('The application has gone over the requests limit in too short a period of time.');
+                        alert('The application has gone over the requests limit in too short a period of time.\n\nPlease contact support!');
                     }else if(status == 'NOT_FOUND'){
-                        alert('At least one of the origin, destination, or via waypoints could not be geocoded. Please make sure the start location or via point are correct locations');
+                        alert('At least one of the origin, destination, or via waypoints could not be geocoded. \n\nPlease make sure the start location or via point are correct locations.');
                     }else if(status == 'INVALID_REQUEST'){
                         alert('The Directions Request provided was invalid.');                  
                     }else{
                         alert("There was an unknown error in your request. Request status: \n\n" + status);
                     }
+                    deferred.resolve(null);
                 }
             });
         }else{
