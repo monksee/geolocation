@@ -2,6 +2,7 @@
 
 <!--A loading symbol will be shown to user before all of the station data is set into scope
     for a better user experience-->
+
 <p class="loading" data-ng-show="dataIsSet === false">Loading...</p>
 
 <!--ouput information on this station-->
@@ -72,7 +73,7 @@
                 <!--use ng-repeat to display five stars so the user can click them to choose a rating. 
                     They will each have a class of either fa-star (full star) or fa-star-o (half star) 
                     depending on which one the users selects-->
-                <span ng-repeat="i in [1,2,3,4,5]">
+                <span data-ng-repeat="i in [1,2,3,4,5]">
                     <i class="fa" 
                         data-ng-class="(reviewFormData.rating >= ($index + 1) ? 'fa-star' : 'fa-star-o')" 
                         data-ng-click="selectStar($index + 1)">
@@ -157,7 +158,7 @@
                         when the review is currently in a state of being edited-->
                     <input type="button" class="edit_button review_area_button" 
                         data-ng-click="displayEditReviewForm($index, currentReview.reviewRating, currentReview.originalReviewText)" 
-                        ng-disabled="selectedReviewForEdit === $index" 
+                        data-ng-disabled="selectedReviewForEdit === $index" 
                         data-ng-show="checkForUserPrivileges(currentReview.reviewUserData.userID)" value="&#xf040;" >
                     <!--a delete button will be shown for deleting the review if the current user is the creator of the review or an administrator-->
                     <!--We wont add an ng-disabled to the delete review button as the user should be able to still delete the review
@@ -177,7 +178,7 @@
 				        </span>
 			        </div>
                     <!--Use ng-bind-html to sanitize the data. htmlentities has been used on the server side before sending here anyway-->
-                    <p class="review_text" ng-bind-html="currentReview.reviewText"></p>
+                    <p class="review_text" data-ng-bind-html="currentReview.reviewText"></p>
                 </div>
 
                 <!--Show the following div If this review has been selected for editing-->
@@ -189,7 +190,7 @@
                             <!--use ng-repeat to display five stars so the user can click them to choose a rating. 
                                 They will each have a class of either fa-star (full star) or fa-star-o (half star) 
                                 depending on which one the users selects-->
-                            <span ng-repeat="i in [1,2,3,4,5]">
+                            <span data-ng-repeat="i in [1,2,3,4,5]">
                                 <i class="fa" 
                                     data-ng-class="(editReviewFormData[$parent.$index].rating >= ($index + 1) ? 'fa-star' : 'fa-star-o')" 
                                     data-ng-click="selectStarForEdit($parent.$index, $index + 1)">
@@ -270,7 +271,7 @@
                          when the reply is currently in a state of being edited-->
                         <input type="button" class="edit_button review_area_button" 
                             data-ng-click="displayEditReplyForm($parent.$index, $index, currentReply.originalReplyText)" 
-                            ng-disabled="selectedReplyEditForms[$parent.$index] === $index"  
+                            data-ng-disabled="selectedReplyEditForms[$parent.$index] === $index"  
                             data-ng-show="checkForUserPrivileges(currentReply.replyUserData.userID)" value="&#xf040;" >
                         <!--a delete button will be shown for deleting the reply if the current user is the creator of the reply or an administrator-->
                         <button type="button" class="delete_button review_area_button" 
@@ -281,7 +282,7 @@
 
                     </div>
                     <!--use ng-bind-html to display the html properly within the replyText-->
-                    <p class="reply_text"  data-ng-show="selectedReplyEditForms[$parent.$index] !== $index" ng-bind-html="currentReply.replyText"></p>
+                    <p class="reply_text"  data-ng-show="selectedReplyEditForms[$parent.$index] !== $index" data-ng-bind-html="currentReply.replyText"></p>
                     <!--show the edit_reply_form if this reply has been selected for editing with the edit_button above.-->
                     <div class="edit_reply_form_area" data-ng-show="selectedReplyEditForms[$parent.$index] === $index">
                         <form name="edit_reply_form" 
