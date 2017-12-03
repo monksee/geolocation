@@ -56,7 +56,7 @@ cursor: pointer;
 font-size: 30px;
 }
 
-.hide_map {
+.hide_element {
 height: 0px;
 opacity: 0;
 }
