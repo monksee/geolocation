@@ -17,8 +17,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 	//userDetails should be stored in the mainController scope
     $scope.userDetails = userFactory.userService.userDetails;
 
-    $scope.bottomPanelIsShowing = false;
-    $scope.bottomPanelRightIsShowing = false;
+    $scope.bottomPanelIsOpen = false;
     $scope.bottomPanelData = {};
     $scope.bottomPanelData.selectedMenuItem = '0';
 
@@ -28,9 +27,13 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
     //add the allStationsMapData to scope (we will use in the directions form destination select menu.)
     $scope.allStationsMapData = stationFactory.stationService.allStationsMapData;
+
     $scope.directionsFormData = {};
     $scope.directionsFormData.travelMode = 'DRIVING';
     $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
+
+    $scope.directionsFormData.selectedDestination = 1;
+    $scope.directionsFormData.directionsAreCalculating = false;
 
 
     $scope.currentLocationIsloading = false;
@@ -46,6 +49,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
     //Initialize it to true so that the error doesnt display before the map tries to load
     $scope.mapLoadedSuccessfully = true;
 
+    var calculatingDirectionsTimer;
     window.onload = function(){
         /*
          * This will execute when the window is loaded. i.e all images, css files, scripts etc are loaded.
@@ -63,7 +67,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             var data = {
                 "userToken" : userFactory.userService.getUserToken()
              };
-            userFactory.userService.checkUserToken(data).then(function(userDetails) {
+            userFactory.userService.checkUserToken(data).then(function(userDetails){
                 //Since the checkUserToken method (in the userFactory) is performaing a http request we need to use a promise
                 //to store the userDetails (from the response) into our $scope.userDetails variable. 
                 $scope.userDetails = userDetails;
@@ -116,7 +120,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         }
     });
 
-    $scope.$on('$routeChangeSuccess', function($event, next, current) { 
+    $scope.$on('$routeChangeSuccess', function($event, next, current){ 
         /*
          * This will be executed whenever a route has changed successfully. 
          *
@@ -143,63 +147,60 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             //The "map" element is empty so therefore the google map has not been loaded previously 
             //so we need to prepare it now with the station data.
             //Firstly set our scope variable mapIsLoading to true so that we can display a loading symbol to the user.
-
             $scope.mapIsLoading = true;
 
-          //  alert("map is empty");
             //before preparing the google map we check if the API is loaded (with prepareGoogleMapsApi)
             //as the user may have not been online when the app was opened initially 
             //and therefore the google map script mightn't have loaded.
             //If we don't do this, then the google object will not be defined 
             //and this error will break the app in subsequent processes
-
-            stationFactory.stationService.prepareGoogleMapsApi(function() {
+            stationFactory.stationService.prepareGoogleMapsApi(function(){
                 //prepareGoogleMapsApi takes in a callback function which will be executed if the Google Maps API has loaded successfully
                 mapsApiIsLoaded = true;
                 //we need to do an API call (i.e call the getAllStationsMapData() method) to retrieve the data from the database.
                 //and also prepare the map
-                stationFactory.stationService.getAllStationsMapData().then(function(allStationsMapData) {
-                    if(allStationsMapData !== null){
-                        $scope.allStationsMapData =  allStationsMapData;
-                        //prepare the google map
-                        stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location).then(function(mapLoadedSuccessfully) {
-                          //  alert("mapLoadedSuccessfully " +  mapLoadedSuccessfully);
-                            //mapLoadedSuccessfully will be true if the process was successful and false if not successful.
+                stationFactory.stationService.getAllStationsMapData().then(function(allStationsMapData){
 
-                            $scope.mapLoadedSuccessfully = mapLoadedSuccessfully;
-                            $scope.mapIsLoading = false;
-                        });
-
-
-                        //get the users current location and mark it on the map.
-                        stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition) {
-                            if(currentPosition !== null){
-                                //change the "From" select menu of the directions form to currentLocation as we have detected a current location successfully
-                                $scope.directionsFormData.selectedFromLocation = 'currentLocation';
-                            }else{
-                               //change the "From" select menu of the directions form to chooseLocation as we have NOT detected a current location successfully
-                               $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
-                            }
-                             console.log(" currentPosition  " +  JSON.stringify(currentPosition));
-                        });
-
-                    }else{
- 
-                    //There has been an error when retrieving all the stations data so set our boolean mapLoadedSuccessfully to false
-                    //so that an error can be displayed in place of the map
-                    $scope.mapLoadedSuccessfully = false;
-                   // alert("$scope.mapLoadedSuccessfully " +  $scope.mapLoadedSuccessfully);
-                    $scope.mapIsLoading = false;
-
+                    if(allStationsMapData == null){
+                        //There has been an error when retrieving all the stations data so set our boolean mapLoadedSuccessfully to false
+                        //so that an error can be displayed in place of the map
+                        $scope.mapLoadedSuccessfully = false;
+                        //assign our mapIsLoading scope variable to false as we have finished the loading process.
+                        $scope.mapIsLoading = false;
+                        return;
                     }
+                    //allStationsMapData is not null so proceed 
+                    $scope.allStationsMapData =  allStationsMapData;      
+                   // $scope.directionsFormData.selectedDestination = '1'; 
+                    console.log(JSON.stringify(allStationsMapData));
+                    //prepare the google map
+                    stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location).then(function(mapLoadedSuccessfully){
+                        //mapLoadedSuccessfully will be true if the process was successful and false if not successful.
+                        $scope.mapLoadedSuccessfully = mapLoadedSuccessfully;
+                        //assign our mapIsLoading scope variable to false as we have finished the loading process.
+                        $scope.mapIsLoading = false;
+                    });
+
+                    //get the users current location and mark it on the map.
+                    stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition){
+                        if(currentPosition == null){
+                            //change the "From" select menu of the directions form to chooseLocation as we have NOT detected a current location successfully
+                            $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
+                            return;
+                        }
+                        //currentPosition is not null so change the "From" select menu of the directions form to currentLocation
+                        $scope.directionsFormData.selectedFromLocation = 'currentLocation';
+                    });
+                   
                 });
-            }).then(function(mapLoadedSuccessfully) {
+
+
+            }).then(function(mapLoadedSuccessfully){
                 //The promise will be resolved if we have detected there was no internet connection 
                 //and therefore the Google Maps API (i.e the maps.google.com script could not be loaded again).
+                //The reason we need a promise is so that we can update our scope variables as follows. 
                 $scope.mapLoadedSuccessfully = mapLoadedSuccessfully;
                 $scope.mapIsLoading = false;
-              //  alert("prepareGoogleMapsApi " +  $scope.mapLoadedSuccessfully);
-
             });  
         }else{
             //The "map" element is full so therefore the google map has already been prepared previously so 
@@ -217,27 +218,24 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
     };
 
-    $scope.showGetDirectionsForm = function(){ 
+    $scope.toggleBottomPanel = function(){ 
      
-        if($scope.bottomPanelIsShowing == false){
-            $scope.bottomPanelIsShowing = true;
-        }else if($scope.bottomPanelIsShowing == true){
-            $scope.bottomPanelIsShowing = false;
+        if($scope.bottomPanelIsOpen == false){
+            $scope.bottomPanelIsOpen = true;
+        }else if($scope.bottomPanelIsOpen == true){
+            $scope.bottomPanelIsOpen = false;
         }
     };
 
-    $scope.selectBottomPanelItem = function(menuItem){
-
-            $scope.bottomPanelData.selectedMenuItem = menuItem;
-           
-
+    $scope.selectBottomPanelMenuItem = function(menuItem){
+        $scope.bottomPanelData.selectedMenuItem = menuItem;
     };
+
     $scope.swipeBottomPanel = function(nextContainerIndex){
-
-            $scope.bottomPanelData.selectedMenuItem = nextContainerIndex;
-           console.log(nextContainerIndex);
-
+        $scope.bottomPanelData.selectedMenuItem = nextContainerIndex;
+        console.log(nextContainerIndex);
     };
+
     $scope.getDirections = function(stationID){ 
         /*
          * This method is called when the "get directions" button is clicked from the google map info window.
@@ -246,9 +244,9 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
          * When the form is submitted we will use the destinationStationID passed through the select menu to get the lat and lng points
          */
         //empty the directions panel from the last time directions were output.
-        document.getElementById("directions_panel").innerHTML = "";
-        $scope.bottomPanelIsShowing = true;
-        $scope.directionsFormData.selectedDestination = "" + stationID; //store it as a string  
+     //   document.getElementById("directions_panel").innerHTML = "";
+        $scope.bottomPanelIsOpen = true;
+        $scope.directionsFormData.selectedDestination = stationID;//"" + stationID; //store it as a string  
     };
 
 
@@ -283,7 +281,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         if(selectedFromLocation === 'currentLocation'){
             $scope.currentLocationIsloading = true;
             //if the user selects current location we should get the current location again as it may have changed.
-            stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition) {
+            stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition){
                 //set the $scope.currentLocationIsloading to false as promised has resolved.
                 $scope.currentLocationIsloading = false;
                 if(currentPosition !== null){
@@ -294,7 +292,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     //if the current position is null then we need to switch the select menu back to "choose a start location"
                     //we do this as follows:
                     $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
-                    alert("We're sorry but your current location is inaccessible. " +
+                    alert("We're sorry but your current location is inaccessible.  \n\n" +
                         "Please ensure location services are enabled in the settings on your device or enter a start location in the form.");
                 }
             });
@@ -305,6 +303,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
     };
 
     $scope.selectDestination = function(){
+        console.log("$scope.directionsFormData.selectedDestination" + typeof $scope.directionsFormData.selectedDestination);
         //ng-change calls this function when select menu changes but we might not need it
         console.log("$scope.directionsFormData.selectedDestination" + $scope.directionsFormData.selectedDestination);
     };
@@ -314,13 +313,28 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         /*
          * This method is called when a user submits the directions_form
          */
-        if($scope.directionsFormData.selectedFromLocation == 'chooseLocation' && $scope.directionsFormData.startLocation == null){
+        //clear the timer in case it is still running from the last time this method was called.
+        //i.e in case the form has been submitted more than once within the space of 2 seconds.
+        $timeout.cancel(calculatingDirectionsTimer);
+        //in order to prevent the form from being submitted multiple times in a row we created a scope variable called directionsAreCalculating
+        //assign the directionsAreCalculating boolean to true so that the submit button will be disabled with ng-disable
+        $scope.directionsFormData.directionsAreCalculating = true;
+
+        console.log("$scope.directionsFormData.startLocation " + $scope.directionsFormData.startLocation);
+        console.log(" $scope.directionsFormData.directionsAreCalculating" +  typeof $scope.directionsFormData.directionsAreCalculating);
+        if($scope.directionsFormData.selectedFromLocation == 'chooseLocation' 
+            && ($scope.directionsFormData.startLocation == null || $scope.directionsFormData.startLocation === "")){
             //the form has been submitted but the input field for the user to type the "from location" is empty 
             //so exit the function. There will already be an error message displayed in the form
-            //alert('choose location error');
+            console.log('choose location error');
+            //in order for the user to see the error we scroll to the top of the form again (where the start_location input field is).
+            var directions_form_container = document.getElementById('directions_form_container');
+            directions_form_container.scrollTop = 0;
+            //assign the directionsAreCalculating boolean to false in order to re-enable the submit button 
+            $scope.directionsFormData.directionsAreCalculating = false;
             return;
         }
-
+      
         var startLocation;
         var destinationStationID = $scope.directionsFormData.selectedDestination;
         var viaPoint = $scope.directionsFormData.viaPoint;
@@ -331,7 +345,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         //and therefore the google map script mightn't have loaded.
         //If we don't do this, then the google object will not be defined 
         //and this error will break the app in subsequent processes     
-        stationFactory.stationService.prepareGoogleMapsApi(function() {
+        stationFactory.stationService.prepareGoogleMapsApi(function(){
             //This callback will run if the maps API is loaded successfully
             //We need to set our global variable mapsApiIsLoaded to true so that we avoid loading the script twice (for example on further requests).
             mapsApiIsLoaded = true;
@@ -339,14 +353,15 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             if($scope.directionsFormData.selectedFromLocation == 'currentLocation'){
                 //we retrieve the updated current position in case the user has moved position since
                 //beginning to fill in the form.
-                stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition) {
+                stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition){
                     if(currentPosition == null){
                         //if the current position is null then we cant allow the form to be submitted.
                         //stop processing the form and output an error to the user telling them to enter a start location
-                        alert("We're sorry but your current location is inaccessible. " +
+                        alert("We're sorry but your current location is inaccessible. \n\n" +
                         "Please ensure location services are enabled in the settings on your device or enter a start location in the form.");
                         //change the select menu to "choose location"
                         $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
+                        $scope.directionsFormData.directionsAreCalculating = false;
                         return;
                     }
                     //we were able to get the users current position
@@ -354,7 +369,11 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     startLocation = currentPosition;
 
                     //pass in start, via and travel mode.
-                    stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID).then(function(directionsDetails) {
+                    stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID).then(function(directionsDetails){
+                        $scope.directionsFormData.directionsAreCalculating = false;
+                        if(directionsDetails == null){ 
+                            return;
+                        }
                         $scope.bottomPanelData.selectedMenuItem = '1';
                         $scope.directionsData.directionsWereGenerated = true;
                         $scope.directionsData.directionsDetails = directionsDetails;
@@ -365,8 +384,12 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             }else{
                 //User has selected to choose a start location in the form so get the input from the startLocation form field
                 startLocation = $scope.directionsFormData.startLocation;
-                //pass in start, via and travel mode.
-                stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID).then(function(directionsDetails) {
+                //pass in start, via and travel mode to the getDirections method from our factory.
+                stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID).then(function(directionsDetails){
+                    $scope.directionsFormData.directionsAreCalculating = false;
+                    if(directionsDetails == null){ 
+                        return;
+                    }
                     $scope.bottomPanelData.selectedMenuItem = '1';
                     $scope.directionsData.directionsWereGenerated = true;
                     console.log("directionsDetails" + JSON.stringify(directionsDetails));
@@ -375,6 +398,14 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                 });
             }
         });
+        //in order to prevent the form from being submitted mulitple times in a row we create a timeout which executes after 6 seconds
+        //and sets the directionsAreCalculating variable to false.
+        //We use this variable with ng-disable in the home view.
+        calculatingDirectionsTimer = $timeout(function () {
+            console.log(" $scope.directionsFormData.directionsAreCalculating " +  $scope.directionsFormData.directionsAreCalculating);
+            //assign the directionsAreCalculating boolean to false in order to re-enable the submit button 
+            $scope.directionsFormData.directionsAreCalculating = false;
+        }, 6000);
     };
 
 
@@ -448,21 +479,8 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
          * We also want the page to transition backwards i.e from left to right so the UX is smoother
          */
         window.history.back();
-        $scope.transitionFromLeftToRight();
     }
 
-    $scope.transitionFromLeftToRight = function() {
-        /*
-         * This function is called in the goBack method in order to transition the page backwards i.e from left to right 
-         * it is also called when a menu item from the right panel is clicked (selectMenuItem()) so that the page 
-         * slides in along with the container_wrapper closing in from the left.
-         */
-		$scope.leftToRight = true; //CSS styling (e.g CSS3 transitions) is applied to the ng-view element in the index.html page when this is set to true 
-        $timeout(function() {
-            //wait 300ms (or other) (i.e until the page transition is finished) to set the transition direction back to default value.
-            $scope.leftToRight = false;
-        }, 300);
-    }
 
 	$scope.selectMenuItem = function($index){
 		/*
@@ -471,9 +489,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 		 * The "current" class adds some CSS styling to the selected item to show the user which menu item is currently selected.
 		 */
         $scope.selectedItem = $index; 
-		//Also when a side menu item is selected we would like the new page to move in from the left, so that it transitions
-		//more smoothly with the side panel as it's closing. 
-		$scope.transitionFromLeftToRight();
+
 	}
 
     $scope.loginWithFacebook = function(){
@@ -488,7 +504,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         var deferred = $q.defer();
 
         if(userFactory.userService.userDetails.isLoggedIn === false){
-            userFactory.userService.login().then(function(userDetails) {
+            userFactory.userService.login().then(function(userDetails){
                 //Store the userDetails (from the response of the http request) into our $scope.userDetails variable. 
 
                 if(userDetails !== null){ 
@@ -505,7 +521,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                        console.log("redirect to home");
                     }
                 }else{
-                    alert("We're sorry but you have not been logged in successfully. Please contact support!");
+                    alert("We're sorry but you have not been logged in successfully.  \n\nPlease contact support!");
                     //if userDetails is null then login was not successful 
                     deferred.resolve(loginIsSuccessful);  
                 }
@@ -547,7 +563,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                 "profilePicURL" : profilePicURL
             };
 
-            userFactory.userService.checkLoginDetails(data).then(function(userDetails) {
+            userFactory.userService.checkLoginDetails(data).then(function(userDetails){
                 //Since the checkLoginDetails method (in the loginFactory) is performaing a http request we need to use a promise
                 //to store the userDetails (from the response) into our $scope.userDetails variable. 
                
@@ -563,7 +579,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                         console.log("redirect to home");
                     }
                 }else{
-                    alert("We're sorry but you have not been logged in successfully. Please contact support!");
+                    alert("We're sorry but you have not been logged in successfully.  \n\nPlease contact support!");
                     //if login was not successful then do not redirect 
                     deferred.resolve(loginIsSuccessful);  
                 }
