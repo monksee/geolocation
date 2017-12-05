@@ -527,7 +527,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
          */
 
         var deferred = $q.defer();
-        var mapLoadedSuccessfully = false;
+        var isSuccessful = false;
         //make sure the user is online before proceeding with loading the google map script (if not loaded already) and also running our callback.
         var userIsOnline = navigator.onLine;
         if(userIsOnline){
@@ -559,7 +559,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
         }else{
             //only resolve the promise if the map API did not load successfully.
 
-            deferred.resolve(mapLoadedSuccessfully); 
+            deferred.resolve(isSuccessful); 
             alert("No Internet Connection!");
         }
         return deferred.promise;
