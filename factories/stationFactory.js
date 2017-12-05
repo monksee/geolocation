@@ -534,8 +534,27 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
             if(mapsApiIsLoaded){
                 callback();
             }else{
-                var url = "http://maps.google.com/maps/api/js?key=AIzaSyAq3rgVX-gPP-1TWmUBER0f_E_tzGO_6Ng"; 
-                stationService.loadScript(url, callback);
+                console.log("not loaded");
+               // var googleMapAPIKey = "AIzaSyAq3rgVX-gPP-1TWmUBER0f_E_tzGO_6Ng"; 
+                $http({ 
+                    method: 'GET',
+                   // url: 'http://localhost/API/deleteReply/' + replyID + '?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+                    url: appFactory.appService.appDetails.appRootURL + '/API/googleMapAPIKey?apiKey=1a0bca66-82af-475a-8585-90bc0417883d',
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                    },
+                    responseType:'json'
+                    }).then(function successCallback(response){
+                        console.log(JSON.stringify(response.data.googleMapAPIKey));
+
+                        var googleMapAPIKey = response.data.googleMapAPIKey;
+                        var url = "http://maps.google.com/maps/api/js?key=" + googleMapAPIKey + "&callback=mapsCallback"; 
+                        stationService.loadScript(url, callback);
+                    },function errorCallback(response){
+                        sharedFactory.buildErrorNotification(response);
+                        return null;
+                });
+
             }
         }else{
             //only resolve the promise if the map API did not load successfully.
