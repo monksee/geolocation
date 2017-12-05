@@ -172,7 +172,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     //allStationsMapData is not null so proceed 
                     $scope.allStationsMapData =  allStationsMapData;      
                    // $scope.directionsFormData.selectedDestination = '1'; 
-                    console.log(JSON.stringify(allStationsMapData));
+                   // console.log(JSON.stringify(allStationsMapData));
                     //prepare the google map
                     stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location).then(function(mapLoadedSuccessfully){
                         //mapLoadedSuccessfully will be true if the process was successful and false if not successful.
@@ -320,8 +320,6 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         //assign the directionsAreCalculating boolean to true so that the submit button will be disabled with ng-disable
         $scope.directionsFormData.directionsAreCalculating = true;
 
-        console.log("$scope.directionsFormData.startLocation " + $scope.directionsFormData.startLocation);
-        console.log(" $scope.directionsFormData.directionsAreCalculating" +  typeof $scope.directionsFormData.directionsAreCalculating);
         if($scope.directionsFormData.selectedFromLocation == 'chooseLocation' 
             && ($scope.directionsFormData.startLocation == null || $scope.directionsFormData.startLocation === "")){
             //the form has been submitted but the input field for the user to type the "from location" is empty 
@@ -492,7 +490,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
 	}
 
-    $scope.loginWithFacebook = function(){
+    $scope.loginWithFacebook1 = function(){
         /*
          * This function calls the login method of the userFactory.userService and returns the user's profile data.
          * This method will be called when the "login with facebook" button is pressed and also when the 
@@ -539,7 +537,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
 
 
-    $scope.loginWithFacebook1 = function(){
+    $scope.loginWithFacebook = function(){
         var loginIsSuccessful = false; //initialize a boolean to false
         var deferred = $q.defer();
         //the following blocks of code should be moved to the facebookFactory when using phonegap

@@ -168,6 +168,7 @@ mapApp.controller("stationController", function($scope, $timeout, $routeParams, 
          * The value passed in to this function will be 1 to 5 inclusive.
          */
         $scope.reviewFormData.rating = rating;
+        console.log(rating);
     };
 
 
@@ -182,7 +183,7 @@ mapApp.controller("stationController", function($scope, $timeout, $routeParams, 
            //There will be an error message displayed in the form already so no need to output error here.
            return;
         }
-
+        console.log("submitReview");
         var reviewText = $scope.reviewFormData.text; //our ng-model variable
         var rating = $scope.reviewFormData.rating; 
         var userToken = userFactory.userService.getUserToken(); //get userToken from local storage.
@@ -379,10 +380,13 @@ mapApp.controller("stationController", function($scope, $timeout, $routeParams, 
     $scope.submitReply = function(reviewIndex, reviewID){
         /*
          */
-        if($scope.replyFormData[reviewIndex].text == null){
-       
-           return;
+        console.log("$scope.replyFormData[reviewIndex]" + $scope.replyFormData[reviewIndex]);
+        if($scope.replyFormData[reviewIndex] == null || 
+            ($scope.replyFormData[reviewIndex] !== null && $scope.replyFormData[reviewIndex].text == null)){
+            //if there is no text in the reply form then do not go any further with the processing.
+            return;
         }
+
         var replyText = $scope.replyFormData[reviewIndex].text; //our ng-model variable
         var userToken = userFactory.userService.getUserToken(); //get userToken from local storage.
 
@@ -393,6 +397,7 @@ mapApp.controller("stationController", function($scope, $timeout, $routeParams, 
         if(inputsAreValid){
             //inputs are valid so we can proceed
             stationFactory.stationService.createReply(reviewID, userToken, replyText).then(function(){
+                //reset the reply form data
                 $scope.replyFormData[reviewIndex] = {};
             });
         }
