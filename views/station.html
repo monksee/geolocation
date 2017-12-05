@@ -7,15 +7,34 @@
 
 <!--ouput information on this station-->
 <div id="station_info_area" data-ng-show="dataIsSet === true">
+    <img class="station_image" src="images/petrol_station.jpg" width="515" height="337" />
     <h3 class="station_name">{{stationDetails.stationName}}</h3>
+    <h4 class="station_header">Address:</h4>
     <address>
-    {{stationDetails.stationAddressLine1}}<br>
-    {{stationDetails.stationAddressLine2}}<br>
+    {{stationDetails.stationAddressLine1}},<br>
+    {{stationDetails.stationAddressLine2}},<br>
     {{stationDetails.stationAddressLine3}}<br>
     {{stationDetails.stationPhoneNumber}}<br>
     </address>
     <!--Each station will have a list of services-->
+    <h4 class="station_header">Services:</h4>
     <ul class="list_of_station_services">
+        <li class="station_service_list_item">
+            <p>Deli</p>
+        </li>
+        <li class="station_service_list_item">
+            <p>Toilets</p>
+        </li>
+        <li class="station_service_list_item">
+            <p>Tea & Coffee</p>
+        </li>
+        <li class="station_service_list_item">
+            <p>Scones</p>
+        </li>
+        <li class="station_service_list_item">
+            <p>Lotto</p>
+        </li>
+
         <li class="station_service_list_item" data-ng-repeat="currentService in stationDetails.stationServices">
             <p>{{currentService.serviceName}}</p>
         </li>
