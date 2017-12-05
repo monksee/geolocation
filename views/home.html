@@ -99,10 +99,13 @@ Therefore this view consists of just the bottom panel html.
                         <div id="select_destination_area">
 					        <label>Destination: </label>
                             <div id="select_destination">
+                                <!--we wont use ng-init on the following menu as the selectedDestination. if we do use ng-init then if we navigate 
+                                away from the home view and then revisit, the value will be reset each time. 
+                                If we don't use ng-init, the value will remain from the last selection (as desired) as it is in the model of our
+                                main controller.--> 
 				                <select data-ng-model="directionsFormData.selectedDestination" 
 				                    data-ng-options="station.stationID as station.stationShortAddress for station in allStationsMapData" 
-				                    data-ng-change="selectDestination()" 
-				                    data-ng-init="directionsFormData.selectedDestination = 1">
+				                    data-ng-change="selectDestination()">
 				                </select>			
                             </div>        
 				        </div><!--/select_destination_area-->
