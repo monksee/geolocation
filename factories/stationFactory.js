@@ -95,7 +95,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                 "stationName" : stationMapData.stationName,
                 "stationShortAddress" : stationMapData.stationName + " " + stationMapData.stationAddressLine2,
                 "stationLatLng" : {"lat" : parseFloat(stationMapData.stationLatLng.lat), "lng" : parseFloat(stationMapData.stationLatLng.lng)},
-                "stationID" : stationMapData.stationID
+                "stationID" : parseInt(stationMapData.stationID)
             });
         }); 
         return preparedMapData;
