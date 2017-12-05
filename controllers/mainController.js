@@ -316,6 +316,12 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         //clear the timer in case it is still running from the last time this method was called.
         //i.e in case the form has been submitted more than once within the space of 2 seconds.
         $timeout.cancel(calculatingDirectionsTimer);
+
+        var userIsOnline = navigator.onLine;
+        if(!userIsOnline){
+            alert("No Internet Connection!");
+            return;
+        }  
         //in order to prevent the form from being submitted multiple times in a row we created a scope variable called directionsAreCalculating
         //assign the directionsAreCalculating boolean to true so that the submit button will be disabled with ng-disable
         $scope.directionsFormData.directionsAreCalculating = true;
