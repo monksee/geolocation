@@ -242,10 +242,10 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         }
     };
 
-   $scope.swipeUpBottomPanel = function(){ 
-      console.log($scope.bottomPanelIsOpen);
+   $scope.swipeUpAndDownBottomPanel = function(bottomPanelIsOpen){ 
+        console.log(bottomPanelIsOpen);
 
-        $scope.bottomPanelIsOpen = true;
+        $scope.bottomPanelIsOpen = bottomPanelIsOpen;
       
     };
     $scope.selectBottomPanelMenuItem = function(menuItem){
