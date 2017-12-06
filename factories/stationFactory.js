@@ -35,6 +35,7 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
     stationService.infoWindowStationLatLng;
     stationService.directionsDisplay;
     stationService.directionsService;
+    stationService.directionsResult = {};
     stationService.stationMarkers = [];
     stationService.currentPositionMarkers = [];
 
@@ -913,6 +914,9 @@ mapApp.factory('stationFactory', function($http, $timeout, $q, $compile, sharedF
                     // alert('status ok');
                     document.getElementById("directions_panel").innerHTML = "";
                     self.directionsDisplay.setDirections(response);
+                    self.directionsResult = response;
+
+                    console.log(typeof response);
                     deferred.resolve(directionsDetails);
                 }else{
                     // alert('status not ok');
