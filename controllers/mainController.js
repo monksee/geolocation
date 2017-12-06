@@ -134,6 +134,9 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             //We have navigated to the home view so prepare the google map
             $scope.initializeMap();
             console.log("yes home");
+            console.log(stationFactory.stationService.directionsResult);
+            console.log(sharedFactory.checkIfEmptyObject(stationFactory.stationService.directionsResult));
+            console.log(stationFactory.stationService.directionsDisplay);
         }
     });
 
@@ -207,6 +210,18 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             //no need to prepare it again.
             //change $scope.mapLoadedSuccessfully to true so the "Error loading map" disappears (if it was shown) in the html
             $scope.mapLoadedSuccessfully = true;
+            //will need to check if the directionsResult object has a value so that we can reinsert the last directions that were calculated
+            //before navigating away from the home view.
+            if(!sharedFactory.checkIfEmptyObject(stationFactory.stationService.directionsResult)){
+                
+            stationFactory.stationService.directionsDisplay = new google.maps.DirectionsRenderer();
+            stationFactory.stationService.directionsDisplay.setMap(stationFactory.stationService.map);
+            stationFactory.stationService.directionsDisplay.setOptions( { suppressMarkers: true } );
+            stationFactory.stationService.directionsDisplay.setPanel(document.getElementById("directions_panel"));
+            stationFactory.stationService.directionsDisplay.setDirections(stationFactory.stationService.directionsResult);
+
+            }
+            console.log(sharedFactory.checkIfEmptyObject(stationFactory.stationService.directionsResult));
         }
 
     };
@@ -219,7 +234,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
     };
 
     $scope.toggleBottomPanel = function(){ 
-     
+     console.log($scope.bottomPanelIsOpen);
         if($scope.bottomPanelIsOpen == false){
             $scope.bottomPanelIsOpen = true;
         }else if($scope.bottomPanelIsOpen == true){
@@ -227,6 +242,12 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         }
     };
 
+   $scope.swipeUpBottomPanel = function(){ 
+      console.log($scope.bottomPanelIsOpen);
+
+        $scope.bottomPanelIsOpen = true;
+      
+    };
     $scope.selectBottomPanelMenuItem = function(menuItem){
         $scope.bottomPanelData.selectedMenuItem = menuItem;
     };
@@ -499,7 +520,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
 	}
 
-    $scope.loginWithFacebook1 = function(){
+    $scope.loginWithFacebook = function(){
         /*
          * This function calls the login method of the userFactory.userService and returns the user's profile data.
          * This method will be called when the "login with facebook" button is pressed and also when the 
@@ -546,7 +567,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
 
 
-    $scope.loginWithFacebook = function(){
+    $scope.loginWithFacebook1 = function(){
         var loginIsSuccessful = false; //initialize a boolean to false
         var deferred = $q.defer();
         //the following blocks of code should be moved to the facebookFactory when using phonegap
