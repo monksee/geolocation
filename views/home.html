@@ -11,7 +11,7 @@ Therefore this view consists of just the bottom panel html.
 <div class="bottom_panel" data-ng-class="{'swipe_up': bottomPanelIsOpen == true}" 
     data-ng-show="mapLoadedSuccessfully && !mapIsLoading"
     data-ng-class="{'hide_element': detectHomeView() == false}">
-	<div id="header_of_bottom_panel">
+	<div id="header_of_bottom_panel" ng-swipe-up="swipeUpBottomPanel()">
 	    <div id="header_button_area"> 
 	        <!--This div contains the caret button that is placed to the top right of the bottom panel. This button enables the user
 	        to open and close (slide up and down) the bottom panel. -->
