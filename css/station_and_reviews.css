@@ -243,6 +243,8 @@ top: 4px;
 right: 0px;
 width: 18px;
 height: 25px;
+background: #fafafa !important;
+
 color: rgba(111, 111, 111, .8); 
 text-shadow: 1px 1px 0px #fff, 0 0 0 #000;
 cursor: pointer;
