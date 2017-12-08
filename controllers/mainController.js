@@ -3,7 +3,7 @@
  * This is the mainController which will be associated with the body of the index file as we will use this controller throughout all
  * "pages" for the header menu items and side panel menu and other details.
  */
-mapApp.controller("mainController", function($scope, $compile, $window, $http, $q, $timeout, $location, geolocationFactory, facebookFactory, sharedFactory, userFactory, validatorFactory, stationFactory){
+mapApp.controller("mainController", function($scope, $compile, $window, $http, $q, $timeout, $location, geolocationFactory, facebookFactory, sharedFactory, userFactory, validatorFactory, googleMapsFactory, stationFactory){
     "use strict";
     /* Define our scope variables */
 	//the boolean variable "panelIsOpen" will initially be set to false as the side panel with initially be closed on page load
@@ -109,14 +109,17 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
          * We will need to detect when the home view has finished loading as we will need to target the div with id of map
          * in the DOM (for google maps)
          */
-
         //Check if the current path is home 
-
         var isHomePath = $scope.checkLocationPath("home");
         if(isHomePath){ 
-            //therefore prepare the Home view with google maps
-            //$scope.initializeMap();
             console.log('home view loaded');
+            //will need to check if the directionsResult object has a value so that we can reinsert the last directions that were calculated
+            //before navigating away from the home view.
+            if(!sharedFactory.checkIfEmptyObject(googleMapsFactory.googleMapsService.directionsResult)){
+                console.log(sharedFactory.checkIfEmptyObject(googleMapsFactory.googleMapsService.directionsResult)); 
+                googleMapsFactory.googleMapsService.directionsDisplay.setPanel(document.getElementById("directions_panel"));
+                googleMapsFactory.googleMapsService.directionsDisplay.setDirections(googleMapsFactory.googleMapsService.directionsResult);
+            }
         }
     });
 
@@ -134,9 +137,6 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             //We have navigated to the home view so prepare the google map
             $scope.initializeMap();
             console.log("yes home");
-            console.log(stationFactory.stationService.directionsResult);
-            console.log(sharedFactory.checkIfEmptyObject(stationFactory.stationService.directionsResult));
-            console.log(stationFactory.stationService.directionsDisplay);
         }
     });
 
@@ -157,7 +157,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             //and therefore the google map script mightn't have loaded.
             //If we don't do this, then the google object will not be defined 
             //and this error will break the app in subsequent processes
-            stationFactory.stationService.prepareGoogleMapsApi(function(){
+            googleMapsFactory.googleMapsService.prepareGoogleMapsApi(function(){
                 //prepareGoogleMapsApi takes in a callback function which will be executed if the Google Maps API has loaded successfully
                 mapsApiIsLoaded = true;
                 //we need to do an API call (i.e call the getAllStationsMapData() method) to retrieve the data from the database.
@@ -177,7 +177,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                    // $scope.directionsFormData.selectedDestination = '1'; 
                    // console.log(JSON.stringify(allStationsMapData));
                     //prepare the google map
-                    stationFactory.stationService.prepareStationsOnMap(allStationsMapData, $scope, $location).then(function(mapLoadedSuccessfully){
+                    googleMapsFactory.googleMapsService.prepareStationsOnMap(allStationsMapData, $scope, $location).then(function(mapLoadedSuccessfully){
                         //mapLoadedSuccessfully will be true if the process was successful and false if not successful.
                         $scope.mapLoadedSuccessfully = mapLoadedSuccessfully;
                         //assign our mapIsLoading scope variable to false as we have finished the loading process.
@@ -185,7 +185,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     });
 
                     //get the users current location and mark it on the map.
-                    stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition){
+                    googleMapsFactory.googleMapsService.prepareCurrentLocation().then(function(currentPosition){
                         if(currentPosition == null){
                             //change the "From" select menu of the directions form to chooseLocation as we have NOT detected a current location successfully
                             $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
@@ -193,11 +193,9 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                         }
                         //currentPosition is not null so change the "From" select menu of the directions form to currentLocation
                         $scope.directionsFormData.selectedFromLocation = 'currentLocation';
+                        //Also since currentPOsition is accessible we can insert nearest station to the destination in the directions form.
                     });
-                   
                 });
-
-
             }).then(function(mapLoadedSuccessfully){
                 //The promise will be resolved if we have detected there was no internet connection 
                 //and therefore the Google Maps API (i.e the maps.google.com script could not be loaded again).
@@ -209,32 +207,27 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             //The "map" element is full so therefore the google map has already been prepared previously so 
             //no need to prepare it again.
             //change $scope.mapLoadedSuccessfully to true so the "Error loading map" disappears (if it was shown) in the html
-            $scope.mapLoadedSuccessfully = true;
-            //will need to check if the directionsResult object has a value so that we can reinsert the last directions that were calculated
-            //before navigating away from the home view.
-            if(!sharedFactory.checkIfEmptyObject(stationFactory.stationService.directionsResult)){
-                
-            stationFactory.stationService.directionsDisplay = new google.maps.DirectionsRenderer();
-            stationFactory.stationService.directionsDisplay.setMap(stationFactory.stationService.map);
-            stationFactory.stationService.directionsDisplay.setOptions( { suppressMarkers: true } );
-            stationFactory.stationService.directionsDisplay.setPanel(document.getElementById("directions_panel"));
-            stationFactory.stationService.directionsDisplay.setDirections(stationFactory.stationService.directionsResult);
-
-            }
-            console.log(sharedFactory.checkIfEmptyObject(stationFactory.stationService.directionsResult));
+            $scope.mapLoadedSuccessfully = true;    
         }
 
     };
 
 
     $scope.refreshMap = function(){
-      //  alert("refresh map");
+         /*
+         * In this method we prepare the google map.
+         * This method will be called when the refresh button in the "map_error" div is clicked in order to try 
+         * loading the map again.
+         * Once the initializeMap method is called our scope variable mapIsLoading will be set to true which will
+         * update the view to display the "map_is_loading" div instead of "map_error"
+         * Therefore we do not need to disable the refresh button when pressed as it will not be hidden once pressed.
+         */
         $scope.initializeMap();
-
     };
 
     $scope.toggleBottomPanel = function(){ 
-     console.log($scope.bottomPanelIsOpen);
+
+        console.log($scope.bottomPanelIsOpen);
         if($scope.bottomPanelIsOpen == false){
             $scope.bottomPanelIsOpen = true;
         }else if($scope.bottomPanelIsOpen == true){
@@ -242,20 +235,33 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         }
     };
 
-   $scope.swipeUpAndDownBottomPanel = function(bottomPanelIsOpen){ 
+    $scope.swipeUpAndDownBottomPanel = function(bottomPanelIsOpen){ 
+        /*
+         * This method will be called when the header of the bottom panel is swiped up or down.
+         * A "swipe up" will open up the bottom panel and a "swipe down" will close it.  
+         */
         console.log(bottomPanelIsOpen);
-
         $scope.bottomPanelIsOpen = bottomPanelIsOpen;
-      
-    };
-    $scope.selectBottomPanelMenuItem = function(menuItem){
-        $scope.bottomPanelData.selectedMenuItem = menuItem;
     };
 
     $scope.swipeBottomPanel = function(nextContainerIndex){
+        /*
+         * This method is called when a "swipe left" or "swipe right" is performed on the divs with 
+         * class "carousel_container" in the body of the bottom panel.
+         * We take in the index of the new container that is to be displayed and set it here.
+         */
         $scope.bottomPanelData.selectedMenuItem = nextContainerIndex;
         console.log(nextContainerIndex);
     };
+
+    $scope.selectBottomPanelMenuItem = function(menuItem){
+        /*
+         * This method is called when a menu item is clicked in the header of the bottom panel.
+         * These menu items correspond to div containers in the body of the bottom panel which are displayed accordingly.
+         */
+        $scope.bottomPanelData.selectedMenuItem = menuItem;
+    };
+
 
     $scope.getDirections = function(stationID){ 
         /*
@@ -264,10 +270,12 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
          * i.e the $scope.directionsFormData.selectedDestination property.
          * When the form is submitted we will use the destinationStationID passed through the select menu to get the lat and lng points
          */
-        //empty the directions panel from the last time directions were output.
-     //   document.getElementById("directions_panel").innerHTML = "";
+        //set the bottom panel menu item to be 0 so that the directions form is displayed when we open the bottom panel 
+        //(as opposed to the directions panel with directions from the last calculation)
+        $scope.bottomPanelData.selectedMenuItem = '0';
         $scope.bottomPanelIsOpen = true;
         $scope.directionsFormData.selectedDestination = stationID;//"" + stationID; //store it as a string  
+
     };
 
 
@@ -302,7 +310,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         if(selectedFromLocation === 'currentLocation'){
             $scope.currentLocationIsloading = true;
             //if the user selects current location we should get the current location again as it may have changed.
-            stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition){
+            googleMapsFactory.googleMapsService.prepareCurrentLocation().then(function(currentPosition){
                 //set the $scope.currentLocationIsloading to false as promised has resolved.
                 $scope.currentLocationIsloading = false;
                 if(currentPosition !== null){
@@ -371,7 +379,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         //and therefore the google map script mightn't have loaded.
         //If we don't do this, then the google object will not be defined 
         //and this error will break the app in subsequent processes     
-        stationFactory.stationService.prepareGoogleMapsApi(function(){
+        googleMapsFactory.googleMapsService.prepareGoogleMapsApi(function(){
             //This callback will run if the maps API is loaded successfully
             //We need to set our global variable mapsApiIsLoaded to true so that we avoid loading the script twice (for example on further requests).
             mapsApiIsLoaded = true;
@@ -379,7 +387,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             if($scope.directionsFormData.selectedFromLocation == 'currentLocation'){
                 //we retrieve the updated current position in case the user has moved position since
                 //beginning to fill in the form.
-                stationFactory.stationService.prepareCurrentLocation().then(function(currentPosition){
+                googleMapsFactory.googleMapsService.prepareCurrentLocation().then(function(currentPosition){
                     if(currentPosition == null){
                         //if the current position is null then we cant allow the form to be submitted.
                         //stop processing the form and output an error to the user telling them to enter a start location
@@ -395,7 +403,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     startLocation = currentPosition;
 
                     //pass in start, via and travel mode.
-                    stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID).then(function(directionsDetails){
+                    googleMapsFactory.googleMapsService.getDirections(startLocation, viaPoint, travelMode, destinationStationID).then(function(directionsDetails){
                         $scope.directionsFormData.directionsAreCalculating = false;
                         if(directionsDetails == null){ 
                             return;
@@ -411,7 +419,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                 //User has selected to choose a start location in the form so get the input from the startLocation form field
                 startLocation = $scope.directionsFormData.startLocation;
                 //pass in start, via and travel mode to the getDirections method from our factory.
-                stationFactory.stationService.getDirections(startLocation, viaPoint, travelMode, destinationStationID).then(function(directionsDetails){
+                googleMapsFactory.googleMapsService.getDirections(startLocation, viaPoint, travelMode, destinationStationID).then(function(directionsDetails){
                     $scope.directionsFormData.directionsAreCalculating = false;
                     if(directionsDetails == null){ 
                         return;
@@ -571,8 +579,8 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         var loginIsSuccessful = false; //initialize a boolean to false
         var deferred = $q.defer();
         //the following blocks of code should be moved to the facebookFactory when using phonegap
-        var facebookUserID = "10213718552614326";//"10213718552600000";
-        var facebookName ="La Monquesa Azul";//"Admin user";
+        var facebookUserID = "133572114059580"; // "10213718552614326";//"10213718552600000";
+        var facebookName = "Mary Smith"; //La Monquesa Azul";//"Admin user";
         var profilePicURL = "https://graph.facebook.com/10213718552614326/picture?type=large&w??idth=200&height=200";
 
         var inputsAreValid = validatorFactory.validateFacebookInputs(
@@ -636,6 +644,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 	    if(confirmation){
             //reset the userDetails object to default values.
             userFactory.userService.resetUserDetails(); 
+            //clear any other variables/objects here that were populated with user data i.e google maps directions data etc 
             //clear the userToken from local storage.
             localStorage.clear();
             $location.path('login');
