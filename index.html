@@ -146,50 +146,6 @@ document.addEventListener('resume', function () {
 // alert('resume fired');
 }, false);
 
-var xmlhttp;
-var appRootURL = "http://localhost";
-var googleMapAPIKey;
-
-function loadScript(url, callback){
-        // Adding the script tag to the head as suggested before
-        var head = document.getElementsByTagName('head')[0];
-        var script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = url;
-
-        // Then bind the event to the callback function.
-        // There are several events for cross browser compatibility.
-        script.onreadystatechange = callback;
-        script.onload = callback;
-
-        // Fire the loading
-        head.appendChild(script);
-}
-
-function getMapAPIKey(){
-	xmlhttp = new XMLHttpRequest(); 
-	xmlhttp.onreadystatechange = getMapAPIKeyCallback;
-	xmlhttp.open('GET', appRootURL + '/API/googleMapAPIKey?apiKey=1a0bca66-82af-475a-8585-90bc0417883d', true);		
-	xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	xmlhttp.send();
-
-}
-function getMapAPIKeyCallback(){
-
-    if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
-        googleMapAPIKey = xmlhttp.responseText;
-        console.log(googleMapAPIKey);
-        var url = "http://maps.google.com/maps/api/js?key=" + googleMapAPIKey + "&callback=mapsCallback";
-        loadScript(url, function(){});
-       // console.log(responseData);
-       // return responseData;
-	}
-}
-
-//var googleMapAPIKey = "AIzaSyAq3rgVX-gPP-1TWmUBER0f_E_tzGO_6Ng"; //getMapAPIKey();
-if(!mapsApiIsLoaded){
-//getMapAPIKey();
-}
 </script>
  
 
@@ -203,11 +159,11 @@ if(!mapsApiIsLoaded){
 <script src="factories/sharedFactory.js"></script>
 <script src="factories/facebookFactory.js"></script>
 <script src="factories/userFactory.js"></script>
-<script src="factories/googleMapsFactory.js"></script>
+
 <script src="factories/reviewFactory.js"></script>
 <script src="factories/geolocationFactory.js"></script>
 <script src="factories/stationFactory.js"></script>
-
+<script src="factories/googleMapsFactory.js"></script>
 
 <script src="controllers/mainController.js"></script>
 <script src="controllers/loginController.js"></script>
