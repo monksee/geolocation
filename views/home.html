@@ -98,6 +98,8 @@ Therefore this view consists of just the bottom panel html.
 
                         <div id="select_destination_area">
 					        <label>Destination: </label>
+
+					        
                             <div id="select_destination">
                                 <!--we wont use ng-init on the following menu as the selectedDestination. if we do use ng-init then if we navigate 
                                 away from the home view and then revisit, the value will be reset each time. 
@@ -130,6 +132,7 @@ Therefore this view consists of just the bottom panel html.
                     <span class="bold_text">{{directionsData.directionsDetails.stationName}}</span>
                 </p>
                 <div id="directions_panel"></div>
+                <div id="directions_panel2"></div>
             </div><!--/inside_body_of_bottom_panel-->
         </div><!--/directions_panel_container-->
     </div><!--/body_of_bottom_panel-->
