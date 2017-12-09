@@ -17,6 +17,7 @@ var mapsApiIsLoaded = false;
 
 window.mapsCallback = function () {
 	console.log('maps callback');
+	//set our global variable mapsApiIsLoaded to true so that we avoid loading the script twice.
     mapsApiIsLoaded = true;
 };
 </script>
