@@ -8,7 +8,7 @@ Therefore this view consists of just the bottom panel html.
 -->
 
 <!--Only show the bottom_panel if the map was loaded successfully and it is not currently loading. -->
-<div class="bottom_panel" data-ng-class="{'swipe_up': bottomPanelIsOpen == true}" 
+<div id="bottom_panel" class="bottom_panel" data-ng-class="{'swipe_up': bottomPanelIsOpen == true}" 
     data-ng-show="mapLoadedSuccessfully && !mapIsLoading"
     data-ng-class="{'hide_element': detectHomeView() == false}">
 	<div id="header_of_bottom_panel" ng-swipe-up="swipeUpAndDownBottomPanel(true)" ng-swipe-down="swipeUpAndDownBottomPanel(false)">
