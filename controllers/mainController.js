@@ -73,6 +73,8 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                 $scope.userDetails = userDetails;
             });
         }
+
+
     };
  
 
@@ -120,6 +122,36 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                 googleMapsFactory.googleMapsService.directionsDisplay.setPanel(document.getElementById("directions_panel"));
                 googleMapsFactory.googleMapsService.directionsDisplay.setDirections(googleMapsFactory.googleMapsService.directionsResult);
             }
+
+            var w = window,
+                d = document,
+                e = d.documentElement,
+                g = d.getElementsByTagName('body')[0],
+                screenWidth = w.innerWidth || e.clientWidth || g.clientWidth,
+                screenHeight = w.innerHeight|| e.clientHeight|| g.clientHeight;
+
+            //The height of our bottom_panel should be the height of the screen minus the full height of the header.
+            var bottomPanelHeight = screenHeight - 74;
+
+            var bottomPanel = document.getElementById("bottom_panel");
+            bottomPanel.style.height = bottomPanelHeight + "px";
+
+            var CSSBottomValue = bottomPanelHeight - 66; // minus the header (of the bottom panel) height
+
+            bottomPanel.style.bottom = "-" + CSSBottomValue + "px";
+
+          //  var swipe_up = document.getElementsByClassName("swipe_up");
+           // swipe_up.style.transform = "translateY(-" + CSSBottomValue + "px)"; 
+            //swipe_up.style.-webkit-transform = "translateY(-" + CSSBottomValue + "px)"; 
+
+
+
+                    var styleSheet = document.createElement('style');
+styleSheet.type = 'text/css';
+styleSheet.innerHTML = '.swipe_up { -webkit-transform: translateY(-' + CSSBottomValue +'px); -moz-transform: translateY(-' + CSSBottomValue +'px); -o-transform: translateY(-' + CSSBottomValue +'px); transform: translateY(-' + CSSBottomValue +'px); }';
+document.getElementsByTagName('head')[0].appendChild(styleSheet);
+
+
         }
     });
 
@@ -158,8 +190,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             //If we don't do this, then the google object will not be defined 
             //and this error will break the app in subsequent processes
             googleMapsFactory.googleMapsService.prepareGoogleMapsApi(function(){
-                //prepareGoogleMapsApi takes in a callback function which will be executed if the Google Maps API has loaded successfully
-                mapsApiIsLoaded = true;
+
                 //we need to do an API call (i.e call the getAllStationsMapData() method) to retrieve the data from the database.
                 //and also prepare the map
                 stationFactory.stationService.getAllStationsMapData().then(function(allStationsMapData){
@@ -182,6 +213,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                         $scope.mapLoadedSuccessfully = mapLoadedSuccessfully;
                         //assign our mapIsLoading scope variable to false as we have finished the loading process.
                         $scope.mapIsLoading = false;
+
                     });
 
                     //get the users current location and mark it on the map.
@@ -381,9 +413,6 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         //and this error will break the app in subsequent processes     
         googleMapsFactory.googleMapsService.prepareGoogleMapsApi(function(){
             //This callback will run if the maps API is loaded successfully
-            //We need to set our global variable mapsApiIsLoaded to true so that we avoid loading the script twice (for example on further requests).
-            mapsApiIsLoaded = true;
-
             if($scope.directionsFormData.selectedFromLocation == 'currentLocation'){
                 //we retrieve the updated current position in case the user has moved position since
                 //beginning to fill in the form.
