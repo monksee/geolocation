@@ -52,6 +52,7 @@ mapApp.factory('googleMapsFactory', function($http, $timeout, $q, $compile, shar
                         console.log(JSON.stringify(response.data.googleMapAPIKey));
 
                         var googleMapAPIKey = response.data.googleMapAPIKey;
+                        //the url will be the maps url. We will call the mapsCallback function in order to set mapsApiIsLoaded to true
                         var url = "http://maps.google.com/maps/api/js?key=" + googleMapAPIKey + "&callback=mapsCallback"; 
                         googleMapsService.loadScript(url, callback);
                     },function errorCallback(response){
