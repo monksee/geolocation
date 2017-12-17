@@ -49,14 +49,20 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
     //Initialize it to true so that the error doesnt display before the map tries to load
     $scope.mapLoadedSuccessfully = true;
 
+
     var calculatingDirectionsTimer;
+
+    //define variables which will be used when calculating values to do with the bottom panel.
+    var screenHeight;
+    var bottomPanelHeight;
+    var CSSBottomValue;
+
     window.onload = function(){
         /*
          * This will execute when the window is loaded. i.e all images, css files, scripts etc are loaded.
-         * Therefore the google maps script will be loaded now and also the div with id of "map" 
-         * so we can initialize the map
+         * I originally had this code in an anonymous function however when using Jasmine the anonymous function made the tests fail.
+         * We could change this back in future.
          */
-       // $scope.initializeMap();
         if(localStorage.getItem("userToken") === null){
             //If there is no userToken in local storage, then we will not want the userDetails object to have any user Details.
             //So reset the userDetails object.
@@ -74,7 +80,24 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             });
         }
 
+        var w = window,
+            d = document,
+            e = d.documentElement,
+            g = d.getElementsByTagName('body')[0];
 
+        screenHeight = w.innerHeight|| e.clientHeight|| g.clientHeight;
+
+        //The height of our bottom_panel should be the height of the screen minus the full height of the header.
+        bottomPanelHeight = screenHeight - 74;
+
+        //calculate how much from the bottom of the screen the bottom panel will be 
+        //It will be hidden (except for its header) when the app opens so the CSS "bottom" value will be a minus value
+        CSSBottomValue = bottomPanelHeight - 66; // minus the header (of the bottom panel) height
+
+        var styleSheet = document.createElement('style');
+        styleSheet.type = 'text/css';
+        styleSheet.innerHTML = '.swipe_up { -webkit-transform: translateY(-' + CSSBottomValue +'px); -moz-transform: translateY(-' + CSSBottomValue +'px); -o-transform: translateY(-' + CSSBottomValue +'px); transform: translateY(-' + CSSBottomValue +'px); }';
+        document.getElementsByTagName('head')[0].appendChild(styleSheet);
     };
  
 
@@ -123,34 +146,9 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                 googleMapsFactory.googleMapsService.directionsDisplay.setDirections(googleMapsFactory.googleMapsService.directionsResult);
             }
 
-            var w = window,
-                d = document,
-                e = d.documentElement,
-                g = d.getElementsByTagName('body')[0],
-                screenWidth = w.innerWidth || e.clientWidth || g.clientWidth,
-                screenHeight = w.innerHeight|| e.clientHeight|| g.clientHeight;
-
-            //The height of our bottom_panel should be the height of the screen minus the full height of the header.
-            var bottomPanelHeight = screenHeight - 74;
-
             var bottomPanel = document.getElementById("bottom_panel");
             bottomPanel.style.height = bottomPanelHeight + "px";
-
-            var CSSBottomValue = bottomPanelHeight - 66; // minus the header (of the bottom panel) height
-
             bottomPanel.style.bottom = "-" + CSSBottomValue + "px";
-
-          //  var swipe_up = document.getElementsByClassName("swipe_up");
-           // swipe_up.style.transform = "translateY(-" + CSSBottomValue + "px)"; 
-            //swipe_up.style.-webkit-transform = "translateY(-" + CSSBottomValue + "px)"; 
-
-
-
-                    var styleSheet = document.createElement('style');
-styleSheet.type = 'text/css';
-styleSheet.innerHTML = '.swipe_up { -webkit-transform: translateY(-' + CSSBottomValue +'px); -moz-transform: translateY(-' + CSSBottomValue +'px); -o-transform: translateY(-' + CSSBottomValue +'px); transform: translateY(-' + CSSBottomValue +'px); }';
-document.getElementsByTagName('head')[0].appendChild(styleSheet);
-
 
         }
     });
