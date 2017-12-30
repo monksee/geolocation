@@ -131,8 +131,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
     $scope.$on('$viewContentLoaded', function(){
         /*
          * This will be executed whenever a view has finished loading. 
-         * We will need to detect when the home view has finished loading as we will need to target the div with id of map
-         * in the DOM (for google maps)
+         * We will need to detect when the home view has finished loading as we will need to perform several processes
          */
         //Check if the current path is home 
         var isHomePath = $scope.checkLocationPath("home");
@@ -145,9 +144,11 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                 googleMapsFactory.googleMapsService.directionsDisplay.setPanel(document.getElementById("directions_panel"));
                 googleMapsFactory.googleMapsService.directionsDisplay.setDirections(googleMapsFactory.googleMapsService.directionsResult);
             }
-
+            //we need to add the styling to the bottom panel after the home view is loaded as that is when the bottom_panel div will
+            //be loaded into the document so we can then use document.getElementById.
             var bottomPanel = document.getElementById("bottom_panel");
             bottomPanel.style.height = bottomPanelHeight + "px";
+            //the bottom value will be a minus value as it will be mostly hidden at the bottom of the screen (except for its header)
             bottomPanel.style.bottom = "-" + CSSBottomValue + "px";
 
         }
@@ -156,12 +157,13 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
     $scope.$on('$routeChangeSuccess', function($event, next, current){ 
         /*
          * This will be executed whenever a route has changed successfully. 
-         *
+        
          */
         //scroll to the top of our container_wrapper so that the content of the new view will start from
         //the top of the screen.  
         var container_wrapper = document.getElementById('container_wrapper');
         container_wrapper.scrollTop = 0;
+
         var currentRoute = next.originalPath;
         if(currentRoute === "/home"){
             //We have navigated to the home view so prepare the google map
@@ -250,7 +252,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
          * loading the map again.
          * Once the initializeMap method is called our scope variable mapIsLoading will be set to true which will
          * update the view to display the "map_is_loading" div instead of "map_error"
-         * Therefore we do not need to disable the refresh button when pressed as it will not be hidden once pressed.
+         * Therefore we do not need to disable the refresh button when pressed as it will be hidden once pressed.
          */
         $scope.initializeMap();
     };
@@ -324,7 +326,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
         var mapIsEmpty = document.getElementById('map').innerHTML === "";
         return mapIsEmpty;
-        console.log("mapIsEmpty " + mapIsEmpty);
+        alert("mapIsEmpty " + mapIsEmpty);
     };
 
     $scope.selectFromLocation = function(selectedFromLocation){ 
