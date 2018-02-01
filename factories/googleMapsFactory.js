@@ -153,7 +153,7 @@ mapApp.factory('googleMapsFactory', function($http, $timeout, $q, $compile, shar
                     }]};
         // create the markerClusterer
         var markerCluster = new MarkerClusterer(self.map, self.stationMarkers, mcOptions);
-        console.log(markerCluster);
+       // console.log(markerCluster);
         
         $timeout(function() {
 
@@ -437,7 +437,7 @@ mapApp.factory('googleMapsFactory', function($http, $timeout, $q, $compile, shar
             });
         }else{
             deferred.resolve(null);
-            alert("No Internet Connection!");
+            alert("No internet connection! \n\nPlease take the following steps: \n\n 1. Make sure mobile data or Wi-Fi is turned on. \n\n 2. Make sure aeroplane mode is off. \n\n 3. Check the signal in your area.");
         }
         return deferred.promise;
     };
