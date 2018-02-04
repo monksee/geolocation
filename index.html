@@ -45,8 +45,12 @@ window.mapsCallback = function () {
 	<!--use the html5 header tag-->
 	<header>
 		<ul class="header_nav" data-ng-class="{'swipe_left': panelIsOpen == true, 'hide_element': detectLoginView()}" data-ng-show="!detectLoginView()">
-			<li class="header_menu_item" data-ng-click="goBack()">
-				<span id="back_header_link" class="header_menu_link normal_link"><i class="fa fa-arrow-left"></i></span>
+			<li class="header_menu_item">
+
+			    <input id="back_header_link" class="header_menu_link normal_link" type="button" 
+                    data-ng-click="goBack()" 
+                    data-ng-disabled="backButtonClicked === true" 
+                    value="&#xf060;" >
 			</li>
         	<li class="header_menu_item navicon" data-ng-click="toggleSidePanel()">
 				<span class="header_menu_link" data-ng-class="{'current': panelIsOpen == true}">
