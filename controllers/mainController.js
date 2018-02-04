@@ -8,6 +8,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
     /* Define our scope variables */
 	//the boolean variable "panelIsOpen" will initially be set to false as the side panel with initially be closed on page load
 	$scope.panelIsOpen = false;
+    $scope.backButtonClicked = false;
 
     //The default page transition effect will be that the content of the view will move from right to left
     //So set our scope variable of leftToRight to false.
@@ -49,7 +50,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
     //Initialize it to true so that the error doesnt display before the map tries to load
     $scope.mapLoadedSuccessfully = true;
 
-
+    var backButtonClickedTimer;
     var calculatingDirectionsTimer;
 
     //define variables which will be used when calculating values to do with the bottom panel.
@@ -89,10 +90,12 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
         //The height of our bottom_panel should be the height of the screen minus the full height of the header.
         bottomPanelHeight = screenHeight - 74;
-
+        var mapContainerHeight = screenHeight - 74 - 66;
         //calculate how much from the bottom of the screen the bottom panel will be 
         //It will be hidden (except for its header) when the app opens so the CSS "bottom" value will be a minus value
         CSSBottomValue = bottomPanelHeight - 66; // minus the header (of the bottom panel) height
+        var mapContainer = document.getElementById("map");
+        mapContainer.style.height = mapContainerHeight + "px";
 
         var styleSheet = document.createElement('style');
         styleSheet.type = 'text/css';
@@ -148,6 +151,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             //be loaded into the document so we can then use document.getElementById.
             var bottomPanel = document.getElementById("bottom_panel");
             bottomPanel.style.height = bottomPanelHeight + "px";
+
             //the bottom value will be a minus value as it will be mostly hidden at the bottom of the screen (except for its header)
             bottomPanel.style.bottom = "-" + CSSBottomValue + "px";
 
@@ -378,12 +382,6 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         //i.e in case the form has been submitted more than once within the space of 2 seconds.
         $timeout.cancel(calculatingDirectionsTimer);
 
-        //check if the user is online before proceeding 
-      //  var userIsOnline = navigator.onLine;
-      //  if(!userIsOnline){
-      //      alert("No Internet Connection!");
-       //     return;
-       // }  
         //in order to prevent the form from being submitted multiple times in a row we created a scope variable called directionsAreCalculating
         //assign the directionsAreCalculating boolean to true so that the submit button will be disabled with ng-disable
         $scope.directionsFormData.directionsAreCalculating = true;
@@ -543,7 +541,17 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
          * This function is called when the back arrow is pressed in order to go back in history.
          * We also want the page to transition backwards i.e from left to right so the UX is smoother
          */
+        console.log("clicked"); 
+        $timeout.cancel(backButtonClickedTimer);
+
+        $scope.backButtonClicked = true;
         window.history.back();
+
+        backButtonClickedTimer = $timeout(function () {
+            alert("enabled");
+           $scope.backButtonClicked = false;
+        }, 700);
+
     }
 
 
