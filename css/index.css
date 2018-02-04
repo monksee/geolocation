@@ -432,11 +432,12 @@ box-shadow: inset 0px 0px 0px 100px #fff;
 
 
 input[type="button"], input[type="submit"]{
+    padding: 0px !important;
 -webkit-appearance: none !important;
 display: block;
 outline: 0 !important; 		/*override the default button outline*/
 border: 0;  		/*override the default button border*/
-
+background:none;
 }
 
 /*styling to prevent chrome's yellow colour input field after autocomplete*/
