@@ -90,13 +90,23 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
         //The height of our bottom_panel should be the height of the screen minus the full height of the header.
         bottomPanelHeight = screenHeight - 74;
-        var mapContainerHeight = screenHeight - 74 - 66;
         //calculate how much from the bottom of the screen the bottom panel will be 
         //It will be hidden (except for its header) when the app opens so the CSS "bottom" value will be a minus value
         CSSBottomValue = bottomPanelHeight - 66; // minus the header (of the bottom panel) height
-        var mapContainer = document.getElementById("map");
-        mapContainer.style.height = mapContainerHeight + "px";
 
+        //we also create the height of the map area dynamically depending on the screen height.
+        //We do this because we dont want this view to be scrollable and therefore do not want the height of the map to extend out of the visible area.
+        var mapContainerHeight = screenHeight - 74 - 66; //screen height minus the main header of the app and also the header of the bottom panel
+        var mapContainer = document.getElementById("map");
+        var mapIsLoadingContainer = document.getElementById("map_is_loading");
+        var mapErrorContainer = document.getElementById("map_error");
+
+        mapContainer.style.height = mapContainerHeight + "px";
+        mapIsLoadingContainer.style.height = mapContainerHeight + "px";
+        mapErrorContainer.style.height = mapContainerHeight + "px";
+        
+        //The .swipe_up class will have values which are dependant on the screen height so therefore we need to create the class dynamically.
+        //and in order to create a CSS class which contains CSS transititions dynamically we need to create a new stylesheet dynamically.
         var styleSheet = document.createElement('style');
         styleSheet.type = 'text/css';
         styleSheet.innerHTML = '.swipe_up { -webkit-transform: translateY(-' + CSSBottomValue +'px); -moz-transform: translateY(-' + CSSBottomValue +'px); -o-transform: translateY(-' + CSSBottomValue +'px); transform: translateY(-' + CSSBottomValue +'px); }';
