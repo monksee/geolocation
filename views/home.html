@@ -1,1 +1,142 @@
-<p>hi</p>
+<!--
+When on the "home" route the map will be displayed and also a "bottom panel" which slides up to show the directions form
+and also the directions when they are generated.
+The div with id "map" is contained in the index.html page (instead of the home view here) as we dont want to have to load/create the google map everytime the home
+view is visited. 
+By keeping the "map" in the index.html the map can be simply loaded when the app is opened.
+Therefore this view consists of just the bottom panel html.
+-->
+
+<!--Only show the bottom_panel if the map was loaded successfully and it is not currently loading. -->
+<div id="bottom_panel" class="bottom_panel" data-ng-class="{'swipe_up': bottomPanelIsOpen == true}" 
+    data-ng-show="mapLoadedSuccessfully && !mapIsLoading"
+    data-ng-class="{'hide_element': detectHomeView() == false}">
+	<div id="header_of_bottom_panel" ng-swipe-up="swipeUpAndDownBottomPanel(true)" ng-swipe-down="swipeUpAndDownBottomPanel(false)">
+	    <div id="header_button_area"> 
+	        <!--This div contains the caret button that is placed to the top right of the bottom panel. This button enables the user
+	        to open and close (slide up and down) the bottom panel. -->
+		    <span class="toggle_bottom_panel_button noPreventDefault" data-ng-click="toggleBottomPanel()">
+                <i class="fa" data-ng-class="(bottomPanelIsOpen === false ? 'fa-caret-up': 'fa-caret-down')"></i>
+            </span>
+        </div>
+        <div id="header_nav_area">
+            <!--This div contains the navigation menu in the header of the bottom panel. The menu items correspond to the carousel_containers 
+            which lie within the body_of_bottom_panel below-->
+            <ul id="nav_menu_of_bottom_panel">
+                <li class="noPreventDefault" data-ng-class="{'selected': bottomPanelData.selectedMenuItem == '0'}" data-ng-click="selectBottomPanelMenuItem('0')">Filter</li>
+                <li class="noPreventDefault" data-ng-class="{'selected': bottomPanelData.selectedMenuItem == '1'}" data-ng-click="selectBottomPanelMenuItem('1')">Directions</li>
+                <!--Thia last list item is the indicator line that moves from right to left depending on which menu item is selected-->
+                <li class="indicator_line" data-ng-class="{'move_to_right': bottomPanelData.selectedMenuItem == '1'}"></li>
+            </ul>
+
+        </div>
+    </div>
+
+    <div class="body_of_bottom_panel">
+	    <div id="directions_form_container" class="carousel_container scrollable" 
+	         data-ng-class="{'move_container_to_left': bottomPanelData.selectedMenuItem == '1'}" 
+	         data-ng-swipe-left="swipeBottomPanel('1')">
+
+            <div class="inside_body_of_bottom_panel">
+                <div id="directions_form_area">
+                    <h4>Please fill in the form to get directions</h4>
+                    <!--use the novalidate form attribute to disable the browser's native form validation-->
+                    <!--use the form name attribute to publish the form instance into the scope-->
+	                <form data-ng-submit="submitGetDirectionsForm()" data-ng-model="directions_form" name="directions_form" novalidate> 
+			    
+				        <div id="select_start_location_area">
+					        <label>From: </label>
+
+                            <div id="select_start_location">
+                                <!--show a spinner in the current location box when current location is being detected-->
+                                <div class="spinner current_location_spinner" data-ng-show="currentLocationIsloading">
+                                    <i class="fa fa-cog fa-spinning"></i>
+                                </div>
+                                <!--a select menu for the user to choose a start location-->
+					            <select data-ng-model="directionsFormData.selectedFromLocation" data-ng-change="selectFromLocation(directionsFormData.selectedFromLocation)">
+                                    <option value="currentLocation" data-ng-selected="directionsFormData.selectedFromLocation === 'currentLocation'">Current location</option>
+                                    <option value="chooseLocation" data-ng-selected="directionsFormData.selectedFromLocation === 'chooseLocation'">Choose start location</option>
+                                </select>
+                            </div><!--/select_start_location-->
+                            <!--show an input field for the user to enter a start location when they select "choose location" from the above select menu-->
+                            <div data-ng-show="directionsFormData.selectedFromLocation === 'chooseLocation'">
+					            <input data-ng-model="directionsFormData.startLocation" type="text" value="" placeholder="Enter Start Location">
+                                <!--show an error if "choose location" is selected but the input field is empty after form submission-->
+					            <div data-ng-show="directions_form.$submitted && (directionsFormData.startLocation == null || directionsFormData.startLocation === '')">
+				                    <p class="error_message">Please enter a start location</p>
+					            </div>
+					        </div>
+				        </div><!--/select_start_location_area-->
+						
+				        <div id="via_area">
+					        <label>Via: </label>
+					        <input data-ng-model="directionsFormData.viaPoint" type="text" value="" placeholder="Enter Via Point (Optional)">
+				        </div><!--/via_area-->
+
+				        <div id="travel_mode_area">
+					        <label>Travel mode:</label>
+					        <label class="radio_button_input">
+					            <input data-ng-model="directionsFormData.travelMode" type="radio" name="travelMode" value="DRIVING" checked/>
+					            <span class="driving"><i class="fa fa-car"></i></span> Driving
+					        </label>
+
+					        <label class="radio_button_input">
+					            <input data-ng-model="directionsFormData.travelMode" type="radio" name="travelMode" value="BICYCLING"/>
+						        <span class="bicycle"><i class="fa fa-bicycle"></i></span> Bicycling
+					        </label>
+
+					        <label class="radio_button_input">
+					            <input data-ng-model="directionsFormData.travelMode" type="radio" name="travelMode" value="TRANSIT"/>
+						        <span class="public"><i class="fa fa-bus"></i></span> Public transport
+					        </label>
+
+					        <label class="radio_button_input">
+					            <input data-ng-model="directionsFormData.travelMode" type="radio" name="travelMode" value="WALKING"/>
+					            <span class="walking"><i class="fa fa-male"></i></span> Walking
+					        </label>
+				        </div><!--/travel_mode_area-->
+
+                        <div id="select_destination_area">
+					        <label>Destination: </label>
+
+					        
+                            <div id="select_destination">
+                                <!--we wont use ng-init on the following menu as the selectedDestination. if we do use ng-init then if we navigate 
+                                away from the home view and then revisit, the value will be reset each time. 
+                                If we don't use ng-init, the value will remain from the last selection (as desired) as it is in the model of our
+                                main controller.--> 
+				                <select data-ng-model="directionsFormData.selectedDestination" 
+				                    data-ng-options="station.stationID as station.stationShortAddress for station in allStationsMapData" 
+				                    data-ng-change="selectDestination()">
+				                </select>			
+                            </div>        
+				        </div><!--/select_destination_area-->
+
+			            <div id="submit_button_area" class="form_divider">
+                            <input class="btn btn_blue btn_float_right" type="submit" 
+                                data-ng-value="(directionsFormData.directionsAreCalculating === true ? 'Please wait...' : 'Submit')" 
+                                data-ng-disabled="directionsFormData.directionsAreCalculating" />
+	                    </div><!--/submit_button_area-->
+  	                </form>
+                </div><!--/directions_form_area-->
+            </div><!--/inside_body_of_bottom_panel-->
+        </div><!--/directions_form_container-->
+
+        <div id="directions_panel_container" class="carousel_container right_container scrollable" 
+            data-ng-class="{'move_container_to_centre': bottomPanelData.selectedMenuItem == '1'}" 
+            data-ng-swipe-right="swipeBottomPanel('0')">
+            <div class="inside_body_of_bottom_panel">
+                <p class="paragraph" data-ng-show="!checkIfDirectionsWereGenerated()">Please fill in the directions form first.</p>
+                <p class="paragraph" data-ng-show="checkIfDirectionsWereGenerated()">
+                    <span class="bold_text">{{directionsData.directionsDetails.travelMode}}</span> to 
+                    <span class="bold_text">{{directionsData.directionsDetails.stationName}}</span>
+                </p>
+                <div id="directions_panel"></div>
+                <div id="directions_panel2"></div>
+            </div><!--/inside_body_of_bottom_panel-->
+        </div><!--/directions_panel_container-->
+    </div><!--/body_of_bottom_panel-->
+
+
+
+</div>
