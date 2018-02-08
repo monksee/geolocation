@@ -98,6 +98,8 @@ border-radius:4px;  /*opera*/
 
 .message_for_user{
 	opacity: 0;
+	min-height: 6px;
+	display: block;
 font-weight: bold;
 color: #1d8ccd;
 -webkit-transition-property: opacity;
@@ -218,7 +220,7 @@ font-size: 16px;
 }
 
 
-button, input[type="button"]{
+button, input[type="button"]:not(#back_header_link){
 outline: 0; 		/*override the default button outline*/
 border: 0 !important;  		/*override the default button border*/
 -webkit-box-shadow: 	none !important;
