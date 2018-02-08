@@ -65,9 +65,10 @@
 
 
 	<!--detect whether current user has already written a review for this station and if not then show the following "write a review" button-->
-	<div id="write_a_review_button_area" data-ng-show="displayReviewForm && checkIfLoggedIn()">
+	<div id="write_a_review_button_area">
 
- 
+        <p class="message_for_user" data-ng-class="(displayMessageForUser === true ? 'full_opacity' : '')" data-ng-show="displayMessageForUser === true">{{messageForUser}}</p>
+
         <div data-ng-show="displayWriteAReviewButton()">
         <!--on button click, call the writeAReview method which will set displayReviewForm to true if the user successfully logs in-->
         <p class="write_a_review_logged_in_as tiny_text"></p>
@@ -83,7 +84,7 @@
         </div>
     </div>
 
-	<div id="write_a_review_form_area">
+	<div id="write_a_review_form_area" data-ng-show="displayReviewForm && checkIfLoggedIn()">
         <h4>Write a review for this Petrol station:</h4>
         <p class="review_form_user_name">
             <span class="bold_text">Name:</span> {{userDetails.facebookName}}
