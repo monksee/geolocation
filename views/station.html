@@ -65,10 +65,9 @@
 
 
 	<!--detect whether current user has already written a review for this station and if not then show the following "write a review" button-->
-	<div id="write_a_review_button_area">
+	<div id="write_a_review_button_area" data-ng-show="displayReviewForm && checkIfLoggedIn()">
 
-        <p class="message_for_user" data-ng-class="(displayMessageForUser === true ? 'full_opacity' : '')" data-ng-show="displayMessageForUser === true">{{messageForUser}}</p>
-
+ 
         <div data-ng-show="displayWriteAReviewButton()">
         <!--on button click, call the writeAReview method which will set displayReviewForm to true if the user successfully logs in-->
         <p class="write_a_review_logged_in_as tiny_text"></p>
