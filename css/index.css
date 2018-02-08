@@ -229,7 +229,7 @@ min-height: 300px; /* need a min height so that the loading sign will appear as 
 position: relative;
 
 }
-.bottom_panel_containe{
+.bottom_panel_container{
 position: absolute;
 left: 0px;
 top: 0px;
