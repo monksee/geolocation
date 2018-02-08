@@ -227,7 +227,7 @@ padding-right: 10px;
 .view{
 min-height: 300px; /* need a min height so that the loading sign will appear as it is position absolute*/
 position: relative;
-
+background: #fafafa; /*put a background on the view so that the side panel is covered when loading the app ??? */
 }
 .bottom_panel_container{
 position: absolute;
