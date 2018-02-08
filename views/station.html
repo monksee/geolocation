@@ -71,13 +71,10 @@
 
         <div data-ng-show="displayWriteAReviewButton()">
         <!--on button click, call the writeAReview method which will set displayReviewForm to true if the user successfully logs in-->
-        <p class="write_a_review_logged_in_as tiny_text"></p>
+
         <button id="write_a_review_button" class="btn btn_blue" data-ng-click="writeAReview()">
             <span>Write a review</span>
         </button>
-
-     
-
         <p class="write_a_review_logged_in_as tiny_text" data-ng-show="checkIfLoggedIn()"><i>Logged in as: {{userDetails.facebookName}}</i></p>
         <p class="tiny_text write_a_review_note" data-ng-show="!checkIfLoggedIn()"><i>Note: If you choose to write a review, you will be asked to log in with Facebook.</i></p>
 
