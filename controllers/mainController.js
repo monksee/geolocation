@@ -96,7 +96,8 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
 
         //we also create the height of the map area dynamically depending on the screen height.
         //We do this because we dont want this view to be scrollable and therefore do not want the height of the map to extend out of the visible area.
-        var mapContainerHeight = screenHeight - 74 - 66; //screen height minus the main header of the app and also the header of the bottom panel
+
+        var mapContainerHeight = screenHeight - 74 - 66 - 12; //screen height minus the main header of the app and also the header of the bottom panel and 12 for username
         var mapContainer = document.getElementById("map");
         var mapIsLoadingContainer = document.getElementById("map_is_loading");
         var mapErrorContainer = document.getElementById("map_error");
