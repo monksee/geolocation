@@ -142,7 +142,7 @@ overflow: hidden;
 .panel_header{
 position: relative;
 width: 95%;
-padding: 4px 1% 0px 4%;
+padding: 8px 1% 0px 4%;
 font-weight: normal;
 background: #fafafa;
 -webkit-box-shadow: inset 2px 0px 4px 0px rgba(0, 0, 0, 0.5);
