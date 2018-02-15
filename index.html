@@ -20,7 +20,12 @@ window.mapsCallback = function () {
 	//set our global variable mapsApiIsLoaded to true so that we avoid loading the script twice.
     mapsApiIsLoaded = true;
 };
+    Array.prototype.min = function() {
+        return Math.min.apply(null, this);
+    };
 </script>
+<script src="js/geodesy/latlon-spherical.js"></script>
+<script src="js/geodesy/dms.js"></script>
 <script src="js/marker-clusterer.js"></script>
 
 
