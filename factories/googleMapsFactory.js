@@ -226,7 +226,7 @@ mapApp.factory('googleMapsFactory', function($http, $timeout, $q, $compile, shar
         return infoWindowHTML;
     };
 
-    googleMapsService.prepareCurrentLocation = function(){ 
+    googleMapsService.prepareCurrentLocation1 = function(){ 
         /*
          * This method gets a user's current position, marks it on the map
          * We also enter this current position to the From input field in our directions form
@@ -294,7 +294,7 @@ mapApp.factory('googleMapsFactory', function($http, $timeout, $q, $compile, shar
         return deferred.promise;
     };
 
-    googleMapsService.prepareCurrentLocation1 = function(){ 
+    googleMapsService.prepareCurrentLocation = function(){ 
         /*
          * This method calls the getCurrentPosition method from the geolocationFactory to get a user's current position
          * If successfully retrieved we mark their current position on the map (with id of "map")
