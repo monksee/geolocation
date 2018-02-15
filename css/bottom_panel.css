@@ -172,14 +172,14 @@ opacity: 0;
 padding-top: 6px;
 }
 
-#select_start_location, #select_destination{
+#select_start_location, #select_destination, #select_destination_type{
 width:100%;  
 margin: 0px 0px 7px 0px;  
 position: relative;  
 overflow: hidden;
 }
 
-#select_start_location select, #select_destination select{
+#select_start_location select, #select_destination select, #select_destination_type select{
 width:99%;
 max-width: 100%;
 font-family: 'Raleway', sans-serif !important;
