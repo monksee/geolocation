@@ -32,7 +32,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
     $scope.directionsFormData = {};
     $scope.directionsFormData.travelMode = 'DRIVING';
     $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
-
+    $scope.directionsFormData.selectedDestinationType = 'nearestPetrolStation';
     $scope.directionsFormData.selectedDestination = 1;
     $scope.directionsFormData.directionsAreCalculating = false;
 
@@ -232,8 +232,8 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     });
 
                     //get the users current location and mark it on the map.
-                    googleMapsFactory.googleMapsService.prepareCurrentLocation().then(function(currentPosition){
-                        if(currentPosition == null){
+                    googleMapsFactory.googleMapsService.prepareCurrentLocation().then(function(currentPositionObject){
+                        if(currentPositionObject == null){
                             //change the "From" select menu of the directions form to chooseLocation as we have NOT detected a current location successfully
                             $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
                             return;
@@ -322,7 +322,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         $scope.bottomPanelData.selectedMenuItem = '0';
         $scope.bottomPanelIsOpen = true;
         $scope.directionsFormData.selectedDestination = stationID;//"" + stationID; //store it as a string  
-
+        $scope.directionsFormData.selectedDestinationType = 'chooseDestination';
     };
 
 
@@ -357,10 +357,10 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         if(selectedFromLocation === 'currentLocation'){
             $scope.currentLocationIsloading = true;
             //if the user selects current location we should get the current location again as it may have changed.
-            googleMapsFactory.googleMapsService.prepareCurrentLocation().then(function(currentPosition){
+            googleMapsFactory.googleMapsService.prepareCurrentLocation().then(function(currentPositionObject){
                 //set the $scope.currentLocationIsloading to false as promised has resolved.
                 $scope.currentLocationIsloading = false;
-                if(currentPosition !== null){
+                if(currentPositionObject !== null){
                     //we were able to get the users current position
                     $scope.directionsFormData.selectedFromLocation = 'currentLocation';
                 }else{
@@ -377,7 +377,10 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
              $scope.directionsFormData.selectedFromLocation = 'chooseLocation';
         }
     };
+    $scope.selectDestinationType = function(selectedDestinationType){
+       console.log("selectedDestinationType "+ selectedDestinationType);
 
+    };
     $scope.selectDestination = function(){
         console.log("$scope.directionsFormData.selectedDestination" + typeof $scope.directionsFormData.selectedDestination);
         //ng-change calls this function when select menu changes but we might not need it
@@ -410,8 +413,8 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             return;
         }
       
-        var startLocation;
-        var destinationStationID = $scope.directionsFormData.selectedDestination;
+        var startLocation;   
+        var destinationStationID;
         var viaPoint = $scope.directionsFormData.viaPoint;
         var travelMode = $scope.directionsFormData.travelMode;
 
@@ -425,8 +428,8 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             if($scope.directionsFormData.selectedFromLocation == 'currentLocation'){
                 //we retrieve the updated current position in case the user has moved position since
                 //beginning to fill in the form.
-                googleMapsFactory.googleMapsService.prepareCurrentLocation().then(function(currentPosition){
-                    if(currentPosition == null){
+                googleMapsFactory.googleMapsService.prepareCurrentLocation().then(function(currentPositionObject){
+                    if(currentPositionObject == null){
                         //if the current position is null then we cant allow the form to be submitted.
                         //stop processing the form and output an error to the user telling them to enter a start location
                         alert("We're sorry but your current location is inaccessible. \n\n" +
@@ -438,7 +441,16 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     }
                     //we were able to get the users current position
                     //store the currentPosition in our startLocation variable to pass into our getDirections method
-                    startLocation = currentPosition;
+                    startLocation = currentPositionObject;
+                    console.log("start" + startLocation.lat);
+                    if($scope.directionsFormData.selectedDestinationType == 'nearestPetrolStation'){
+                        destinationStationID = googleMapsFactory.googleMapsService.getNearestStation(startLocation, $scope.allStationsMapData);
+                        console.log("destinationStationID " + destinationStationID);
+                    }else{
+                        destinationStationID = $scope.directionsFormData.selectedDestination;
+
+                    }  
+
 
                     //pass in start, via and travel mode.
                     googleMapsFactory.googleMapsService.getDirections(startLocation, viaPoint, travelMode, destinationStationID).then(function(directionsDetails){
@@ -456,6 +468,33 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             }else{
                 //User has selected to choose a start location in the form so get the input from the startLocation form field
                 startLocation = $scope.directionsFormData.startLocation;
+                console.log("start location: " + startLocation);
+                if($scope.directionsFormData.selectedDestinationType == 'nearestPetrolStation'){
+                    //as the start location will be an address (that the user entered) in this case as oppose to lat and lng coordinates 
+                    //we will need to convert the start location to lat and lng coords before passing into the getNearestStation function.
+                    googleMapsFactory.googleMapsService.getLatLng(startLocation).then(function(latLng){
+                        console.log("latLng" + JSON.stringify(latLng));
+                        //pass in the latLng to the getNearestStation function
+                        console.log("destinationStationID1 " + destinationStationID);
+                        destinationStationID = googleMapsFactory.googleMapsService.getNearestStation(latLng, $scope.allStationsMapData);
+                        console.log("destinationStationID " + destinationStationID);
+                    //pass in start, via and travel mode to the getDirections method from our factory.
+                    googleMapsFactory.googleMapsService.getDirections(startLocation, viaPoint, travelMode, destinationStationID).then(function(directionsDetails){
+                        $scope.directionsFormData.directionsAreCalculating = false;
+                        if(directionsDetails == null){ 
+                            return;
+                        }
+                        $scope.bottomPanelData.selectedMenuItem = '1';
+                        $scope.directionsData.directionsWereGenerated = true;
+                        console.log("directionsDetails" + JSON.stringify(directionsDetails));
+                        //if directionsDetails is not null
+                        $scope.directionsData.directionsDetails = directionsDetails;
+                    });
+
+
+                    });
+                }else{
+                    destinationStationID = $scope.directionsFormData.selectedDestination;
                 //pass in start, via and travel mode to the getDirections method from our factory.
                 googleMapsFactory.googleMapsService.getDirections(startLocation, viaPoint, travelMode, destinationStationID).then(function(directionsDetails){
                     $scope.directionsFormData.directionsAreCalculating = false;
@@ -468,6 +507,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     //if directionsDetails is not null
                     $scope.directionsData.directionsDetails = directionsDetails;
                 });
+                } 
             }
         }).then(function(isSuccessful){
             $scope.directionsFormData.directionsAreCalculating = false;
