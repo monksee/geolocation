@@ -38,6 +38,8 @@ mapApp.factory('googleMapsFactory', function($http, $timeout, $q, $compile, shar
             if(mapsApiIsLoaded){
                 callback();
             }else{
+            	//If the maps API has not been loaded yet then make a http request to the googleMapAPIkey endpoint to retrieve our google maps API key 
+            	//from the server. (Note: We retrieve it from the server for more security)
                 console.log("not loaded");
                // var googleMapAPIKey = "AIzaSyAq3rgVX-gPP-1TWmUBER0f_E_tzGO_6Ng"; 
                 $http({ 
@@ -52,7 +54,8 @@ mapApp.factory('googleMapsFactory', function($http, $timeout, $q, $compile, shar
                         console.log(JSON.stringify(response.data.googleMapAPIKey));
 
                         var googleMapAPIKey = response.data.googleMapAPIKey;
-                        //the url will be the maps url. We will call the mapsCallback function in order to set mapsApiIsLoaded to true
+                        //Now that we have the google maps API Key we can load the google maps API with the loadScript method. 
+                        //We will call the mapsCallback function (after the google maps API is loaded) in order to set mapsApiIsLoaded to true
                         var url = "http://maps.google.com/maps/api/js?key=" + googleMapAPIKey + "&callback=mapsCallback"; 
                         googleMapsService.loadScript(url, callback);
                     },function errorCallback(response){
@@ -223,7 +226,7 @@ mapApp.factory('googleMapsFactory', function($http, $timeout, $q, $compile, shar
         return infoWindowHTML;
     };
 
-    googleMapsService.prepareCurrentLocation1 = function(){ 
+    googleMapsService.prepareCurrentLocation = function(){ 
         /*
          * This method gets a user's current position, marks it on the map
          * We also enter this current position to the From input field in our directions form
@@ -241,6 +244,7 @@ mapApp.factory('googleMapsFactory', function($http, $timeout, $q, $compile, shar
                     var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                     console.log(JSON.stringify(currentPosition));
                     var currentLocationIcon = new google.maps.MarkerImage(appFactory.appService.appDetails.appRootURL + "/map_server_files/images/gm_icon_user.png", null, null, null, new google.maps.Size(48,68));
+                    var currentPositionObject = {"lat": position.coords.latitude, "lng": position.coords.longitude};
 
 
                     var currentPositionMarker = new google.maps.Marker({
@@ -255,7 +259,7 @@ mapApp.factory('googleMapsFactory', function($http, $timeout, $q, $compile, shar
                     // Push your newly created marker into the array
                     self.currentPositionMarkers.push(currentPositionMarker);
                     //return the current position. This will be an object with lat and lng points.
-                    deferred.resolve(currentPosition); 
+                    deferred.resolve(currentPositionObject); 
                 },
                 function(error) {
                     var errors = { 
@@ -290,7 +294,7 @@ mapApp.factory('googleMapsFactory', function($http, $timeout, $q, $compile, shar
         return deferred.promise;
     };
 
-    googleMapsService.prepareCurrentLocation = function(){ 
+    googleMapsService.prepareCurrentLocation1 = function(){ 
         /*
          * This method calls the getCurrentPosition method from the geolocationFactory to get a user's current position
          * If successfully retrieved we mark their current position on the map (with id of "map")
@@ -311,7 +315,7 @@ mapApp.factory('googleMapsFactory', function($http, $timeout, $q, $compile, shar
 
                     var currentPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                     var currentLocationIcon = new google.maps.MarkerImage(appFactory.appService.appDetails.appRootURL + "/map_server_files/images/gm_icon_user.png", null, null, null, new google.maps.Size(48,68));
-
+                   var currentPositionObject = {"lat": position.coords.latitude, "lng": position.coords.longitude};
 
                     console.log(JSON.stringify(currentPosition));
 
@@ -327,7 +331,7 @@ mapApp.factory('googleMapsFactory', function($http, $timeout, $q, $compile, shar
                     // Push your newly created marker into the array
                     self.currentPositionMarkers.push(currentPositionMarker);
                     //return the current position. This will be an object with lat and lng points.
-                    deferred.resolve(currentPosition); 
+                    deferred.resolve(currentPositionObject); 
                 },
                 function(error) {
                     //we will output a message to the user in the controller as
@@ -351,11 +355,56 @@ mapApp.factory('googleMapsFactory', function($http, $timeout, $q, $compile, shar
         return deferred.promise;
     };
 
+    googleMapsService.getLatLng = function(address){ 
+    	var deferred = $q.defer();
+        var latLng = {};
+        var geocoder = new google.maps.Geocoder();
+
+        geocoder.geocode( { 'address': address}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                var latitude = results[0].geometry.location.lat();
+                var longitude = results[0].geometry.location.lng();
+                latLng = {"lat": latitude, "lng": longitude};
+                deferred.resolve(latLng);
+               // return latLng;
+            } 
+        }); 
+        return deferred.promise;
+    };
+
+    googleMapsService.getNearestStation = function(startLocation, allStationsMapData){
+        var stationIDs = [];
+        var distances = [];
+        console.log(startLocation);
+        var startingPoint = new LatLon(parseFloat(startLocation.lat), parseFloat(startLocation.lng));
+         console.log(startingPoint);
+        allStationsMapData.forEach(function(stationMapData){
+           // console.log(stationMapData.stationLatLng);
+            var endPoint = new LatLon(parseFloat(stationMapData.stationLatLng.lat), parseFloat(stationMapData.stationLatLng.lng));
+            var distance = startingPoint.distanceTo(endPoint);
+            distances.push(distance);
+            stationIDs.push(parseInt(stationMapData.stationID));
+            //console.log(endPoint);
+        });
+        console.log("distances " + JSON.stringify(distances));
+        console.log("distances.min()" + distances.min());
+        var minDistanceIndex = distances.indexOf(distances.min());
+        console.log(minDistanceIndex);
+        var nearestStationID = stationIDs[minDistanceIndex];
+       console.log("nearestStationID" + nearestStationID); 
+        return nearestStationID;
+    };
+
+
+
     googleMapsService.getDirections = function(startLocation, viaPoint, travelMode, destinationStationID){ 
         
         var self = this;
         var deferred = $q.defer();
         var via = viaPoint;
+        console.log("strt" + JSON.stringify(startLocation));
+       // var startLocation = new google.maps.LatLng(startLocation.lat, startLocation.lng);
+
         if (travelMode == 'TRANSIT') {
             via = '';  //if the travel mode is transit, don't use the via waypoint because that will not work
         }
