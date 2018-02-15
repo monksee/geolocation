@@ -98,13 +98,19 @@ Therefore this view consists of just the bottom panel html.
 
                         <div id="select_destination_area">
 					        <label>Destination: </label>
-
+                            <div id="select_destination_type">
+                                <select data-ng-model="directionsFormData.selectedDestinationType" data-ng-change="selectDestinationType(directionsFormData.selectedDestinationType)">
+                                  <option value="nearestPetrolStation" data-ng-selected="directionsFormData.selectedDestinationType === 'nearestPetrolStation'">Nearest Petrol Station</option>
+                                  <option value="chooseDestination" data-ng-selected="directionsFormData.selectedDestinationType === 'chooseDestination'">Choose Destination</option>
+                                </select>   
+                            </div>
 					        
-                            <div id="select_destination">
+                            <div id="select_destination" data-ng-show="directionsFormData.selectedDestinationType === 'chooseDestination'">
                                 <!--we wont use ng-init on the following menu as the selectedDestination. if we do use ng-init then if we navigate 
                                 away from the home view and then revisit, the value will be reset each time. 
                                 If we don't use ng-init, the value will remain from the last selection (as desired) as it is in the model of our
                                 main controller.--> 
+                                <h4>Choose a destination petrol station</h4>
 				                <select data-ng-model="directionsFormData.selectedDestination" 
 				                    data-ng-options="station.stationID as station.stationShortAddress for station in allStationsMapData" 
 				                    data-ng-change="selectDestination()">
