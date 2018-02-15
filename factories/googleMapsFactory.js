@@ -375,9 +375,9 @@ mapApp.factory('googleMapsFactory', function($http, $timeout, $q, $compile, shar
     googleMapsService.getNearestStation = function(startLocation, allStationsMapData){
         var stationIDs = [];
         var distances = [];
-        console.log(startLocation);
+        alert(startLocation);
         var startingPoint = new LatLon(parseFloat(startLocation.lat), parseFloat(startLocation.lng));
-         console.log(startingPoint);
+         alert(startingPoint);
         allStationsMapData.forEach(function(stationMapData){
            // console.log(stationMapData.stationLatLng);
             var endPoint = new LatLon(parseFloat(stationMapData.stationLatLng.lat), parseFloat(stationMapData.stationLatLng.lng));
@@ -386,12 +386,12 @@ mapApp.factory('googleMapsFactory', function($http, $timeout, $q, $compile, shar
             stationIDs.push(parseInt(stationMapData.stationID));
             //console.log(endPoint);
         });
-        console.log("distances " + JSON.stringify(distances));
-        console.log("distances.min()" + distances.min());
+        alert("distances " + JSON.stringify(distances));
+        alert("distances.min()" + distances.min());
         var minDistanceIndex = distances.indexOf(distances.min());
-        console.log(minDistanceIndex);
+        alert(minDistanceIndex);
         var nearestStationID = stationIDs[minDistanceIndex];
-       console.log("nearestStationID" + nearestStationID); 
+       alert("nearestStationID" + nearestStationID); 
         return nearestStationID;
     };
 
