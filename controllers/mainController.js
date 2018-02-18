@@ -89,7 +89,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         screenHeight = w.innerHeight|| e.clientHeight|| g.clientHeight;
 
         //The height of our bottom_panel should be the height of the screen minus the full height of the header.
-        bottomPanelHeight = screenHeight - 74;
+       bottomPanelHeight = screenHeight - 74;
         //calculate how much from the bottom of the screen the bottom panel will be 
         //It will be hidden (except for its header) when the app opens so the CSS "bottom" value will be a minus value
         CSSBottomValue = bottomPanelHeight - 66; // minus the header (of the bottom panel) height
@@ -102,16 +102,16 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         var mapIsLoadingContainer = document.getElementById("map_is_loading");
         var mapErrorContainer = document.getElementById("map_error");
 
-        mapContainer.style.height = mapContainerHeight + "px";
-        mapIsLoadingContainer.style.height = mapContainerHeight + "px";
-        mapErrorContainer.style.height = mapContainerHeight + "px";
+      //  mapContainer.style.height = mapContainerHeight + "px";
+      //  mapIsLoadingContainer.style.height = mapContainerHeight + "px";
+      //  mapErrorContainer.style.height = mapContainerHeight + "px";
         
         //The .swipe_up class will have values which are dependant on the screen height so therefore we need to create the class dynamically.
         //and in order to create a CSS class which contains CSS transititions dynamically we need to create a new stylesheet dynamically.
         var styleSheet = document.createElement('style');
         styleSheet.type = 'text/css';
         styleSheet.innerHTML = '.swipe_up { -webkit-transform: translateY(-' + CSSBottomValue +'px); -moz-transform: translateY(-' + CSSBottomValue +'px); -o-transform: translateY(-' + CSSBottomValue +'px); transform: translateY(-' + CSSBottomValue +'px); }';
-        document.getElementsByTagName('head')[0].appendChild(styleSheet);
+       // document.getElementsByTagName('head')[0].appendChild(styleSheet);
     };
  
 
@@ -161,10 +161,10 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             //we need to add the styling to the bottom panel after the home view is loaded as that is when the bottom_panel div will
             //be loaded into the document so we can then use document.getElementById.
             var bottomPanel = document.getElementById("bottom_panel");
-            bottomPanel.style.height = bottomPanelHeight + "px";
+          //  bottomPanel.style.height = bottomPanelHeight + "px";
 
             //the bottom value will be a minus value as it will be mostly hidden at the bottom of the screen (except for its header)
-            bottomPanel.style.bottom = "-" + CSSBottomValue + "px";
+           // bottomPanel.style.bottom = "-" + CSSBottomValue + "px";
 
         }
     });
