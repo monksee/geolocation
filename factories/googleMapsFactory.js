@@ -356,60 +356,88 @@ mapApp.factory('googleMapsFactory', function($http, $timeout, $q, $compile, shar
     };
 
     googleMapsService.getLatLng = function(address){ 
+    	/*
+         * This method takes in an address as a parameter and calls the google maps geocode method in order to get the 
+         * lat and lng co-ordinates for that address.
+         * We will call this method in the main controller if the user chooses to enter a start location and also 
+         * has requested to get directions to the nearest station.
+         * We return an object with lat and lng values with a promise
+         */
     	var deferred = $q.defer();
         var latLng = {};
         var geocoder = new google.maps.Geocoder();
-
-        geocoder.geocode( { 'address': address}, function(results, status) {
-            if (status == google.maps.GeocoderStatus.OK) {
+        //restrict the result to Irish addresses
+        geocoder.geocode( { 'address': address, componentRestrictions: {country: 'IRELAND'}}, function(results, status) {
+            if(status == 'ZERO_RESULTS'){
+                alert('The start location entered is not recognised as a valid address. \n\nPlease try again.');        
+            }else if (status == google.maps.GeocoderStatus.OK) {
+            	//status is ok
                 var latitude = results[0].geometry.location.lat();
                 var longitude = results[0].geometry.location.lng();
                 latLng = {"lat": latitude, "lng": longitude};
+                //return the lat lng object
                 deferred.resolve(latLng);
-               // return latLng;
             } 
         }); 
         return deferred.promise;
     };
 
     googleMapsService.getNearestStation = function(startLocation, allStationsMapData){
+    	/*
+    	 * This method uses the haversine algorithm for calculating the distance between two points (with latitude and longtitude values).
+    	 * We call methods from the latlon-spherical.js and dms.js files.
+         * We take in a startLocation object (with lat and lng values) and the allStationsMapData array as parameters.
+         * We calculate the distance between the startLocation and each petrol station. We return the station ID with the smallest distance.
+         */
+
+        //the stationIDs array will store the station ID for each destination petrol station.
         var stationIDs = [];
+        //the distances array will store the distances between the startLocation we take in and each petrol station. 
         var distances = [];
-        alert(startLocation);
+
+        //create a LatLon object (which is defined in the latlon-spherical.js file) so that we can use it with the distanceTo method as seen below.
         var startingPoint = new LatLon(parseFloat(startLocation.lat), parseFloat(startLocation.lng));
-         alert(startingPoint);
+        console.log(startingPoint);
+        //iterate through the allStationsMapData array in order to get the lat and lng points of each station
         allStationsMapData.forEach(function(stationMapData){
-           // console.log(stationMapData.stationLatLng);
             var endPoint = new LatLon(parseFloat(stationMapData.stationLatLng.lat), parseFloat(stationMapData.stationLatLng.lng));
+            //calculate the distance from the starting point to the current station endpoint
             var distance = startingPoint.distanceTo(endPoint);
+            //push the distance onto the distances array
             distances.push(distance);
             stationIDs.push(parseInt(stationMapData.stationID));
-            //console.log(endPoint);
         });
-        alert("distances " + JSON.stringify(distances));
-        alert("distances.min()" + distances.min());
+        console.log("distances " + distances);
+        console.log("distances.min()" + distances.min());
+        //get the minimum value from the distances array using the min() method and in turn
+        //get the index of the distances array which holds the element with that value.
         var minDistanceIndex = distances.indexOf(distances.min());
-        alert(minDistanceIndex);
+        //get the station ID from the stationIDs array using the minDistanceIndex.
+        //This will be the nearest station ID to the starting point which we took in as a parameter.
         var nearestStationID = stationIDs[minDistanceIndex];
-       alert("nearestStationID" + nearestStationID); 
+        console.log("nearestStationID" + nearestStationID); 
+        //return the station ID of the nearest station
         return nearestStationID;
     };
 
 
 
     googleMapsService.getDirections = function(startLocation, viaPoint, travelMode, destinationStationID){ 
-        
+        /*
+    	 * This method takes in a startLocation, viaPoint, travelMode and destinationStationID and uses the google maps directions service
+    	 * in order to calculate the directions from the starting point to the endpoint.
+    	 */
         var self = this;
         var deferred = $q.defer();
         var via = viaPoint;
         console.log("strt" + JSON.stringify(startLocation));
-       // var startLocation = new google.maps.LatLng(startLocation.lat, startLocation.lng);
+        //startLocation is already in the LatLng Object format so we don't need to create an object with: "new google.maps.LatLng(lat, lng);"
 
         if (travelMode == 'TRANSIT') {
             via = '';  //if the travel mode is transit, don't use the via waypoint because that will not work
         }
 
-        //get the lat and lng points of the station with stationID of destinationStationID.
+        //get the lat and lng points (from the database) of the station with stationID of destinationStationID.
         var destinationLatLng = stationFactory.stationService.getStationLatLngPoints(destinationStationID, stationFactory.stationService.allStationsMapData);
         //get the station name of the station with stationID of destinationStationID.
         var stationName = stationFactory.stationService.getStationName(destinationStationID, stationFactory.stationService.allStationsMapData);
