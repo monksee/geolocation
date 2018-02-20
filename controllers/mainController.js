@@ -475,9 +475,25 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                     googleMapsFactory.googleMapsService.getLatLng(startLocation).then(function(latLng){
                         console.log("latLng" + JSON.stringify(latLng));
                         //pass in the latLng to the getNearestStation function
-                        console.log("destinationStationID1 " + destinationStationID);
                         destinationStationID = googleMapsFactory.googleMapsService.getNearestStation(latLng, $scope.allStationsMapData);
                         console.log("destinationStationID " + destinationStationID);
+                        //pass in start, via and travel mode to the getDirections method from our factory.
+                        googleMapsFactory.googleMapsService.getDirections(startLocation, viaPoint, travelMode, destinationStationID).then(function(directionsDetails){
+                            $scope.directionsFormData.directionsAreCalculating = false;
+                            if(directionsDetails == null){ 
+                                return;
+                            }
+                            $scope.bottomPanelData.selectedMenuItem = '1';
+                            $scope.directionsData.directionsWereGenerated = true;
+                            console.log("directionsDetails" + JSON.stringify(directionsDetails));
+                            //if directionsDetails is not null
+                            $scope.directionsData.directionsDetails = directionsDetails;
+                        });
+
+
+                    });
+                }else{
+                    destinationStationID = $scope.directionsFormData.selectedDestination;
                     //pass in start, via and travel mode to the getDirections method from our factory.
                     googleMapsFactory.googleMapsService.getDirections(startLocation, viaPoint, travelMode, destinationStationID).then(function(directionsDetails){
                         $scope.directionsFormData.directionsAreCalculating = false;
@@ -490,23 +506,6 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
                         //if directionsDetails is not null
                         $scope.directionsData.directionsDetails = directionsDetails;
                     });
-
-
-                    });
-                }else{
-                    destinationStationID = $scope.directionsFormData.selectedDestination;
-                //pass in start, via and travel mode to the getDirections method from our factory.
-                googleMapsFactory.googleMapsService.getDirections(startLocation, viaPoint, travelMode, destinationStationID).then(function(directionsDetails){
-                    $scope.directionsFormData.directionsAreCalculating = false;
-                    if(directionsDetails == null){ 
-                        return;
-                    }
-                    $scope.bottomPanelData.selectedMenuItem = '1';
-                    $scope.directionsData.directionsWereGenerated = true;
-                    console.log("directionsDetails" + JSON.stringify(directionsDetails));
-                    //if directionsDetails is not null
-                    $scope.directionsData.directionsDetails = directionsDetails;
-                });
                 } 
             }
         }).then(function(isSuccessful){
