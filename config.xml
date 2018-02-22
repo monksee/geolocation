@@ -46,7 +46,7 @@
 
 
 	<plugin name="cordova-plugin-facebook4" source="npm" spec="1.7.4">
-        	<param name="APP_ID" value="693315124196911" />
+        	<param name="APP_ID" value="359532051123033" />
         	<param name="APP_NAME" value="Map App" />
 	</plugin>
 
