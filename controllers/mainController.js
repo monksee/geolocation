@@ -321,8 +321,18 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         //(as opposed to the directions panel with directions from the last calculation)
         $scope.bottomPanelData.selectedMenuItem = '0';
         $scope.bottomPanelIsOpen = true;
-        $scope.directionsFormData.selectedDestination = stationID;//"" + stationID; //store it as a string  
+        $scope.directionsFormData.selectedDestination = stationID;
         $scope.directionsFormData.selectedDestinationType = 'chooseDestination';
+        //reset the directionsDisplay if it is already set (e.g from previous direction results)
+         console.log(googleMapsFactory.googleMapsService.directionsDisplay);
+            if(googleMapsFactory.googleMapsService.directionsDisplay != null){
+                console.log("here");
+                googleMapsFactory.googleMapsService.directionsDisplay.setMap(null);
+                googleMapsFactory.googleMapsService.directionsDisplay = null;
+                googleMapsFactory.googleMapsService.directionsResult = {};
+                document.getElementById("directions_panel").innerHTML = '';
+                $scope.directionsData.directionsWereGenerated = false;
+            }
     };
 
 
@@ -598,7 +608,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         window.history.back();
 
         backButtonClickedTimer = $timeout(function () {
-            alert("enabled");
+           // alert("enabled");
            $scope.backButtonClicked = false;
         }, 700);
 
