@@ -19,9 +19,9 @@ background: #fff;
 -moz-transition: .4s;
 -o-transition: .4s;
 transition: .4s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
--webkit-box-shadow: 0px -2px 6px 0px rgba(61, 59, 59, 0.5);
--moz-box-shadow:    0px -2px 6px 0px rgba(61, 59, 59, 0.5);
-box-shadow:         0px -2px 6px 0px rgba(61, 59, 59, 0.5);
+-webkit-box-shadow: 0px -2px 6px 0px rgba(61, 59, 59, 0.5), inset 0px -2px 6px 0px rgba(61, 59, 59, 0.5);
+-moz-box-shadow:    0px -2px 6px 0px rgba(61, 59, 59, 0.5), inset 0px -2px 6px 0px rgba(61, 59, 59, 0.5);
+box-shadow:         0px -2px 6px 0px rgba(61, 59, 59, 0.5), inset 0px -2px 6px 0px rgba(61, 59, 59, 0.5);
 }
 
 .reset_box_shadow{
@@ -150,10 +150,10 @@ min-height: 500px;
 }
 
 .swipe_up{
--webkit-transform: translateY(-87.5%); 
--moz-transform: translateY(-87.5%); 
--o-transform: translateY(-87.5%); 
-transform: translateY(-87.5%); 
+-webkit-transform: translateY(-83%); 
+-moz-transform: translateY(-83%); 
+-o-transform: translateY(-83%); 
+transform: translateY(-83%); 
 }
 .swipe_up1{
 
