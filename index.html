@@ -56,13 +56,14 @@ Array.prototype.min = function() {
 		<ul class="header_nav" data-ng-class="{'swipe_left': panelIsOpen == true, 'hide_element': detectLoginView()}" data-ng-show="!detectLoginView()">
 			<li class="header_menu_item">
                 <label class="header_menu_link">
-			    <input id="back_header_link" class="normal_link" type="button" 
-                    data-ng-click="goBack()" 
-                    data-ng-disabled="backButtonClicked === true" 
-                    value="" >
-                    <img src="images/back_arrow_white.svg" width="27" height="23" alt="">
-
-
+                    <!--we need to have an input of type button here so that we can disable the back button once pressed as it is slow on iOS
+                        but I also want to have an svg for the icon and I cant put that inside the input tag so if we wrap both the input tag
+                        and also the img tag with svg in a label then when either of them are clicked the other registers as being clicked also-->
+			        <input id="back_header_link" class="normal_link" type="button" 
+                        data-ng-click="goBack()" 
+                        data-ng-disabled="backButtonClicked === true" 
+                        value="" >
+                    <img src="images/back_arrow_white.svg" width="25" height="22" alt="">
                 </label>
 			</li>
         	<li class="header_menu_item navicon" data-ng-click="toggleSidePanel()">
