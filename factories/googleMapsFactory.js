@@ -149,7 +149,7 @@ mapApp.factory('googleMapsFactory', function($http, $timeout, $q, $compile, shar
         //set style options for marker clusters (these are the default styles)
         var mcOptions = {styles: [{
                         height: 75,
-                        url: appFactory.appService.appDetails.appRootURL + "/map_server_files/images/gm_icon_marker_cluster.png",
+                        url: appFactory.appService.appDetails.appRootURL + "/map_server_files/images/gm_icon_marker_cluster_light.png",
                         width: 75,
                         textColor: '#ffffff',
                         textSize:14
