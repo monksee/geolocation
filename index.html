@@ -42,6 +42,7 @@ Array.prototype.min = function() {
 <script src="phonegap.js"></script>
 
 <link rel="stylesheet" type="text/css" href="css/index.css"/>	
+<link rel="stylesheet" type="text/css" href="css/login.css"/>
 <link rel="stylesheet" type="text/css" href="css/header.css"/>	
 <link rel="stylesheet" type="text/css" href="css/map.css"/>	
 <link rel="stylesheet" type="text/css" href="css/bottom_panel.css"/>	
@@ -54,11 +55,15 @@ Array.prototype.min = function() {
 	<header>
 		<ul class="header_nav" data-ng-class="{'swipe_left': panelIsOpen == true, 'hide_element': detectLoginView()}" data-ng-show="!detectLoginView()">
 			<li class="header_menu_item">
-
-			    <input id="back_header_link" class="header_menu_link normal_link" type="button" 
+                <label class="header_menu_link">
+			    <input id="back_header_link" class="normal_link" type="button" 
                     data-ng-click="goBack()" 
                     data-ng-disabled="backButtonClicked === true" 
-                    value="&#xf060;" >
+                    value="" >
+                    <img src="images/back_arrow_white.svg" width="27" height="23" alt="">
+
+
+                </label>
 			</li>
         	<li class="header_menu_item navicon" data-ng-click="toggleSidePanel()">
 				<span class="header_menu_link" data-ng-class="{'current': panelIsOpen == true}">
@@ -71,7 +76,7 @@ Array.prototype.min = function() {
 	<div id="container_wrapper" 
 	    data-ng-class="{'scrollable': !detectHomeView(), 'swipe_left': panelIsOpen == true}" 
 	    data-ng-swipe-left="(!detectHomeView() ? panelIsOpen = true : '')">
-	    <div class="container">
+	    <div class="container" data-ng-class="{'hide_element': detectLoginView() == true}">
             <div id="login_info_area" data-ng-show="showUserProfileArea()">
 			   <span class="user_profile_name">Hi {{userDetails.facebookName}}</span> 
 			</div>
