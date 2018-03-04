@@ -1,16 +1,30 @@
 <div id="login_area">
-<div id="login_buttons_area" data-ng-class="{'hide_element': detectHomeView()}">
-    <button class="facebook-login-button" data-ng-click="loginWithFacebook()">
-        <span class="facebook_button_icon">
-            <i class="fa fa-facebook" aria-hidden="true"></i>
-        </span>
-        <span class="button_text">Login with Facebook</span>
-    </button>
+<div id="logo_area">
 
-    <a href="#home" class="btn btn_blue btn_enter_app normal_link">
+    <img src="images/ipra-logo.png" width="300" height="80" alt="">
+</div>
+
+<div id="login_buttons_area" data-ng-class="{'hide_element': detectHomeView()}">
+
+    <a id="btn_enter_app" href="#home" class="btn btn_blue normal_link">
         <span>Enter</span>
     </a>
+    <div id="or_area">
+        <span class="or_line"></span>
+        <span class="or_area_text">Or</span>
+        <span class="or_line"></span>
+
+    </div>
+    
+    <button class="login_with_fb_button btn btn_blue" data-ng-click="loginWithFacebook()">
+        <span class="login_with_fb_icon">
+            <i class="fa fa-facebook" aria-hidden="true"></i>
+        </span>
+        <span class="login_with_fb_button_text">Login with Facebook</span>
+    </button>
+
 </div>
+
 </div>
 
 
