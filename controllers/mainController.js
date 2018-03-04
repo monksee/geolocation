@@ -101,7 +101,8 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
         var mapContainer = document.getElementById("map");
         var mapIsLoadingContainer = document.getElementById("map_is_loading");
         var mapErrorContainer = document.getElementById("map_error");
-
+        var loginArea = document.getElementById("login_area");
+        loginArea.style.height = screenHeight + "px";
       //  mapContainer.style.height = mapContainerHeight + "px";
       //  mapIsLoadingContainer.style.height = mapContainerHeight + "px";
       //  mapErrorContainer.style.height = mapContainerHeight + "px";
@@ -149,6 +150,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
          */
         //Check if the current path is home 
         var isHomePath = $scope.checkLocationPath("home");
+        var isLoginPath = $scope.detectLoginView();
         if(isHomePath){ 
             console.log('home view loaded');
             //will need to check if the directionsResult object has a value so that we can reinsert the last directions that were calculated
@@ -166,6 +168,12 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             //the bottom value will be a minus value as it will be mostly hidden at the bottom of the screen (except for its header)
            // bottomPanel.style.bottom = "-" + CSSBottomValue + "px";
 
+        }
+
+        if(isLoginPath){
+            console.log('login view loaded');
+            var loginArea = document.getElementById("login_area");
+            loginArea.style.height = screenHeight + "px";
         }
     });
 
@@ -185,6 +193,7 @@ mapApp.controller("mainController", function($scope, $compile, $window, $http, $
             $scope.initializeMap();
             console.log("yes home");
         }
+
     });
 
     $scope.initializeMap = function(){ 
