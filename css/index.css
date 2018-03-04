@@ -100,9 +100,7 @@ position: relative;
  * also the padding on left and right is a total of 4% which when added to the width of 96% will equal 100%
  */
 padding: 62px 0% 0px 0%; 
-
 width: 100%;
-
 }
 
 
@@ -338,6 +336,7 @@ font-weight: bold;
 
 }
 .hide_element {
+padding-top: 0px !important;
 height: 0px;
 opacity: 0;
 }
@@ -366,7 +365,7 @@ padding: 3px 0px;
 }
 
 /*******************************************************/
-label{
+label:not(.header_menu_link){
 display:block;
 margin:4px 0px 4px 0px;
 color: #414141; /*off white color for the text*/
@@ -441,7 +440,9 @@ background:none;
 }
 input[type="button"]#back_header_link{
 padding: 0px !important;
+margin: 0px !important;
 }
+
 /*styling to prevent chrome's yellow colour input field after autocomplete*/
 input:-webkit-autofill {
 -webkit-box-shadow: inset 0px 0px 0px 100px #fafafa;
@@ -550,8 +551,16 @@ min-height: 37px;
 
 .btn_blue {
 color: #f1f3f3;
-border: 2px solid #1d8ccd !important;
-background: #1d8ccd !important;
+
+border: 0px solid #1d8ccd !important;
+/*background: #1d8ccd !important;*/
+
+/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#3182ba+0,23aec1+100 */
+background: #3182ba !important; /* Old browsers */
+background: -moz-linear-gradient(left, #3182ba 0%, #23aec1 100%) !important; /* FF3.6-15 */
+background: -webkit-linear-gradient(left, #3182ba 0%,#23aec1 100%) !important; /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to right, #3182ba 0%,#23aec1 100%) !important; /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3182ba', endColorstr='#23aec1',GradientType=1 ) !important; /* IE6-9 */
 }
 
 .btn_white{
@@ -567,6 +576,12 @@ color: #1d8ccd !important;
 
 .btn_blue:hover, .btn_blue:active{
 background: #1d8ccd !important;
+background: #3182ba !important; /* Old browsers */
+background: -moz-linear-gradient(left, #3182ba 0%, #23aec1 100%) !important; /* FF3.6-15 */
+background: -webkit-linear-gradient(left, #3182ba 0%,#23aec1 100%) !important; /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to right, #3182ba 0%,#23aec1 100%) !important; /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3182ba', endColorstr='#23aec1',GradientType=1 ) !important; /* IE6-9 */
+
 color: #fff !important;
 border-color: #1d8ccd;
 box-shadow: 0px 0px 0px 2px #fff inset; 
@@ -593,69 +608,7 @@ text-align: center;
 margin: 5px 8px;	
 
 }
-.btn_enter_app{
-width: 230px;
-margin: 30px auto 10px auto;
-font-size: 16px;
-}
-/* facebook login button*/
-.facebook-login-button{
-position: relative;
-display: block;
-outline: 0; 		/*override the default button outline*/
-border: 0;  		/*override the default button border*/
-border-radius: 2px; 	
--webkit-border-radius: 2px;
--moz-border-radius: 2px;
--webkit-box-shadow:	0px 0px 0px 1px rgba(50, 73, 136, 1);
--moz-box-shadow:	0px 0px 0px 1px rgba(50, 73, 136, 1);
-box-shadow: 		0px 0px 0px 1px rgba(50, 73, 136, 1);
-color: #fff; 
-background: #3d57a3;
-cursor: pointer;
-margin: 2px auto;
-z-index: 3;
-max-width: 100%;
-}
 
-
-.button_text{
-letter-spacing: .2px;
-font-weight: bold;
-text-shadow: -1px -1px 0px #26345a;
-font-size: 16px;
--webkit-box-shadow: inset 1px 0px 0px 0px rgba(84, 115, 200,1);
--moz-box-shadow:    inset 1px 0px 0px 0px rgba(84, 115, 200, 1);
-box-shadow:         inset 1px 0px 0px 0px rgba(84, 115, 200, 1);
--webkit-box-shadow: inset 1px 0px 0px 0px rgba(90, 119, 200,1);
--moz-box-shadow:    inset 1px 0px 0px 0px rgba(90, 119, 200, 1);
-box-shadow:         inset 1px 0px 0px 0px rgba(90, 119, 200, 1);
-padding: 10px 0px;
-display: block;
-text-align: center;
-width: 190px;
-height: 20px;
-float: left;
-}
-
-.facebook_button_icon{
-text-align: center;
-text-shadow: -1px -1px 0px #26345a;
-font-size: 24px;
-float: left;
-display: block;
-width: 40px;
-padding-top: 6px;
-height: 34px;
--webkit-box-shadow: inset -1px 0px 0px 0px rgba(50, 73, 136, 1);
--moz-box-shadow:    inset -1px 0px 0px 0px rgba(50, 73, 136, 1);
-box-shadow:         inset -1px 0px 0px 0px rgba(50, 73, 136, 1);
-}
-#login_buttons_area{
-padding: 0px 2%;
-width: 96%;
-
-}
 /**************************************************************/
 /*Font Awesome styles. See reference*/
 
