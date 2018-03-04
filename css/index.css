@@ -541,10 +541,12 @@ cursor: pointer;
 padding: 7px 15px;
 
 font-size: .9rem;
-font-weight: bold;
-letter-spacing: 1px;
 
-transition: all 0.2s ease;	
+letter-spacing: .6px;
+-webkit-transition: .3s; /* Android 2.1+, Chrome 1-25, iOS 3.2-6.1, Safari 3.2-6  */
+-moz-transition:.3s;
+-o-transition: .3s;
+transition: .3s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
 z-index: 3;
 min-height: 37px;
 }
@@ -554,15 +556,27 @@ color: #f1f3f3;
 
 border: 0px solid #1d8ccd !important;
 /*background: #1d8ccd !important;*/
-
-/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#3182ba+0,23aec1+100 */
-background: #3182ba !important; /* Old browsers */
-background: -moz-linear-gradient(left, #3182ba 0%, #23aec1 100%) !important; /* FF3.6-15 */
-background: -webkit-linear-gradient(left, #3182ba 0%,#23aec1 100%) !important; /* Chrome10-25,Safari5.1-6 */
-background: linear-gradient(to right, #3182ba 0%,#23aec1 100%) !important; /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3182ba', endColorstr='#23aec1',GradientType=1 ) !important; /* IE6-9 */
+/*we need the important keyword on the background for submit buttons and inputs of type button to display properly*/
+/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#3182ba+0,2a9bbe+100 */
+background: #3182ba !important;  /* Old browsers */
+background: -moz-linear-gradient(left, #3182ba 0%, #2a9bbe 100%) !important; /* FF3.6-15 */
+background: -webkit-linear-gradient(left, #3182ba 0%,#2a9bbe 100%) !important; /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to right, #3182ba 0%,#2a9bbe 100%) !important; /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3182ba', endColorstr='#2a9bbe',GradientType=1 ) !important; /* IE6-9 */
 }
+.btn_navy{
+color: #f1f3f3;
 
+border: 0px solid #1d8ccd !important;
+/*we need the important keyword on the background for submit buttons and inputs of type button to display properly*/
+/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#2b3e59+0,27639a+100 */
+background: #2b3e59 !important; /* Old browsers */
+background: -moz-linear-gradient(left, #2b3e59 0%, #27639a 100%) !important; /* FF3.6-15 */
+background: -webkit-linear-gradient(left, #2b3e59 0%,#27639a 100%) !important; /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to right, #2b3e59 0%,#27639a 100%) !important; /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2b3e59', endColorstr='#27639a',GradientType=1 ) !important; /* IE6-9 */
+
+}
 .btn_white{
 
 box-sizing: border-box;
@@ -574,18 +588,30 @@ background: #f4f2f2 !important;
 color: #1d8ccd !important;
 }
 
+.btn_navy:hover, .btn_navy:active{
+
+/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#27639a+0,2675a3+100 */
+background: #27639a !important; /* Old browsers */
+background: -moz-linear-gradient(left, #27639a 0%, #2675a3 100%) !important; 
+background: -webkit-linear-gradient(left, #27639a 0%,#2675a3 100%) !important;
+background: linear-gradient(to right, #27639a 0%,#2675a3 100%) !important; 
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#27639a', endColorstr='#2675a3',GradientType=1 ) !important; /* IE6-9 */
+}
+
+
 .btn_blue:hover, .btn_blue:active{
-background: #1d8ccd !important;
-background: #3182ba !important; /* Old browsers */
-background: -moz-linear-gradient(left, #3182ba 0%, #23aec1 100%) !important; /* FF3.6-15 */
-background: -webkit-linear-gradient(left, #3182ba 0%,#23aec1 100%) !important; /* Chrome10-25,Safari5.1-6 */
-background: linear-gradient(to right, #3182ba 0%,#23aec1 100%) !important; /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3182ba', endColorstr='#23aec1',GradientType=1 ) !important; /* IE6-9 */
+
+
+background: #3182ba !important;/* Old browsers */
+background: -moz-linear-gradient(left, #3182ba 0%, #3e87b7 100%) !important; /* FF3.6-15 */
+background: -webkit-linear-gradient(left, #3182ba 0%,#3e87b7 100%) !important; /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to right, #3182ba 0%,#3e87b7 100%) !important; /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3182ba', endColorstr='#3e87b7',GradientType=1 ) !important; /* IE6-9 */
+
 
 color: #fff !important;
 border-color: #1d8ccd;
-box-shadow: 0px 0px 0px 2px #fff inset; 
-transition: all 0.2s ease;	
+/*box-shadow: 0px 0px 0px 2px #fff inset; */
 }
 
 .btn_white:hover, .btn_white:active{

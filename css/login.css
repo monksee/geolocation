@@ -14,21 +14,94 @@ background: -webkit-linear-gradient(top, #294362 1%,#1c5688 100%); /* Chrome10-2
 background: linear-gradient(to bottom, #294362 1%,#1c5688 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#294362', endColorstr='#1c5688',GradientType=0 ); /* IE6-9 */
 }
-#login_buttons_area{
-padding: 60px 2% 0px 2%;
-width: 96%;
-
+/*the logo at the top of the login view*/
+#logo_area{
+padding-top: 70px;
+width: 240px;
+margin: 0px auto;
+max-width: 100%;
 }
-.btn_enter_app{
+#logo_area img{
+display: block;
+max-width: 100%;
+height: auto;
+}
+
+/*the area containing the enter button and login with facebook button*/
+#login_buttons_area{
+padding: 30px 2% 0px 2%;
+width: 96%;
+}
+/*the or_area is the area containing the horizontal lines in between the enter and login with facebook buttons*/
+#or_area{
+margin: 0px auto;
+width: 240px; 
+overflow: hidden;
+} 
+/*there are three span tags within the "or_area" for the two lines and the "or" text*/
+#or_area span{
+float: left;
+} 
+/*the "or" text*/
+.or_area_text{
+width: 14%;
+text-align: center;
+color: #fff;
+font-size: 12px;
+} 
+/*the horizontal lines on either side of the "or" text*/
+.or_line{
+    margin-top: 8px;
+    height: 1px;
+    width: 43%;
+    background: #fff;
+    display: block;
+}
+
+
+/*the enter button on the login view*/
+#btn_enter_app{
 width: 210px;
-margin: 30px auto 10px auto;
-font-size: 16px;
+margin: 30px auto 30px auto;
+font-size: 14px;
 min-height: auto;
 padding: 12px 15px;
+text-transform: uppercase;
+max-width: 100%;
 }
 
-/* facebook login button*/
-.facebook-login-button{
+/*the login with facebook button on the login view*/
+.login_with_fb_button{
+padding: 0px 10px 0px 0px !important;
+letter-spacing: .2px !important;
+text-transform: uppercase;
+margin: 30px auto 30px auto;
+max-width: 100%;
+}
+.login_with_fb_button_text{
+padding: 12px 0px 12px 10px;
+display: block;
+text-align: center;
+width: 190px;
+height: 20px;
+float: left;
+}
+.login_with_fb_icon{
+text-align: center;
+font-size: 18px;
+float: left;
+display: block;
+width: 30px;
+padding-top: 10px;
+height: 34px;
+-webkit-box-shadow: inset -1px 0px 0px 0px rgba(40, 115, 163, 1);
+-moz-box-shadow:    inset -1px 0px 0px 0px rgba(40, 115, 163, 1);
+box-shadow:         inset -1px 0px 0px 0px rgba(40, 115, 163, 1);
+}
+
+/********************************************************************************************/
+/* facebook login button original*/
+.facebook_login_button{
 position: relative;
 display: block;
 outline: 0; 		/*override the default button outline*/
@@ -46,16 +119,12 @@ margin: 2px auto;
 z-index: 3;
 max-width: 100%;
 }
-
-
-.button_text{
+.facebook_button_text{
 letter-spacing: .2px;
 font-weight: bold;
 text-shadow: -1px -1px 0px #26345a;
 font-size: 16px;
--webkit-box-shadow: inset 1px 0px 0px 0px rgba(84, 115, 200,1);
--moz-box-shadow:    inset 1px 0px 0px 0px rgba(84, 115, 200, 1);
-box-shadow:         inset 1px 0px 0px 0px rgba(84, 115, 200, 1);
+
 -webkit-box-shadow: inset 1px 0px 0px 0px rgba(90, 119, 200,1);
 -moz-box-shadow:    inset 1px 0px 0px 0px rgba(90, 119, 200, 1);
 box-shadow:         inset 1px 0px 0px 0px rgba(90, 119, 200, 1);
@@ -80,3 +149,5 @@ height: 34px;
 -moz-box-shadow:    inset -1px 0px 0px 0px rgba(50, 73, 136, 1);
 box-shadow:         inset -1px 0px 0px 0px rgba(50, 73, 136, 1);
 }
+/* facebook login button original end*/
+/********************************************************************************************/

@@ -82,16 +82,13 @@ font-family: Raleway, FontAwesome; /*need to put font awesome here for the icons
 .header_menu_link img{
 max-width: 100%;
 max-height: 100%;
-
 }
+
+/*the header_menu_link containing the back arrow img tag will be a label so we target it as follows*/
 label.header_menu_link{
-
+padding-top: 2px;
 }
 
-label.header_menu_link svg {
-width: 150px;
-height: 120px;
-}
 
 .header_menu_link.logo_link{
 padding-top: 4px;

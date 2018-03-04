@@ -67,7 +67,8 @@ max-width: 100%;
 display: block;
 margin: 10px 0px !important;
 cursor: pointer;
-border: 2px solid #747474 !important;
+border: 0px solid #747474 !important;
+min-height: auto;
 }
 .info_window .station_name{
 font-size: 1.0rem !important;

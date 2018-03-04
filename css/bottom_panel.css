@@ -153,6 +153,7 @@ left: 100%;
 /*The header of the bottom_panel (which is position absolute) has a full height of 66px therefore we will put
 padding of approx 76px on top of the contents of the body of the bottom_panel. */
 .inside_body_of_bottom_panel{
+background: #fff;
 position: relative;
 padding: 76px 0px 30px 0px;
 width: 100%;
@@ -218,7 +219,7 @@ width: 96%;
 
 #directions_panel{
 position: relative;
-background: #fff;
+
 width: 96%;
 padding: 5px 1% 10px 1%;
 margin: 15px auto 10px auto;
