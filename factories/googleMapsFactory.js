@@ -118,7 +118,7 @@ mapApp.factory('googleMapsFactory', function($http, $timeout, $q, $compile, shar
             //We need to do this so that the user can navigate back in a phonegap app.
             self.fixMapWhenLoaded(); 
         });
-        var stationIcon = new google.maps.MarkerImage(appFactory.appService.appDetails.appRootURL + "/map_server_files/images/gm_icon_petrol_pump.png", null, null, null, new google.maps.Size(48,68));
+        var stationIcon = new google.maps.MarkerImage(appFactory.appService.appDetails.appRootURL + "/map_server_files/images/gm_icon_petrol_pump_navy.png", null, null, null, new google.maps.Size(48,68));
 
 
         for(var i = 0; i < allStationsMapData.length; i++){
@@ -218,8 +218,8 @@ mapApp.factory('googleMapsFactory', function($http, $timeout, $q, $compile, shar
          */
         var infoWindowHTML = '<div class="info_window"><h4 class="station_name">' + stationName + '</h4>' + 
                              '<div class="info_window_button_area">' + 
-                             '<a class="info_window_button btn btn_white" href="#station?stationID=' + stationID + '">View more info</a>' + 
-                             '<span class="info_window_button btn btn_white" + data-ng-click="getDirections(' + stationID + ')">Get directions</span>' + 
+                             '<a class="info_window_button btn btn_navy" href="#station?stationID=' + stationID + '">View more info</a>' + 
+                             '<span class="info_window_button btn btn_navy" + data-ng-click="getDirections(' + stationID + ')">Get directions</span>' + 
                              '</div>' +
                              '</div>';
 
