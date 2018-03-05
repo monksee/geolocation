@@ -8,10 +8,10 @@
 	android-versionCode = "3"
         version   = "1.0.0">
 	<!-- versionCode is optional and Android only -->
-    	<name>IRPA</name>
+    	<name>IPRA</name>
 
     	<description>
-    		An application for the customers of the IRPA
+    		An application for the customers of the IPRA
    	</description>
 
     	<author href="http://www.gamuzic.com" email="monks.sarah@gmail.com">
