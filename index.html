@@ -66,6 +66,9 @@ Array.prototype.min = function() {
                     <img src="images/back_arrow_white.svg" width="25" height="22" alt="">
                 </label>
 			</li>
+			<li class="header_menu_item logo_list_item">
+                <img src="images/icon.png" width="64" height="64" alt="">
+			</li>
         	<li class="header_menu_item navicon" data-ng-click="toggleSidePanel()">
 				<span class="header_menu_link" data-ng-class="{'current': panelIsOpen == true}">
 					<i class="fa fa-navicon"></i>
@@ -137,7 +140,7 @@ Array.prototype.min = function() {
 				<!--only show the following link to the login view if the user is not logged in.-->
 				<li class="side_menu_item" data-ng-show="!checkIfLoggedIn()">
 					<a class="side_menu_link normal_link" href="#login" data-ng-click="toggleSidePanel();selectMenuItem($index)">
-						<i class="panel_icon fa fa-home"></i>Login<i class="fa fa-chevron-right"></i>
+						<i class="panel_icon fa fa-sign-in"></i>Login<i class="fa fa-chevron-right"></i>
 					</a>
 					
 				</li>
