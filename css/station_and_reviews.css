@@ -220,15 +220,6 @@ font-size: 16px;
 }
 
 
-button, input[type="button"]:not(#back_header_link){
-outline: 0; 		/*override the default button outline*/
-border: 0 !important;  		/*override the default button border*/
--webkit-box-shadow: 	none !important;
--moz-box-shadow: 	none !important;
-box-shadow: 		none !important;
-border: none !important; 
-
-}
 /*this is the styling of a container for the small buttons that appear within a review or reply*/
 .review_area_button{
 outline: 0; 		/*override the default button outline*/

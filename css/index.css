@@ -41,7 +41,6 @@ body{
 position: relative;
 font-family: 'Raleway', sans-serif !important;
 color: #515252;
-line-height: 1.2rem;
 font-size: .9rem;
 letter-spacing: .4px; /*create a small space between each letter so the text is more readable*/
 width: 100%;
@@ -442,7 +441,15 @@ input[type="button"]#back_header_link{
 padding: 0px !important;
 margin: 0px !important;
 }
+button, input[type="button"]:not(#back_header_link){
+outline: 0;         /*override the default button outline*/
+border: 0 !important;       /*override the default button border*/
+-webkit-box-shadow:     none !important;
+-moz-box-shadow:    none !important;
+box-shadow:         none !important;
+border: none !important; 
 
+}
 /*styling to prevent chrome's yellow colour input field after autocomplete*/
 input:-webkit-autofill {
 -webkit-box-shadow: inset 0px 0px 0px 100px #fafafa;
@@ -538,7 +545,7 @@ border-radius: 5px !important;
 
 text-align: center;
 cursor: pointer;
-padding: 7px 15px;
+padding: 12px 15px;
 
 font-size: .9rem;
 
@@ -548,7 +555,7 @@ letter-spacing: .6px;
 -o-transition: .3s;
 transition: .3s;  /* Chrome 26, Firefox 16+, iOS 7+, IE 10+, Opera, Safari 6.1+  */
 z-index: 3;
-min-height: 37px;
+
 }
 
 .btn_blue {

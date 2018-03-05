@@ -13,6 +13,12 @@ background: -moz-linear-gradient(top, #294362 1%, #1c5688 100%); /* FF3.6-15 */
 background: -webkit-linear-gradient(top, #294362 1%,#1c5688 100%); /* Chrome10-25,Safari5.1-6 */
 background: linear-gradient(to bottom, #294362 1%,#1c5688 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#294362', endColorstr='#1c5688',GradientType=0 ); /* IE6-9 */
+/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#083a5d+1,1c5688+100 */
+background: #083a5d; /* Old browsers */
+background: -moz-linear-gradient(left, #083a5d 1%, #1c5688 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(left, #083a5d 1%,#1c5688 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to right, #083a5d 1%,#1c5688 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#083a5d', endColorstr='#1c5688',GradientType=1 ); /* IE6-9 */
 }
 /*the logo at the top of the login view*/
 #logo_area{
@@ -64,8 +70,7 @@ font-size: 12px;
 width: 210px;
 margin: 30px auto 30px auto;
 font-size: 14px;
-min-height: auto;
-padding: 12px 15px;
+min-height: auto !important;
 text-transform: uppercase;
 max-width: 100%;
 }
@@ -73,7 +78,7 @@ max-width: 100%;
 /*the login with facebook button on the login view*/
 .login_with_fb_button{
 padding: 0px 10px 0px 0px !important;
-letter-spacing: .2px !important;
+
 text-transform: uppercase;
 margin: 30px auto 30px auto;
 max-width: 100%;
@@ -81,9 +86,9 @@ max-width: 100%;
 .login_with_fb_button_text{
 padding: 12px 0px 12px 10px;
 display: block;
-text-align: center;
-width: 190px;
-height: 20px;
+text-align: left;
+width: 180px;
+
 float: left;
 }
 .login_with_fb_icon{
@@ -91,12 +96,10 @@ text-align: center;
 font-size: 18px;
 float: left;
 display: block;
-width: 30px;
+width: 40px;
 padding-top: 10px;
-height: 34px;
--webkit-box-shadow: inset -1px 0px 0px 0px rgba(40, 115, 163, 1);
--moz-box-shadow:    inset -1px 0px 0px 0px rgba(40, 115, 163, 1);
-box-shadow:         inset -1px 0px 0px 0px rgba(40, 115, 163, 1);
+
+
 }
 
 /********************************************************************************************/
