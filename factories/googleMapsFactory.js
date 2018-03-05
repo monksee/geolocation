@@ -218,8 +218,14 @@ mapApp.factory('googleMapsFactory', function($http, $timeout, $q, $compile, shar
          */
         var infoWindowHTML = '<div class="info_window"><h4 class="station_name">' + stationName + '</h4>' + 
                              '<div class="info_window_button_area">' + 
-                             '<a class="info_window_button btn btn_navy" href="#station?stationID=' + stationID + '">View more info</a>' + 
-                             '<span class="info_window_button btn btn_navy" + data-ng-click="getDirections(' + stationID + ')">Get directions</span>' + 
+                             '<a class="info_window_button btn btn_navy" href="#station?stationID=' + stationID + '">' +
+                                 '<span class="info_window_button_icon"><i class="fa fa-info-circle"></i></span>' +
+                                 '<span class="info_window_button_text">View station</span>' +
+                             '</a>' + 
+                             '<span class="info_window_button btn btn_navy" + data-ng-click="getDirections(' + stationID + ')">' +
+                                 '<span class="info_window_button_icon"><img src="images/directions_white.svg" alt=""></span>' +
+                                 '<span class="info_window_button_text">Get directions</span>' +
+                             '</span>' + 
                              '</div>' +
                              '</div>';
 
