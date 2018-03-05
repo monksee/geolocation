@@ -13,7 +13,7 @@ left: 0px;
 z-index: 50;
 width:100%;
 height: 80%;
-overflow: hidden;
+overflow: visible;
 background: #fff;
 -webkit-transition: .4s; /* Android 2.1+, Chrome 1-25, iOS 3.2-6.1, Safari 3.2-6  */
 -moz-transition: .4s;
@@ -37,7 +37,9 @@ box-shadow:         none !important;
 position: absolute;
 top: 0px;
 left: 0px;
-padding: 0px !important;
+padding: 6px 0px 0px 0px !important;
+height: 54px;
+max-height: 60px;
 width: 100%;
 z-index: 35;
 
@@ -49,49 +51,72 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#083a5d', end
 
 }
 
+
 #header_button_area{
-position: relative;
+	width: 30px;
+	padding-top: 2px;
+	height: 26px;
+background: #083a5d; /* Old browsers */
+position: absolute;
+top: -26px;
+left: 47%;
 overflow: hidden;
+border-top-left-radius: 4px;
+border-top-right-radius: 4px;
 }
 
-#header_nav_area{
-position: relative;
-
-}
 
 .toggle_bottom_panel_button{
 display: block;
 position: relative;
-float: right;
-width: 30px;
-height: 30px;
+width: 100%;
+height: 100%;
 cursor: pointer;
 text-align: center;
 }
 
-.toggle_bottom_panel_button i {
-font-size: 22px;
+.toggle_bottom_panel_button .fa-angle-double-up, .toggle_bottom_panel_button .fa-angle-double-down{
+	color: #fff;
+font-size: 28px;
+}
+#header_nav_area{
+position: relative;
+
+	height: 100%;
 }
 
-
 #nav_menu_of_bottom_panel{
+
 width: 100%;
 overflow: hidden; /*add this to clear below the floats*/
 height: 100%;
 }
 
 #nav_menu_of_bottom_panel li{
+
 margin: 0px 5%;
 cursor: pointer;
-padding: 3px 0% 3px 0%;
+padding: 3px 0% 0px 0%;
 text-align: center;
-height: 30px;
+
 width: 40%;
 float: left;
 color: #fff;
 font-weight: bold;
 text-transform: uppercase;
 }
+#nav_menu_of_bottom_panel li img{
+display: block;
+height: 60%;
+width: 25px;
+margin: 0px auto 3px auto;
+}
+.bp_nav_menu_text{
+	display: block;
+	height: 40%;
+	font-size: 12px;
+}
+
 #nav_menu_of_bottom_panel li.selected{
 
 }
