@@ -16,15 +16,23 @@ Therefore this view consists of just the bottom panel html.
 	        <!--This div contains the caret button that is placed to the top right of the bottom panel. This button enables the user
 	        to open and close (slide up and down) the bottom panel. -->
 		    <span class="toggle_bottom_panel_button noPreventDefault" data-ng-click="toggleBottomPanel()">
-                <i class="fa" data-ng-class="(bottomPanelIsOpen === false ? 'fa-caret-up': 'fa-caret-down')"></i>
+                <i class="fa" data-ng-class="(bottomPanelIsOpen === false ? 'fa-angle-double-up': 'fa-angle-double-down')"></i>
             </span>
         </div>
+
         <div id="header_nav_area">
             <!--This div contains the navigation menu in the header of the bottom panel. The menu items correspond to the carousel_containers 
             which lie within the body_of_bottom_panel below-->
             <ul id="nav_menu_of_bottom_panel">
-                <li class="noPreventDefault" data-ng-class="{'selected': bottomPanelData.selectedMenuItem == '0'}" data-ng-click="selectBottomPanelMenuItem('0')">Filter</li>
-                <li class="noPreventDefault" data-ng-class="{'selected': bottomPanelData.selectedMenuItem == '1'}" data-ng-click="selectBottomPanelMenuItem('1')">Directions</li>
+                <li class="noPreventDefault" data-ng-class="{'selected': bottomPanelData.selectedMenuItem == '0'}" data-ng-click="selectBottomPanelMenuItem('0')">
+                    <img src="images/funnel_white.svg" alt="">
+                    <span class="bp_nav_menu_text">Filter</span>
+                   
+                </li>
+                <li class="noPreventDefault" data-ng-class="{'selected': bottomPanelData.selectedMenuItem == '1'}" data-ng-click="selectBottomPanelMenuItem('1')">
+                    <img src="images/directions_white.svg" alt="">
+                    <span class="bp_nav_menu_text">Directions</span>
+                </li>
                 <!--Thia last list item is the indicator line that moves from right to left depending on which menu item is selected-->
                 <li class="indicator_line" data-ng-class="{'move_to_right': bottomPanelData.selectedMenuItem == '1'}"></li>
             </ul>
